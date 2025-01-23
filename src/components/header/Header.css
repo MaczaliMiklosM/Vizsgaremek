@@ -1,0 +1,31 @@
+.profile-links a {
+    margin: 0 10px;
+    color: #333; 
+    text-decoration: none; 
+    font-size: 16px; 
+    padding: 0 5px;
+}
+
+.profile-links a:hover {
+    color: #333; 
+    background-color: transparent; 
+    text-decoration: none; 
+    text-shadow: none;
+}
+
+.profile-links a:visited {
+    text-decoration: none;
+}
+
+
+.logo img {
+    width: 150px; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto; 
+  }
+  
+  .logo {
+    padding: 10px; 
+    text-align: center; 
+  }

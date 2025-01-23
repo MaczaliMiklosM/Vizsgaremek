@@ -5,45 +5,46 @@
     padding: 10px;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
+}
   
-  .logo {
+.logo {
     font-size: 24px;
     font-weight: bold;
     color: #333;
-  }
+}
   
-  .group {
+.group {
     display: flex;
     align-items: center;
-  }
+}
   
-  .input {
+.input {
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-left: 10px;
-  }
+}
   
-  .profile-links {
+.profile-links {
     display: flex;
     align-items: center;
-  }
+}
   
-  .navbar {
-    display: flex;
-    justify-content: space-around;
-    background-color: #333;
-    padding: 10px 0;
-  }
-  
-  .nav-link {
-    color: white;
+.profile-links a {
+    margin: 0 10px; /* Add horizontal spacing between links */
+    color: #333; /* Set text color */
+    text-decoration: none; /* Remove underline */
+    font-size: 16px; /* Set font size */
+    padding: 0 5px; /* Add padding for spacing */
+}
+
+.profile-links a:hover {
+    color: #333; /* Keep the color same on hover */
+    background-color: transparent; /* No background color on hover */
+    text-decoration: none; /* No underline on hover */
+}
+
+.profile-links a:visited {
     text-decoration: none;
-    font-size: 16px;
-  }
-  
-  .nav-link:hover {
-    text-decoration: underline;
-  }
-  
+}
+ 
