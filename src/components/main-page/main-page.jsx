@@ -19,11 +19,11 @@ function Main() {
           <h2>Popular Brands</h2>   
         </section>
         <section className="popular-brands">
-          <div className="card">Brand 1</div>
-          <div className="card">Brand 2</div>
-          <div className="card">Brand 3</div>
-          <div className="card">Brand 4</div>
-          <div className="card">Brand 5</div>
+          <div className="card"><img src="/Images/luika.png" alt="yeCipo" /></div>
+          <div className="card"><img src="/Images/patika.png" alt="yeCipo" /></div>
+          <div className="card"><img src="/Images/hermes.png" alt="yeCipo" /></div>
+          <div className="card"><img src="/Images/jordi.png" alt="yeCipo" /></div>
+          <div className="card"><img src="/Images/chrome.png" alt="yeCipo" /></div>
         </section>
         <section className="altTitles">
           <h2>Picks For Her</h2>
@@ -41,9 +41,17 @@ function Main() {
           <Link to="/product-details/2">
             <div className="card" id="2">Louis Vuitton x Takashi Murakami<img src="/Images/taska.png" alt="yeCipo" /></div>
           </Link>
-          <div className="card">Brand 3</div>
-          <div className="card">Brand 4</div>
-          <div className="card">Brand 5</div>
+          <Link to="/product-details/2">
+            <div className="card" id="3">Patek Philippe Annual Calendar Chronograph<img src="/Images/patek.png" alt="yeCipo" /></div>
+          </Link>
+          <Link to="/product-details/2">
+            <div className="card" id="4">Jordan 1 Retro High Dior<img src="/Images/diorJ1.png" alt="yeCipo" /></div>
+          </Link>
+          <Link to="/product-details/2">
+            <div className="card" id="4">Hermes Bearn Compact Wallet Black<img src="/Images/hermiona.png" alt="yeCipo" /></div>
+          </Link>
+
+  
         </section>
       </main>
 
