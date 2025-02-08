@@ -5,9 +5,10 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import Person2Icon from '@mui/icons-material/Person2';
 import InfoIcon from '@mui/icons-material/Info';
-import './productDetails.css'; 
+import './ProductDetails.css'; 
 import Header from '../header/Header'; 
 import Navbar from '../navbar/Navbar';
+import Footer from '../Footer/Footer'; 
 
 const productData = {
   1: {
@@ -93,7 +94,9 @@ function ProductDetails() {
           <p>{product.description}</p>
         </div>
       </div>
+      <Footer /> 
     </div>
+    
   );
 }
 

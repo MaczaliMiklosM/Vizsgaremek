@@ -1,0 +1,9 @@
+.footer {
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-content p {
+  margin: 0;
+  color: #333;
+}

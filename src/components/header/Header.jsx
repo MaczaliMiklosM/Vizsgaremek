@@ -26,6 +26,7 @@ function Header() {
       </div>
       <div className="profile-links">
         <Link to="/signin">Sign In</Link>
+        <Link to="/profile">Profile</Link>
         <Link to="/about">About</Link>
         <Link to="/favorites"><FavoriteBorderIcon /></Link>
         <Link to="/collection"><BookmarkBorderIcon /></Link>

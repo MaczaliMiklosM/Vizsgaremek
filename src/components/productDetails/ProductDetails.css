@@ -1,0 +1,148 @@
+/* ProductDetails.css */
+
+* {
+  box-sizing: border-box;
+}
+.product-details {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .product-header h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .product-header h3 {
+    font-size: 24px;
+    color: #777;
+    margin-bottom: 30px;
+  }
+  
+  .product-content {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .product-images {
+    width: 60%;
+  }
+  
+  .main-image img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid #333; 
+}
+  
+  .image-thumbnails {
+    display: flex;
+    margin-top: 15px;
+  }
+  
+  .image-thumbnails img {
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .image-thumbnails img:hover {
+    border: 2px solid #4070f4;
+    transform: scale(1.1); 
+  }
+  
+  .product-info {
+    width: 35%;
+  }
+  
+  .product-price h2 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .product-size {
+    margin-bottom: 20px;
+  }
+  
+  .product-size label {
+    font-size: 16px;
+    color: #555;
+    margin-right: 10px;
+  }
+  
+  .product-size select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .product-actions button {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .bid-btn {
+    background-color: black;
+    color: white;
+  }
+  
+  .wishlist-btn {
+    background-color: #e1e1e1;
+  }
+  
+  .favorite-btn {
+    background-color: #e1e1e1;
+  }
+  
+  .share-btn {
+    background-color: #e1e1e1;
+  }
+  
+  .product-actions button:hover {
+    opacity: 0.9;
+  }
+  
+  .product-condition p {
+    font-size: 16px;
+    color: #777;
+  }
+  
+  .verified {
+    margin-top: 20px;
+  }
+  
+  .verified-text {
+    font-size: 14px;
+    color: green;
+    font-weight: bold;
+  }
+  
+  .product-description {
+    margin-top: 40px;
+  }
+  
+  .product-description h3 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .product-description p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+  }
+  
