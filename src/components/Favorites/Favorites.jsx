@@ -37,7 +37,7 @@ const Favorites = () => {
       <Header />
       <Navbar />
       <div className="favorites-container">
-        <h1>Kedvencek</h1>
+        <h1>Favorites</h1>
 
         <div className="favorites-list">
           {favorites.length > 0 ? (
@@ -57,7 +57,7 @@ const Favorites = () => {
               </div>
             ))
           ) : (
-            <p className="no-favorites">Nincsenek kedvenc termékeid</p>
+            <p className="no-favorites">You don't have any favorite yet</p>
           )}
         </div>
       </div>

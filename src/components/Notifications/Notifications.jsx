@@ -18,7 +18,7 @@ const Notifications = () => {
       <Header />
       <Navbar />
       <div className="notifications-container">
-        <h1>Értesítések</h1>
+        <h1>Notifications</h1>
 
         <div className="notifications-list">
           {notifications.length > 0 ? (

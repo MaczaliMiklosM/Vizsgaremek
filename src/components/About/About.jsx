@@ -2,6 +2,8 @@ import React from 'react';
 import Header from '../header/Header';
 import Navbar from '../navbar/Navbar';
 import Footer from '../Footer/Footer';
+import { Info as InfoIcon, OtherHouses as OtherHousesIcon, 
+         Phone as PhoneIcon, TrackChanges as TrackChangesIcon } from '@mui/icons-material';
 import './About.css';
 
 const About = () => {
@@ -10,43 +12,42 @@ const About = () => {
       <Header />
       <Navbar />
       <div className="about-container">
-        <h1>Rólunk</h1>
+        <h1>About Us</h1>
 
         {/* Company Introduction */}
         <section className="about-section">
-          <h2>📖 Kik vagyunk?</h2>
+          <h2><InfoIcon /> Who Are We?</h2>
           <p>
-            A **YeCipo** egy prémium sneaker és divatáru webáruház, amely a legjobb minőségű cipőket és kiegészítőket kínálja a divat szerelmeseinek. 
-            Célunk, hogy ügyfeleink számára egyedi és exkluzív darabokat biztosítsunk, a legújabb trendek figyelembevételével.
+            <strong>LuxCollect</strong> is a premium online marketplace dedicated to exclusive, limited-edition, and collectible luxury products.
+            Our goal is to provide our customers with unique and high-value items while ensuring a secure and transparent trading experience.
           </p>
         </section>
 
         {/* History */}
         <section className="about-section">
-          <h2>🏛 Történetünk</h2>
+          <h2><OtherHousesIcon /> Our Story</h2>
           <p>
-            A YeCipo 2015-ben alakult egy kis budapesti garázsban, szenvedélyes sneaker-gyűjtők által. Az évek során kinőttük magunkat egy
-            vezető online piactérré, amely világszerte szállít ritka és ikonikus cipőket.
+            Although LuxCollect is currently a fictional company, this project brings it to life! We are designing and developing the company's online presence
+            along with its backend database, creating a marketplace where collectors and investors can acquire rare luxury items.
           </p>
         </section>
 
         {/* Mission Statement */}
         <section className="about-section">
-          <h2>🎯 Küldetésünk</h2>
+          <h2><TrackChangesIcon /> Our Mission</h2>
           <p>
-            Célunk, hogy a prémium cipők szerelmeseinek egy megbízható platformot biztosítsunk, ahol autentikus termékeket vásárolhatnak és fedezhetnek fel.
-            Hiszünk a közösségben és a minőségben.
+            Our mission is to provide collectors and investors with a safe, reliable platform where they can buy, sell, and bid on authentic luxury products.
+            We are committed to authenticity verification and creating a premium experience for our users.
           </p>
         </section>
 
         {/* Contact Information */}
         <section className="about-section">
-          <h2>📞 Kapcsolat</h2>
-          <p><strong>Email:</strong> support@yecipo.hu</p>
-          <p><strong>Telefon:</strong> +36 1 234 5678</p>
-          <p><strong>Cím:</strong> 1051 Budapest, Fashion Street 10.</p>
+          <h2><PhoneIcon /> Contact</h2>
+          <p><strong>Email:</strong> support@luxcollect.com</p>
+          <p><strong>Phone:</strong> +36 1 234 5678</p>
+          <p><strong>Address:</strong> 1051 Budapest, Luxury Avenue 10.</p>
         </section>
-
       </div>
       <Footer />
     </div>

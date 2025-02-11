@@ -8,6 +8,7 @@ import Profile from './components/Profile/Profile'
 import About from './components/About/About'
 import Notifications from './components/Notifications/Notifications'
 import Favorites from './components/Favorites/Favorites'
+import Collection from './components/Collection/Collection'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/collection" element={<Collection />} />
       </Routes>
     </HashRouter>
   );
