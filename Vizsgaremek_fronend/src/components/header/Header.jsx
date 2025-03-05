@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Person2Icon from '@mui/icons-material/Person2';
-import InfoIcon from '@mui/icons-material/Info';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import { ShoppingBasket as ShoppingBasketIcon} from '@mui/icons-material';
 import './Header.css';
 
 function Header() {
@@ -28,8 +27,9 @@ function Header() {
         <Link to="/signin">Sign In</Link>
         <Link to="/profile">Profile</Link>
         <Link to="/about">About</Link>
+        <Link to="/sell">Sell</Link>
         <Link to="/favorites"><FavoriteBorderIcon /></Link>
-        <Link to="/collection"><BookmarkBorderIcon /></Link>
+        <Link to="/basket"><ShoppingBasketIcon /></Link>
         <Link to="/notifications"><NotificationsIcon /></Link>
       </div>
     </header>

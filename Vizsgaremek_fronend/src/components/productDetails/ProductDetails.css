@@ -59,7 +59,7 @@
 }
 
 .image-thumbnails img:hover {
-  border: 2px solid #2563eb;
+  border: 1px solid #2563eb;
   transform: scale(1.1);
 }
 

@@ -5,7 +5,6 @@ import Footer from '../Footer/Footer';
 import './Notifications.css';
 
 const Notifications = () => {
-  // Example notifications
   const notifications = [
     { id: 1, message: "Új termék érkezett a kollekciódban!", time: "2 órája" },
     { id: 2, message: "A rendelésed feldolgozás alatt áll.", time: "1 napja" },

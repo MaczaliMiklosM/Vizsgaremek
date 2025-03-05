@@ -12,7 +12,6 @@ function Main() {
     <div className="main-container">
       <Header />
       <Navbar />
-      {/* Main Content */}
       <main className="main-content">
         <section className="altTitles">   
           <h2>Popular Brands</h2>   

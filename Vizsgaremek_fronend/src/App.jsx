@@ -9,6 +9,8 @@ import About from './components/About/About'
 import Notifications from './components/Notifications/Notifications'
 import Favorites from './components/Favorites/Favorites'
 import Collection from './components/Collection/Collection'
+import Basket from './components/Basket/Basket'
+import CheckOut from './components/CheckOut/CheckOut'
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/collection" element={<Collection />} />
+        <Route path="/basket" element={<Basket />} />
+        <Route path="/checkout" element={<CheckOut />} />
       </Routes>
     </HashRouter>
   );
