@@ -1,0 +1,139 @@
+.sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: #1f2937;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  z-index: 999;
+}
+
+.sidebar h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #111827;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 6px;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.filter-group h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #2563eb;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-group h4:hover {
+  color: #1d4ed8;
+}
+
+.filter-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.filter-group label:hover {
+  color: #111827;
+}
+
+.filter-group input[type="checkbox"],
+.filter-group input[type="radio"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #2563eb;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  transition: 0.2s;
+}
+
+.filter-group input[type="checkbox"]:checked::before,
+.filter-group input[type="radio"]:checked::before {
+  content: '✕'; /* vagy */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.filter-group input[type="range"] {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  accent-color: #2563eb;
+  cursor: pointer;
+  display: block;
+}
+
+.filter-content {
+  overflow: hidden;
+  max-height: 1000px;
+  transition: max-height 0.3s ease;
+}
+
+.filter-content.collapsed {
+  max-height: 0;
+}
+
+/* Mobilbarát slide-in */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #333;
+    cursor: pointer;
+  }
+}
