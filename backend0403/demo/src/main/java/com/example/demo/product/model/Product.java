@@ -1,6 +1,6 @@
 package com.example.demo.product.model;
 
-import com.example.demo.enums.ProductCondition;
+import com.example.demo.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -48,8 +48,10 @@ public class Product {
     @Column(name = "size")
     private String size;
 
-    @Column(name = "product_condition")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_condition", nullable = false)
     private ProductCondition productCondition;
+
 
     @Column(name = "uploader_id")
     private Integer uploaderId;
@@ -57,20 +59,27 @@ public class Product {
     @Column(name = "upload_date")
     private LocalDateTime uploadDate;
 
-    @Column(name = "category")
-    private String category;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private Category category;
 
-    @Column(name = "target_gender")
-    private String targetGender;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "target_gender", nullable = false)
+    private TargetGender targetGender;
+
 
     @Column(name = "bidding_enabled")
     private Boolean biddingEnabled;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "bidding_duration")
-    private Integer biddingDuration;
+    private BiddingDuration biddingDuration;
 
-    @Column(name = "status")
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
+
 
 
 
