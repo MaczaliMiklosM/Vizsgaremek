@@ -33,7 +33,7 @@ public class UserManagementService {
             User user = new User();
             user.setEmail(registrationRequest.getEmail());
             user.setCountry(registrationRequest.getCountry());
-            user.setRole(registrationRequest.getRole());
+            user.setRole("USER");
             user.setFull_name(registrationRequest.getName());
             user.setAddress(registrationRequest.getAddress());
             user.setPhone_number(registrationRequest.getPhoneNumber());

@@ -24,7 +24,8 @@ public class User implements UserDetails{
     private String password_hash;
     private String phone_number;
     private String address;
-    private String role;
+    @Column(nullable = false)
+    private String role = "USER";
     private String country;
 
 
