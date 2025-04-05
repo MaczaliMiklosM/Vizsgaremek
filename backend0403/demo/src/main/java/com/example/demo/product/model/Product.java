@@ -75,6 +75,9 @@ public class Product {
     @Column(name = "bidding_duration")
     private BiddingDuration biddingDuration;
 
+    @Column(name = "bidding_start_time")
+    private LocalDateTime biddingStartTime;
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
