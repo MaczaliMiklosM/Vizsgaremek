@@ -3,12 +3,16 @@ package com.example.demo.controller;
 import com.example.demo.dto.ReqRes;
 import com.example.demo.product.model.User;
 import com.example.demo.product.services.UserManagementService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/api")
 @RestController
 public class UserManagmentController {
 
@@ -45,12 +49,18 @@ public class UserManagmentController {
         return ResponseEntity.ok(userManagementService.updateUser(userId, reqres));
     }
 
-    @GetMapping("/adminuser/get-profile")
+    // Get Profile
+    @Operation(summary = "Get My Profile", description = "Fetches the profile information of the authenticated user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched profile"),
+            @ApiResponse(responseCode = "404", description = "Profile not found")
+    })
+    @GetMapping("/auth/get-profile")
     public ResponseEntity<ReqRes> getMyProfile(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         ReqRes response = userManagementService.getMyInfo(email);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+        return  ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @DeleteMapping("/admin/delete/{userId}")

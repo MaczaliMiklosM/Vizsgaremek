@@ -6,6 +6,8 @@ import com.example.demo.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -183,10 +185,10 @@ public class UserManagementService {
         return reqRes;
     }
 
-    public ReqRes getMyInfo(String email){
+    public ReqRes getMyInfo(String username) {
         ReqRes reqRes = new ReqRes();
         try {
-            Optional<User> userOptional = userRepo.findByEmail(email);
+            Optional<User> userOptional = userRepo.findByEmail(username);
             if (userOptional.isPresent()) {
                 reqRes.setUser(userOptional.get());
                 reqRes.setStatusCode(200);
@@ -203,4 +205,6 @@ public class UserManagementService {
         return reqRes;
 
     }
+
+
 }

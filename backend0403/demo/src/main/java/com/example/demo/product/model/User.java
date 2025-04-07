@@ -20,6 +20,7 @@ public class User implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int user_id;
     private String full_name;
+    @Column(name = "email")
     private String email;
     private String password_hash;
     private String phone_number;
@@ -45,8 +46,9 @@ public class User implements UserDetails{
         this.full_name = full_name;
     }
 
+
     public String getEmail() {
-        return email;
+        return email; // ← EZ LEGYEN
     }
 
     public void setEmail(String email) {
