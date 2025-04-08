@@ -107,7 +107,7 @@ public class User implements UserDetails{
 
     @Override
     public String getUsername() {
-        return full_name;
+        return email;
     }
 
     @Override
