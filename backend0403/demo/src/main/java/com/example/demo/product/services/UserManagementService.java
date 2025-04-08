@@ -1,13 +1,13 @@
 package com.example.demo.product.services;
 
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.dto.ReqRes;
 import com.example.demo.product.model.User;
 import com.example.demo.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class UserManagementService {
     private PasswordEncoder passwordEncoder;
 
 
-    public ReqRes register(ReqRes registrationRequest) {
+    public ReqRes register(RegisterRequest registrationRequest) {
         ReqRes resp = new ReqRes();
 
         try {
@@ -54,7 +54,7 @@ public class UserManagementService {
         return resp;
     }
 
-    public ReqRes login(ReqRes loginRequest) {
+    public ReqRes login(LoginRequest loginRequest) {
         ReqRes response = new ReqRes();
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));

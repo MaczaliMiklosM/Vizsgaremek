@@ -13,12 +13,12 @@ import java.util.List;
 public class ProductController {
 
     private final CreateProductService createProductService;
-    private final GetProductsService getProductService;
+    private final GetProductService getProductService;
     private final UpdateProductService updateProductService;
     private final DeleteProductService deleteProductService;
     private final GetProductService getProductsService;
 
-    public ProductController(CreateProductService createProductService, GetProductsService getProductService, UpdateProductService updateProductService, DeleteProductService deleteProductService, GetProductService getProductsService) {
+    public ProductController(CreateProductService createProductService, GetProductService getProductService, UpdateProductService updateProductService, DeleteProductService deleteProductService, GetProductService getProductsService) {
         this.createProductService = createProductService;
         this.getProductService = getProductService;
         this.updateProductService = updateProductService;
@@ -33,8 +33,8 @@ public class ProductController {
     }
 
 
-    @GetMapping("/products")
-    public ResponseEntity<List<ProductDTO>> getProducts(){
+    @GetMapping("/product")
+    public ResponseEntity<ProductDTO> getProducts(){
         return getProductService.execute(null);
     }
 

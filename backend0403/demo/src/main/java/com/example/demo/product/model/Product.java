@@ -82,13 +82,4 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
-
-
-
-
-
-
-
-
-
 }

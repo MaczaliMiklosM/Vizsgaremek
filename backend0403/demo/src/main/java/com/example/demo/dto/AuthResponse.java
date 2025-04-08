@@ -1,0 +1,14 @@
+package com.example.demo.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+public class AuthResponse {
+    private String token;
+    private String refreshToken;
+    private String expirationTime;
+    private String message;
+}

@@ -1,66 +1,61 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.dto.ReqRes;
 import com.example.demo.product.model.User;
 import com.example.demo.product.services.UserManagementService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api")
+import java.util.List;
+
 @RestController
+@RequestMapping("/api")
 public class UserManagmentController {
+    private final UserManagementService userManagementService;
 
     @Autowired
-    private UserManagementService userManagementService;
+    private UserManagementService RegisterRequest;
+    private UserManagementService LoginRequest;
 
-    @PostMapping("/auth/register")
-    public ResponseEntity<ReqRes> register(@RequestBody ReqRes reg) {
-        return ResponseEntity.ok(userManagementService.register(reg));
+    public UserManagmentController(UserManagementService userManagementService) {
+        this.userManagementService = userManagementService;
     }
 
-    @PostMapping("/auth/refresh")
-    public ResponseEntity<ReqRes> refreshToken(@RequestBody ReqRes req) {
-        return ResponseEntity.ok(userManagementService.refreshToken(req));
+    @PostMapping("/auth/register")
+    public ResponseEntity<ReqRes> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(RegisterRequest.register(request));
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
-        return ResponseEntity.ok(userManagementService.login(req));
+    public ResponseEntity<ReqRes> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(userManagementService.login(request));
+    }
+
+    @GetMapping("/adminuser/get-profile")
+    public ResponseEntity<ReqRes> getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return ResponseEntity.ok(userManagementService.getMyInfo(email));
     }
 
     @GetMapping("/admin/get-all-users")
-    public ResponseEntity<ReqRes> getAllUsers() {
-        return ResponseEntity.ok(userManagementService.getAllUsers());
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userManagementService.getAllUsers().getUserList());
     }
 
     @GetMapping("/admin/get-users/{userId}")
-    public ResponseEntity<ReqRes> getUserById(@PathVariable Integer userId) {
-        return ResponseEntity.ok(userManagementService.getUsersById(userId));
+    public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
+        return ResponseEntity.ok(userManagementService.getUsersById(userId).getUser());
     }
 
     @PutMapping("/admin/update/{userId}")
-    public ResponseEntity<ReqRes> updateUser(@PathVariable Integer userId, @RequestBody User reqres) {
-        return ResponseEntity.ok(userManagementService.updateUser(userId, reqres));
-    }
-
-    // Get Profile
-    @Operation(summary = "Get My Profile", description = "Fetches the profile information of the authenticated user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched profile"),
-            @ApiResponse(responseCode = "404", description = "Profile not found")
-    })
-    @GetMapping("/auth/get-profile")
-    public ResponseEntity<ReqRes> getMyProfile(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        ReqRes response = userManagementService.getMyInfo(email);
-        return  ResponseEntity.status(response.getStatusCode()).body(response);
+    public ResponseEntity<User> updateUser(@PathVariable Integer userId, @RequestBody User request) {
+        return ResponseEntity.ok(userManagementService.updateUser(userId, request).getUser());
     }
 
     @DeleteMapping("/admin/delete/{userId}")
