@@ -9,9 +9,10 @@ const Collection = () => {
   const [collection, setCollection] = useState([]);
 
   useEffect(() => {
-    const basket = JSON.parse(localStorage.getItem('basket')) || [];
-    setCollection(basket);
-  }, []);
+    // A termékek betöltése a localStorage-ból
+    const purchasedItems = JSON.parse(localStorage.getItem('purchasedItems')) || [];
+    setCollection(purchasedItems);
+  }, []); // Csak egyszer fut le, amikor a komponens betöltődik
 
   const totalValue = collection.reduce((total, product) => total + product.price, 0);
 
@@ -24,7 +25,7 @@ const Collection = () => {
           <h1>My Collection</h1>
           <div className="collection-list">
             {collection.length > 0 ? (
-              collection.map(product => (
+              collection.map((product) => (
                 <div key={product.id} className="collection-item">
                   <img src={product.image} alt={product.name} className="collection-image" />
                   <div className="collection-details">

@@ -22,15 +22,19 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: #f1f5f9;
-  padding: 25px;
+  background: #f9fafb;
+  padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
 }
 
-.checkout-step h2,
-.checkout-summary h2 {
+.checkout-step:hover, .checkout-summary:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-step h2, .checkout-summary h2 {
   color: #1f2937;
   font-size: 22px;
   margin-bottom: 10px;
@@ -44,6 +48,7 @@ input, select {
   font-size: 16px;
   transition: border-color 0.3s;
   box-sizing: border-box;
+  margin-bottom: 15px;
 }
 
 input:focus, select:focus {
@@ -62,15 +67,12 @@ button {
   font-size: 16px;
   font-weight: 600;
   width: 100%;
+  margin-top: 10px;
 }
 
 button:hover {
   background: #1e40af;
   transform: translateY(-1px);
-}
-
-button + button {
-  margin-left: 10px;
 }
 
 .checkout-summary p {
@@ -139,6 +141,11 @@ button + button {
   gap: 10px;
 }
 
+.checkout-summary img {
+  max-width: 100px;  /* Ensuring images are smaller */
+  margin: 10px 0;
+}
+
 @media (max-width: 768px) {
   .checkout-container {
     width: 90%;
@@ -151,6 +158,10 @@ button + button {
 
   button + button {
     margin-left: 0;
+  }
+
+  .checkout-step, .checkout-summary {
+    padding: 20px;
   }
 }
 
