@@ -11,11 +11,12 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
 
+  // Lekérés egyszer, ha a felhasználó id-jét már elmentettük
   useEffect(() => {
     if (user?.id) {
       fetchWishlist();
     }
-  }, [user]);
+  }, [user?.id]);
 
   const fetchWishlist = async () => {
     try {

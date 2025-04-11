@@ -44,23 +44,27 @@ function ProductDetails() {
 
   const addToBasket = () => {
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
+  
+    // Ha nem található a termék a kosárban, hozzáadjuk
     if (!basket.find(p => p.id === product.id)) {
       basket.push({
         id: product.id,
         name: product.name,
         price: product.price,
         image: `/Images/product_images/${product.imageUrl?.split(',')[0]}`,
-        quantity: 1,
-        stock: 2,
+        quantity: 1,  // Mivel a quantity mindig 1
+        stock: 2,  // Példa raktárkészlet, ha szükséges változtasd
         size: product.size || 'N/A'
       });
       localStorage.setItem("basket", JSON.stringify(basket));
       alert("Added to basket!");
     } else {
-      alert("Already in basket!");
+      alert("Already in basket!");  // Ha már van a kosárban, értesítjük a felhasználót
     }
-    navigate('/basket');
+  
+    navigate('/basket');  // Átnavigálás a kosár oldalra
   };
+  
 
   const addToWishlist = async () => {
     const token = localStorage.getItem("token");

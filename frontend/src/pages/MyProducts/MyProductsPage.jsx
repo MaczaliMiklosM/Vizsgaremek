@@ -16,8 +16,6 @@ function MyProductsPage() {
     size: "",
     category: "",
     product_condition: "new",
-    bidding_enabled: "no",
-    bidding_duration: "", 
     target_gender: "unisex",
   };
 
@@ -27,15 +25,6 @@ function MyProductsPage() {
   const [formData, setFormData] = useState(initialFormData);
   const [myProducts, setMyProducts] = useState([]);
   const [error, setError] = useState("");
-
-  const currentBids = [
-    { productName: "Omega Seamaster Watch", yourBid: 780, currentHighest: 810, status: "Outbid" },
-  ];
-
-  const bidHistory = [
-    { name: "Cartier Tank", amount: 600, time: "2024.03.12 13:52" },
-    { name: "LV Monogram Bag", amount: 960, time: "2024.03.10 09:13" },
-  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,7 +63,7 @@ function MyProductsPage() {
     e.preventDefault();
 
     const {
-      name, description, price, image_url, brand, color, size, category, bidding_enabled, bidding_duration
+      name, description, price, image_url, brand, color, size, category
     } = formData;
 
     if ([name, description, price, image_url, brand, color, size, category].some((field) => field.trim() === "")) {
@@ -120,11 +109,6 @@ function MyProductsPage() {
       return;
     }
 
-    if (bidding_enabled === "yes" && !["24", "48", "72"].includes(bidding_duration)) {
-      setError("Please select a bidding duration (24, 48 or 72 hours).");
-      return;
-    }
-
     setError("");
 
     const newProduct = {
@@ -146,149 +130,97 @@ function MyProductsPage() {
 
   return (
     <RequireAuth>
-       <div>
-      <Header />
-      <Navbar />
+      <div>
+        <Header />
+        <Navbar />
 
-      <div className="upload-page">
-        <h2>Upload a New Product</h2>
-        <p style={{ color: "#b91c1c", fontWeight: "bold", textAlign: "center" }}>
-          Please make sure all details are correct before submission. Changes are not allowed later.
-        </p>
+        <div className="upload-page">
+          <h2>Upload a New Product</h2>
+          <p style={{ color: "#b91c1c", fontWeight: "bold", textAlign: "center" }}>
+            Please make sure all details are correct before submission. Changes are not allowed later.
+          </p>
 
-        <form className="upload-form" onSubmit={handleSubmit}>
-          {error && <div className="form-error">{error}</div>}
+          <form className="upload-form" onSubmit={handleSubmit}>
+            {error && <div className="form-error">{error}</div>}
 
-          <input name="name" placeholder="Product name" value={formData.name} onChange={handleChange} />
-          <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} />
-          <input name="price" type="number" placeholder="Price" value={formData.price} onChange={handleChange} />
-          <input name="image_url" placeholder="Image URL" value={formData.image_url} onChange={handleChange} />
+            <input name="name" placeholder="Product name" value={formData.name} onChange={handleChange} />
+            <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} />
+            <input name="price" type="number" placeholder="Price" value={formData.price} onChange={handleChange} />
+            <input name="image_url" placeholder="Image URL" value={formData.image_url} onChange={handleChange} />
 
-          <label>Brand</label>
-          <select name="brand" value={formData.brand} onChange={handleChange} required>
-            <option value="">Select Brand</option>
-            {allowedBrands.map((brand) => (
-              <option key={brand} value={brand}>{brand}</option>
-            ))}
-          </select>
-
-          <label>Color</label>
-          <select name="color" value={formData.color} onChange={handleChange} required>
-            <option value="">Select Color</option>
-            {allowedColors.map((color) => (
-              <option key={color} value={color}>{color}</option>
-            ))}
-          </select>
-
-          <label>Category</label>
-          <select name="category" value={formData.category} onChange={handleChange}>
-            <option value="">Select Category</option>
-            <option value="sneaker">Sneaker</option>
-            <option value="bag">Bag</option>
-            <option value="watch">Watch</option>
-          </select>
-
-          <input
-            name="size"
-            placeholder={sizePlaceholder}
-            value={formData.size}
-            onChange={handleChange}
-          />
-
-          <label>Condition</label>
-          <select name="product_condition" value={formData.product_condition} onChange={handleChange}>
-            <option value="new">New</option>
-            <option value="used">Used</option>
-          </select>
-
-          <label>Bidding Enabled</label>
-          <select name="bidding_enabled" value={formData.bidding_enabled} onChange={handleChange}>
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-          </select>
-
-          {formData.bidding_enabled === "yes" && (
-            <>
-              <label>Bidding Duration</label>
-              <select name="bidding_duration" value={formData.bidding_duration} onChange={handleChange}>
-                <option value="">Select Duration</option>
-                <option value="24">24 Hours</option>
-                <option value="48">48 Hours</option>
-                <option value="72">72 Hours</option>
-              </select>
-            </>
-          )}
-
-          <label>Target Gender</label>
-          <select name="target_gender" value={formData.target_gender} onChange={handleChange}>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="unisex">Unisex</option>
-          </select>
-
-          <button type="submit">Upload Product</button>
-        </form>
-
-        <h3>Your Uploaded Products</h3>
-        <div className="product-list">
-          {myProducts.length === 0 ? (
-            <p className="empty-text">No products uploaded yet.</p>
-          ) : (
-            myProducts.map((product) => (
-              <div key={product.product_id} className="product-card">
-                <img src={product.image_url} alt={product.name} />
-                <h4>{product.name}</h4>
-                <p>{product.description}</p>
-                <p><strong>Price:</strong> ${product.price} USD</p>
-                <p><strong>Brand:</strong> {product.brand}</p>
-                <p><strong>Color:</strong> {product.color}</p>
-                <p><strong>Size:</strong> {product.size}</p>
-                <p><strong>Category:</strong> {product.category}</p>
-                <p><strong>Condition:</strong> {product.product_condition}</p>
-                <p><strong>Bidding:</strong> {product.bidding_enabled}</p>
-                {product.bidding_enabled === "yes" && (
-                  <p><strong>Bidding Duration:</strong> {product.bidding_duration} hours</p>
-                )}
-                <p><strong>Gender:</strong> {product.target_gender}</p>
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="bid-section">
-          <h3>Your Bidding Activity</h3>
-
-          <div className="bid-list">
-            <div className="bid-subsection">
-              <h4>Current Bids</h4>
-              {currentBids.map((bid, index) => (
-                <div key={index} className="bid-card">
-                  <p><strong>Product:</strong> {bid.productName}</p>
-                  <p><strong>Your Highest Bid:</strong> ${bid.yourBid}</p>
-                  <p><strong>Current Highest Bid:</strong> ${bid.currentHighest}</p>
-                  <p><strong>Status:</strong> {bid.status}</p>
-                </div>
+            <label>Brand</label>
+            <select name="brand" value={formData.brand} onChange={handleChange} required>
+              <option value="">Select Brand</option>
+              {allowedBrands.map((brand) => (
+                <option key={brand} value={brand}>{brand}</option>
               ))}
-            </div>
+            </select>
 
-            <div className="bid-subsection">
-              <h4>Bid History</h4>
-              <ul className="bid-history-list">
-                {bidHistory.map((entry, index) => (
-                  <li key={index}>
-                    <span>{entry.name} – </span>${entry.amount} on {entry.time}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <label>Color</label>
+            <select name="color" value={formData.color} onChange={handleChange} required>
+              <option value="">Select Color</option>
+              {allowedColors.map((color) => (
+                <option key={color} value={color}>{color}</option>
+              ))}
+            </select>
+
+            <label>Category</label>
+            <select name="category" value={formData.category} onChange={handleChange}>
+              <option value="">Select Category</option>
+              <option value="sneaker">Sneaker</option>
+              <option value="bag">Bag</option>
+              <option value="watch">Watch</option>
+            </select>
+
+            <input
+              name="size"
+              placeholder={sizePlaceholder}
+              value={formData.size}
+              onChange={handleChange}
+            />
+
+            <label>Condition</label>
+            <select name="product_condition" value={formData.product_condition} onChange={handleChange}>
+              <option value="new">New</option>
+              <option value="used">Used</option>
+            </select>
+
+            <label>Target Gender</label>
+            <select name="target_gender" value={formData.target_gender} onChange={handleChange}>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="unisex">Unisex</option>
+            </select>
+
+            <button type="submit">Upload Product</button>
+          </form>
+
+          <h3>Your Uploaded Products</h3>
+          <div className="product-list">
+            {myProducts.length === 0 ? (
+              <p className="empty-text">No products uploaded yet.</p>
+            ) : (
+              myProducts.map((product) => (
+                <div key={product.product_id} className="product-card">
+                  <img src={product.image_url} alt={product.name} />
+                  <h4>{product.name}</h4>
+                  <p>{product.description}</p>
+                  <p><strong>Price:</strong> ${product.price} USD</p>
+                  <p><strong>Brand:</strong> {product.brand}</p>
+                  <p><strong>Color:</strong> {product.color}</p>
+                  <p><strong>Size:</strong> {product.size}</p>
+                  <p><strong>Category:</strong> {product.category}</p>
+                  <p><strong>Condition:</strong> {product.product_condition}</p>
+                  <p><strong>Gender:</strong> {product.target_gender}</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
-      </div>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
     </RequireAuth>
-   
   );
 }
 
