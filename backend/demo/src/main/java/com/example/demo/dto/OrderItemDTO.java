@@ -1,0 +1,16 @@
+package com.example.demo.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderItemDTO {
+    private Integer productId;
+    private Integer unitPrice;
+    // Az alábbi mezőt adjuk hozzá
+    private Integer quantity = 1;  // A quantity mindig 1
+}
+

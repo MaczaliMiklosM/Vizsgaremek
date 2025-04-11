@@ -1,0 +1,162 @@
+.checkout-container {
+  max-width: 600px;
+  margin: 60px auto;
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.checkout-container h1 {
+  font-size: 32px;
+  color: #111827;
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.checkout-step, .checkout-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #f1f5f9;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.checkout-step h2,
+.checkout-summary h2 {
+  color: #1f2937;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+}
+
+button:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+button + button {
+  margin-left: 10px;
+}
+
+.checkout-summary p {
+  font-size: 16px;
+  color: #374151;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.checkout-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.checkout-step-indicator {
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.checkout-step-circle {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.checkout-step-circle.active {
+  background: #2563eb;
+}
+
+.checkout-step-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.checkout-step-label.active {
+  color: #2563eb;
+}
+
+.checkout-step-line {
+  position: absolute;
+  top: 15px;
+  right: -50%;
+  width: 100%;
+  height: 3px;
+  background: #e5e7eb;
+  z-index: -1;
+}
+
+.checkout-step-line.active {
+  background: #2563eb;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .checkout-container {
+    width: 90%;
+    padding: 25px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  button + button {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-container {
+    width: 95%;
+    padding: 20px;
+  }
+}

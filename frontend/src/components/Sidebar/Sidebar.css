@@ -1,0 +1,229 @@
+.sidebar {
+  width: 260px;
+  min-width: 260px; 
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: #1f2937;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  z-index: 999;
+  box-sizing: border-box;
+}
+
+.sidebar h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #111827;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 6px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #111827;
+}
+
+.sidebar-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 4px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}
+.sidebar-close:hover {
+  background: none !important;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.filter-group h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #2563eb;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.filter-group h4:hover {
+  color: #1d4ed8;
+}
+
+.filter-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  width: 100%;
+}
+.filter-group label:hover {
+  color: #111827;
+}
+
+.filter-group input[type="checkbox"],
+.filter-group input[type="radio"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #2563eb;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  transition: 0.2s;
+}
+
+.filter-group input[type="checkbox"]:checked::before,
+.filter-group input[type="radio"]:checked::before {
+  content: '✕';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.filter-group input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  cursor: pointer;  
+}
+
+.filter-content {
+  overflow: hidden;
+  max-height: 1000px;
+  transition: max-height 0.3s ease;
+}
+.filter-content.collapsed {
+  max-height: 0;
+}
+
+
+@media (max-width: 864px) {
+  .sidebar{
+    width: 150px;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 90vh;
+    background-color: #fff;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 9999;
+  }
+
+  .sidebar.open {
+    transform: translateY(0);
+  }
+
+  .sidebar-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    border: none;
+    background: none;
+    color: #333;
+    cursor: pointer;
+    z-index: 10001;
+  }
+
+  .apply-filters-button {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    background-color: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 10000;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 9998;
+  }
+
+  .mobile-filter-bar {
+    position: sticky;
+    top: 70px;
+    background: white;
+    z-index: 999;
+    padding: 10px 16px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .mobile-filter-bar button {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+  }
+}
+
+body.sidebar-open {
+  overflow: hidden !important;
+  height: 100vh;
+}

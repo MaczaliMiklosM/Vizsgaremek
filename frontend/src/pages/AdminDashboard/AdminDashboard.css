@@ -1,0 +1,236 @@
+.admin-dashboard {
+  background-color: #f9fafb;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-dashboard .admin-header {
+  background-color: #ffffff;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e5e7eb;
+  position: relative;
+}
+
+.admin-dashboard .admin-header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-dashboard .admin-logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-dashboard .admin-logo img {
+  height: 48px;
+  border-radius: 8px;
+}
+
+.admin-dashboard .admin-logo h1 {
+  font-size: 30px;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0;
+}
+
+.admin-dashboard .admin-tabs {
+  display: flex;
+  gap: 12px;
+}
+
+.admin-dashboard .admin-tabs button {
+  background-color: #e5e7eb;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  color: black;
+  transition: background 0.3s ease;
+}
+
+.admin-dashboard .admin-tabs .active-tab {
+  background-color: #2563eb;
+  color: white;
+}
+
+.admin-dashboard .sign-out-button {
+  position: absolute;
+  max-width: 100px;
+  top: 20px;
+  right: 30px;
+  background-color: #dc2626;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.admin-dashboard .sign-out-button:hover {
+  background-color: #b91c1c;
+}
+
+.admin-dashboard .admin-panel {
+  padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-dashboard .admin-panel h2 {
+  font-size: 20px;
+  margin-bottom: 24px;
+  color: #111827;
+}
+
+.admin-dashboard .product-row {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.admin-dashboard .product-image-column {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.admin-dashboard .thumbnail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-dashboard .thumbnail-row img {
+  width: 90px;
+  height: auto;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  object-fit: contain;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  transition: border 0.2s;
+}
+
+.admin-dashboard .thumbnail-row img.selected-thumbnail {
+  border-color: #2563eb;
+}
+
+.admin-dashboard .main-image {
+  width: 420px;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-dashboard .product-details {
+  flex: 1;
+  min-width: 250px;
+}
+
+.admin-dashboard .product-details h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+.admin-dashboard .product-details p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #374151;
+}
+
+.admin-dashboard .product-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 16px;
+}
+
+.admin-dashboard .approve-btn,
+.admin-dashboard .unapprove-btn,
+.admin-dashboard .delete-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard .approve-btn {
+  background-color: #2563eb;
+  color: white;
+}
+
+.admin-dashboard .approve-btn:hover {
+  background-color: #1e40af;
+}
+
+.admin-dashboard .unapprove-btn {
+  background-color: #6b7280;
+  color: white;
+}
+
+.admin-dashboard .delete-btn {
+  background-color: #dc2626;
+  color: white;
+}
+
+.admin-dashboard .unapprove-btn:hover {
+  background-color: #4b5563;
+}
+
+.admin-dashboard .delete-btn:hover {
+  background-color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard .product-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .admin-dashboard .thumbnail-row {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .admin-dashboard .main-image {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .admin-dashboard .product-image-column {
+    align-items: center;
+  }
+
+  .admin-dashboard .admin-panel {
+    padding: 20px;
+  }
+
+  .admin-dashboard .admin-header-center {
+    align-items: flex-start;
+  }
+
+  .admin-dashboard .sign-out-button {
+    position: static;
+    margin-top: 10px;
+    align-self: flex-end;
+  }
+}
