@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.order;
 
 import com.example.demo.enums.OrderStatus;
 import lombok.AllArgsConstructor;

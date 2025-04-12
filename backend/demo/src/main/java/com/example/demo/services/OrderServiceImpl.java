@@ -1,8 +1,8 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.OrderItemDTO;
-import com.example.demo.dto.OrderRequestDTO;
-import com.example.demo.dto.OrderResponseDTO;
+import com.example.demo.dto.order.OrderItemDTO;
+import com.example.demo.dto.order.OrderRequestDTO;
+import com.example.demo.dto.order.OrderResponseDTO;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.model.OrderBody;
 import com.example.demo.model.OrderHeader;

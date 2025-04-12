@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 
 import com.example.demo.enums.OrderStatus;
-import com.example.demo.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.*;
 

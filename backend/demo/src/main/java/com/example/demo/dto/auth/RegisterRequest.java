@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

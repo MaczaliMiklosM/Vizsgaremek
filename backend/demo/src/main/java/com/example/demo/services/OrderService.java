@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.OrderRequestDTO;
-import com.example.demo.dto.OrderResponseDTO;
+import com.example.demo.dto.order.OrderRequestDTO;
+import com.example.demo.dto.order.OrderResponseDTO;
 
 import java.util.List;
 
