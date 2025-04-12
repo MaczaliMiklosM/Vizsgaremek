@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.auth.LoginRequest;
 import com.example.demo.dto.auth.RegisterRequest;
 import com.example.demo.dto.ReqRes;
+import com.example.demo.dto.user.UserUpdateRequest;
 import com.example.demo.model.User;
 import com.example.demo.services.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,10 @@ public class UserManagmentController {
     }
 
     @PutMapping("/admin/update/{userId}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer userId, @RequestBody User request) {
+    public ResponseEntity<User> updateUser(@PathVariable Integer userId, @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(userManagementService.updateUser(userId, request).getUser());
     }
+
 
     @DeleteMapping("/admin/delete/{userId}")
     public ResponseEntity<ReqRes> deleteUser(@PathVariable Integer userId) {

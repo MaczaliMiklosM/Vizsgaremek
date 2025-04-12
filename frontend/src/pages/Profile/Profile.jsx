@@ -4,6 +4,8 @@ import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import RequireAuth from '../../components/Auth/RequireAuth';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import './Profile.css';
 import {
   ShoppingBasket as ShoppingBasketIcon,
   Person2 as Person2Icon,
@@ -11,28 +13,24 @@ import {
   BookmarkBorder as BookmarkBorderIcon,
   Checklist as ChecklistIcon
 } from '@mui/icons-material';
-import './Profile.css';
-import axios from 'axios';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: '', email: '', phone_number: '', address: '', country: ''
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    console.log('JWT token:', token); 
-    if (!token) {
-      console.warn("No token found in localStorage");
-      return;
-    }
+    if (!token) return;
 
     axios.get('http://localhost:8080/api/adminuser/get-profile', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     })
     .then(response => {
-      console.log("✅ Profile response:", response.data); 
       setUser(response.data.user);
+      setFormData(response.data.user);
     })
     .catch(error => {
       console.error('❌ Failed to fetch user profile:', error);
@@ -41,6 +39,28 @@ const Profile = () => {
       }
     });
   }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = () => {
+    const token = localStorage.getItem('token');
+    if (!user || !token) return;
+
+    axios.put(`http://localhost:8080/api/admin/update/${user.id}`, formData, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => {
+      setUser(response.data);
+      setEditMode(false);
+      alert('Profile updated successfully');
+    })
+    .catch(error => {
+      console.error('❌ Failed to update profile:', error);
+      alert('Failed to update profile.');
+    });
+  };
 
   return (
     <RequireAuth>
@@ -71,11 +91,26 @@ const Profile = () => {
               <h2><Person2Icon /> Personal Information</h2>
               {user ? (
                 <>
-                  <p><strong>Name:</strong> {user.full_name}</p>
-                  <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>Phone:</strong> {user.phone_number}</p>
-                  <p><strong>Country:</strong> {user.country}</p>
-                  <p><strong>Address:</strong> {user.address}</p>
+                  {editMode ? (
+                    <div className="edit-form">
+                      <input name="full_name" value={formData.full_name} onChange={handleChange} placeholder="Full Name" />
+                      <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
+                      <input name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="Phone" />
+                      <input name="country" value={formData.country} onChange={handleChange} placeholder="Country" />
+                      <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" />
+                      <button className="checkout-btn" onClick={handleSave}>Save</button>
+                      <button className="checkout-btn" onClick={() => setEditMode(false)}>Cancel</button>
+                    </div>
+                  ) : (
+                    <>
+                      <p><strong>Name:</strong> {user.full_name}</p>
+                      <p><strong>Email:</strong> {user.email}</p>
+                      <p><strong>Phone:</strong> {user.phone_number}</p>
+                      <p><strong>Country:</strong> {user.country}</p>
+                      <p><strong>Address:</strong> {user.address}</p>
+                      <button className="checkout-btn" onClick={() => setEditMode(true)}>Edit</button>
+                    </>
+                  )}
                 </>
               ) : (
                 <p>Loading user data...</p>

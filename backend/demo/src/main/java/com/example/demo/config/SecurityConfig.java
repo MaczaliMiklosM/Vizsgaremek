@@ -54,7 +54,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/orders/**").hasAnyAuthority("USER", "ADMIN") // ⬅️ ADD THIS
 
                         .requestMatchers("/api/wishlist/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/api/admin/update/**").hasAnyAuthority("USER", "ADMIN")
+
                         .requestMatchers("/admin/**", "/products/deleteProduct/**").hasAuthority("ADMIN")
+
                         .requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()
 
