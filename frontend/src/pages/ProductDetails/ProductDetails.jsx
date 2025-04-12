@@ -15,25 +15,39 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [showAccessDenied, setShowAccessDenied] = useState(false);
+  const [inWishlist, setInWishlist] = useState(false);
 
   const isLoggedIn = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
+useEffect(() => {
+  const fetchProduct = async () => {
+    try {
+      const response = await axios.get(`/api/products/getProductById/${id}`);
+      const data = response.data;
+      setProduct(data);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`/api/products/getProductById/${id}`);
-        const data = response.data;
-        setProduct(data);
-        const baseImages = data.imageUrl?.split(',') || [];
-        setSelectedImage(`/Images/product_images/${baseImages[0]}`);
-      } catch (error) {
-        console.error('❌ Failed to load product:', error);
+      const baseImages = data.imageUrl?.split(',') || [];
+      setSelectedImage(`/Images/product_images/${baseImages[0]}`);
+
+      // 💡 Friss ellenőrzés szerverről:
+      if (isLoggedIn && user?.id) {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`/api/wishlist/${user.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const exists = res.data.some(item => item.productId === data.id);
+        setInWishlist(exists);
       }
-    };
 
-    fetchProduct();
-  }, [id]);
+    } catch (error) {
+      console.error('❌ Failed to load product:', error);
+    }
+  };
+
+  fetchProduct();
+}, [id, isLoggedIn, user?.id]);
+
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -89,6 +103,11 @@ function ProductDetails() {
       });
 
       if (response.status === 200) {
+        const updated = [...(JSON.parse(localStorage.getItem("wishlist")) || []), {
+          productId: product.id
+        }];
+        localStorage.setItem("wishlist", JSON.stringify(updated));
+        setInWishlist(true);
         alert("Added to wishlist!");
       } else {
         alert("Failed to add to wishlist.");
@@ -153,9 +172,15 @@ function ProductDetails() {
                 <span>Buy Now</span>
               </button>
 
-              <button className="btn wishlist-btn" onClick={addToWishlist}>
-                <AddCircleIcon /> <span>Wishlist</span>
-              </button>
+              {inWishlist ? (
+                <button className="btn wishlist-btn" disabled>
+                  <AddCircleIcon /> <span>Already in Wishlist</span>
+                </button>
+              ) : (
+                <button className="btn wishlist-btn" onClick={addToWishlist}>
+                  <AddCircleIcon /> <span>Wishlist</span>
+                </button>
+              )}
 
               <button className="btn share-btn" onClick={handleShare}>
                 <IosShareIcon /> <span>Share</span>

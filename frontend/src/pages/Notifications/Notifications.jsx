@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import './Notifications.css';
 
 const Notifications = () => {
-  const notifications = [
-    { id: 1, message: "Notification", time: "2 hours ago" },
-  ];
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);  // Hibakezelés
+
+  const fetchNotifications = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Nem találtunk érvényes tokent. Kérlek jelentkezz be!');
+        return;
+      }
+
+      const response = await axios.get('http://localhost:8080/api/notifications/my', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setNotifications(response.data);
+    } catch (error) {
+      console.error('Hiba az értesítések lekérésekor:', error);
+      setError('Hiba történt az értesítések lekérésekor!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   return (
     <div className="container">
@@ -16,18 +44,24 @@ const Notifications = () => {
       <div className="notifications-container">
         <h1>Notifications</h1>
 
-        <div className="notifications-list">
-          {notifications.length > 0 ? (
-            notifications.map(notification => (
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p className="error-message">{error}</p>  // Hibakezelés UI-n
+        ) : notifications.length > 0 ? (
+          <div className="notifications-list">
+            {notifications.map(notification => (
               <div key={notification.id} className="notification-item">
                 <p>{notification.message}</p>
-                <span className="notification-time">{notification.time}</span>
+                <span className="notification-time">
+                  {new Date(notification.timestamp).toLocaleString('hu-HU')}
+                </span>
               </div>
-            ))
-          ) : (
-            <p className="no-notifications">Nincsenek új értesítések</p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="no-notifications">You have no notifications.</p>
+        )}
       </div>
       <Footer />
     </div>

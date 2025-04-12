@@ -18,18 +18,54 @@ function Main() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const stored = localStorage.getItem("featuredProducts");
+      const storedDate = localStorage.getItem("featuredProductsDate");
+  
       try {
-        const response = await axios.get("/api/products/getProducts");
-        const all = response.data;
-        const shuffled = all.sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, 6);
+        // 🔍 1. Ellenőrizzük a cache-t, ha van
+        if (stored && storedDate === today) {
+          const cached = JSON.parse(stored);
+  
+          // 🔄 Lekérjük a legfrissebb adatokat ezekhez a termék ID-khez
+          const productIds = cached.map(p => p.id);
+          const res = await axios.get("/api/products/getProducts");
+          const all = res.data;
+  
+          // Ellenőrizd, hogy cache-ben lévő termékek között van-e SOLD
+          const updatedList = all.filter(p =>
+            productIds.includes(p.id) && p.status?.toLowerCase() !== 'sold'
+          );
+  
+          if (updatedList.length === 12) {
+            setRandomProducts(updatedList);
+            return;
+          } else {
+            // 🔁 Cache nem érvényes
+            localStorage.removeItem("featuredProducts");
+            localStorage.removeItem("featuredProductsDate");
+          }
+        }
+  
+        // ✅ Új lekérés, ha nincs cache, vagy nem volt megfelelő
+        const res = await axios.get("/api/products/getProducts");
+        const allProducts = res.data.filter(p => p.status?.toLowerCase() !== 'sold');
+  
+        const shuffled = allProducts.sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 12);
+  
         setRandomProducts(selected);
+        localStorage.setItem("featuredProducts", JSON.stringify(selected));
+        localStorage.setItem("featuredProductsDate", today);
+  
       } catch (err) {
         console.error("❌ Failed to fetch featured products:", err);
       }
     };
+  
     fetchProducts();
   }, []);
+  
 
   return (
     <div>
@@ -42,66 +78,50 @@ function Main() {
           </section>
 
           <section className="popular-brands">
-            <Link to="/products?brand=Balenciaga" className="card-link">
-              <div className="card">
-                <img src="/Images/logo_images/balenciaga_logo.jpeg" alt="Balenciaga" />
-              </div>
-            </Link>
-            <Link to="/products?brand=Cartier" className="card-link">
-              <div className="card">
-                <img src="/Images/logo_images/cartier_logo.jpeg" alt="Cartier" />
-              </div>
-            </Link>
-            <Link to="/products?brand=Chanel" className="card-link">
-              <div className="card">
-                <img src="/Images/logo_images/chanel_logo.jpeg" alt="Chanel" />
-              </div>
-            </Link>
-            <Link to="/products?brand=Hermes" className="card-link">
-              <div className="card">
-                <img src="/Images/logo_images/hermes_logo.jpeg" alt="Hermes" />
-              </div>
-            </Link>
-            <Link to="/products?brand=LouisVuitton" className="card-link">
-              <div className="card">
-                <img src="/Images/logo_images/LouisV_logo.jpeg" alt="LouisVuitton" />
-              </div>
-            </Link>
-            <Link to="/products?brand=Rolex" className="card-link">
-              <div className="card">
-                <img src="/Images/logo_images/rolex_logo.jpeg" alt="Rolex" />
-              </div>
-            </Link>
+            {[
+              { brand: "Balenciaga", img: "balenciaga_logo.jpeg" },
+              { brand: "Cartier", img: "cartier_logo.jpeg" },
+              { brand: "Chanel", img: "chanel_logo.jpeg" },
+              { brand: "Hermes", img: "hermes_logo.jpeg" },
+              { brand: "LouisVuitton", img: "LouisVuitton_logo.jpeg" },
+              { brand: "Rolex", img: "rolex_logo.jpeg" }
+            ].map(({ brand, img }) => (
+              <Link to={`/products?brand=${brand}`} key={brand} className="card-link">
+                <div className="card">
+                  <img src={`/Images/logo_images/${img}`} alt={brand} />
+                </div>
+              </Link>
+            ))}
           </section>
 
           <section className="altTitles">
-            <h2>Featured Products</h2>
+            <h2>Today's Featured Products</h2>
           </section>
 
-          <section className="popular-brands">
-           {randomProducts.map(product => {
-             const firstImage = product.imageUrl?.split(",")[0]?.trim(); // csak az első kép
-             const imagePath = firstImage?.startsWith("http") || firstImage?.startsWith("/Images")
-               ? firstImage
-               : `/Images/product_images/${firstImage}`;
+          <section className="popular-brands grid-2-rows">
+            {randomProducts.length > 0 ? (
+              randomProducts.map(product => {
+                const firstImage = product.imageUrl?.split(",")[0]?.trim();
+                const imagePath = firstImage?.startsWith("http") || firstImage?.startsWith("/Images")
+                  ? firstImage
+                  : `/Images/product_images/${firstImage}`;
 
-             console.log("🖼 Product:", product);
-             console.log("📷 Image path:", imagePath);
-
-             return (
-               <Link key={product.id} to={`/product-details/${product.id}`} className="card-link">
-                 <div className="card">
-                   {product.brand}
-                   <img src={imagePath} alt={product.name} />
-                 </div>
-               </Link>
-             );
-           })}
-           {randomProducts.length === 0 && <p>Loading featured products...</p>}
+                return (
+                  <Link key={product.id} to={`/product-details/${product.id}`} className="card-link">
+                    <div className="card">
+                      <img src={imagePath} alt={product.name} />
+                      <div className="details">
+                        <div className="brand">{product.brand}</div>
+                        <div className="price">{product.price} $</div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })
+            ) : (
+              <p>Loading featured products...</p>
+            )}
           </section>
-          
-
-
         </main>
         <Footer />
       </div>

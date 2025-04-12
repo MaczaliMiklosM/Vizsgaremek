@@ -9,6 +9,7 @@ import com.example.demo.model.Wishlist;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WishlistRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,7 @@ public class WishlistService {
         return wishlistRepository.save(wishlist);
     }
 
+    @Transactional
     public ResponseEntity<String> removeFromWishlist(WishlistDelete wishlistDelete) {
         Optional<User> user = userRepository.findById(wishlistDelete.getUserId());
         Optional<Product> product = productRepository.findById(wishlistDelete.getProductId());

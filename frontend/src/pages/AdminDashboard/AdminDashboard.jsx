@@ -34,27 +34,51 @@ function AdminDashboard() {
     navigate("/", { replace: true });
   };
 
-  const approveProduct = (id) => {
-    console.log('Approved:', id);
-    // TODO: Send approval to backend
+  const approveProduct = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`/api/products/approveProduct/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setProducts(prev => prev.map(p => p.id === id ? { ...p, status: 'APPROVED' } : p));
+      alert("Product approved!");
+    } catch (err) {
+      console.error("❌ Failed to approve product", err);
+      alert("Failed to approve product.");
+    }
   };
 
-  const unapproveProduct = (id) => {
-    console.log('Unapproved:', id);
-    // TODO: Send unapprove request to backend
+  const unapproveProduct = async (id) => {
+    const confirmed = window.confirm("Are you sure you want to reject and delete this product?");
+    if (!confirmed) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`/api/products/deleteProduct/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setProducts(prev => prev.filter(product => product.id !== id));
+      alert("Product rejected and deleted.");
+    } catch (error) {
+      console.error("❌ Failed to reject and delete product", error);
+      alert("Failed to reject product.");
+    }
   };
 
   const deleteProduct = async (id) => {
     const confirmed = window.confirm("Are you sure you want to delete this product?");
     if (!confirmed) return;
-  
+
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`/api/products/deleteProduct/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-  
-      // Frontenden is távolítsuk el a listából:
+
       setProducts(prev => prev.filter(product => product.id !== id));
       alert("Product successfully deleted!");
     } catch (error) {
@@ -62,7 +86,6 @@ function AdminDashboard() {
       alert("Failed to delete product.");
     }
   };
-  
 
   const filteredProducts = products.filter(product => {
     if (activeTab === 'pending' && product.status !== 'UNAPPROVED') return false;
@@ -99,16 +122,16 @@ function AdminDashboard() {
         <h2>{activeTab === 'pending' ? 'Pending Product Approvals' : 'All Products'}</h2>
 
         {activeTab === 'approved' && (
-        <div className="admin-searchbar-container">
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="admin-search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-          )}
+          <div className="admin-searchbar-container">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="admin-search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        )}
 
         {filteredProducts.map(product => (
           <div key={product.id} className="product-row">

@@ -1,3 +1,5 @@
+// ✅ Frissített Collection.jsx – backendből tölti be a kollekciót
+
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
@@ -7,14 +9,40 @@ import './Collection.css';
 
 const Collection = () => {
   const [collection, setCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // A termékek betöltése a localStorage-ból
-    const purchasedItems = JSON.parse(localStorage.getItem('purchasedItems')) || [];
-    setCollection(purchasedItems);
-  }, []); // Csak egyszer fut le, amikor a komponens betöltődik
+    const token = localStorage.getItem('token');
+    if (!token) return;
+  
+    fetch('http://localhost:8080/api/adminuser/get-profile', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const userId = data.user.id;
+        return fetch(`http://localhost:8080/collection/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Collection fetch failed');
+        return res.json();
+      })
+      .then(data => {
+        setCollection(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch collection:', err);
+        setLoading(false);
+      });
+  }, []);
+  
 
-  const totalValue = collection.reduce((total, product) => total + product.price, 0);
+  const totalValue = collection.reduce((total, item) => total + item.productPrice, 0);
 
   return (
     <RequireAuth>
@@ -23,22 +51,37 @@ const Collection = () => {
         <Navbar />
         <div className="collection-container">
           <h1>My Collection</h1>
-          <div className="collection-list">
-            {collection.length > 0 ? (
-              collection.map((product) => (
-                <div key={product.id} className="collection-item">
-                  <img src={product.image} alt={product.name} className="collection-image" />
-                  <div className="collection-details">
-                    <h2>{product.name}</h2>
-                    <p className="collection-price">${product.price}</p>
+
+          {loading ? (
+            <p>Loading collection...</p>
+          ) : (
+            <div className="collection-list">
+              {collection.length > 0 ? (
+                collection.map((item) => (
+                  <div key={item.id} className="collection-item">
+                    <img
+  src={`/Images/product_images/${item.productImageUrl?.split(',')[0]}`}
+  alt={item.productName}
+  className="collection-image"
+/>
+
+                    <div className="collection-details">
+                      <h2>{item.productName}</h2>
+                      <p className="collection-price">${item.productPrice}</p>
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p className="no-collection">Your collection is empty</p>
-            )}
-          </div>
-          <div className="collection-total">Total Collection Value: ${totalValue}</div>
+                ))
+              ) : (
+                <p className="no-collection">Your collection is empty</p>
+              )}
+            </div>
+          )}
+
+          {!loading && (
+            <div className="collection-total">
+              Total Collection Value: ${totalValue}
+            </div>
+          )}
         </div>
         <Footer />
       </div>

@@ -1,3 +1,4 @@
+// módosítások: category + gender eltávolítva, helyette productCondition filter bevezetve
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import axios from "axios";
@@ -11,9 +12,10 @@ function normalizeProducts(products) {
   return products.map(p => ({
     ...p,
     category: p.category?.toLowerCase(),
-    gender: p.gender?.toLowerCase(),
+    gender: (p.gender || p.targetGender)?.toLowerCase(),
     brand: p.brand?.toLowerCase().replace(/\s/g, ''),
     color: p.color?.toLowerCase(),
+    productCondition: p.productCondition?.toLowerCase().replace(/\s/g, '')
   }));
 }
 
@@ -23,10 +25,9 @@ function ProductsPage() {
 
   const [allProducts, setAllProducts] = useState([]);
   const [filters, setFilters] = useState({
-    category: [],
-    gender: [],
     brands: [],
     colors: [],
+    productCondition: [],
     price: 10000,
   });
 
@@ -61,19 +62,9 @@ function ProductsPage() {
     const search = params.get("search")?.toLowerCase() || "";
     setSearchTerm(search);
 
-    const lower = category?.toLowerCase();
-    const validCategories = ["bag", "watch", "sneaker"];
-    const validGenders = ["man", "woman", "unisex"];
-
-    if (validCategories.includes(lower)) {
-      setFilters(prev => ({ ...prev, category: [lower] }));
-    } else if (validGenders.includes(lower)) {
-      setFilters(prev => ({ ...prev, gender: [lower] }));
-    }
-
     setFilters(prev => ({
       ...prev,
-      brands: brand ? [brand.toLowerCase().replace(/\s/g, '')] : prev.brands,
+      brands: brand ? [brand.toLowerCase().replace(/\s/g, '')] : [],
     }));
   }, [category, location.search]);
 
@@ -92,34 +83,48 @@ function ProductsPage() {
   };
 
   const resetFilters = () => {
-    setFilters({ category: [], gender: [], brands: [], colors: [], price: 10000 });
+    setFilters({
+      brands: [],
+      colors: [],
+      productCondition: [],
+      price: 10000
+    });
   };
 
   const normalizedProducts = normalizeProducts(allProducts);
-  const filteredProducts = normalizedProducts.filter((product) => {
-    const matchCategory =
-      filters.category.length === 0 ||
-      filters.category.length === 3 ||
-      filters.category.includes(product.category);
+  const visibleProducts = normalizedProducts.filter(p => p.status?.toLowerCase() !== 'sold');
 
-    const matchGender =
-      filters.gender.length === 0 ||
-      filters.gender.length === 3 ||
-      filters.gender.includes(product.gender);
-
+  const filteredProducts = visibleProducts.filter((product) => {
     const matchBrand =
       filters.brands.length === 0 || filters.brands.includes(product.brand);
 
     const matchColor =
       filters.colors.length === 0 || filters.colors.includes(product.color);
 
+    const matchCondition =
+      filters.productCondition.length === 0 ||
+      filters.productCondition.includes(product.productCondition?.toLowerCase().replace(/\s/g, ''));
+
     const matchPrice = product.price <= filters.price;
 
     const matchSearch =
-      !searchTerm || product.name.toLowerCase().includes(searchTerm);
+      !searchTerm ||
+      product.name.toLowerCase().includes(searchTerm) ||
+      product.gender?.toLowerCase().includes(searchTerm) ||
+      product.category?.toLowerCase().includes(searchTerm);
 
-    return matchCategory && matchGender && matchBrand && matchColor && matchPrice && matchSearch;
+    return matchBrand && matchColor && matchCondition && matchPrice && matchSearch;
   });
+
+  const getCategoryLabel = () => {
+    if (searchTerm.includes("bag")) return "bags";
+    if (searchTerm.includes("watch")) return "watches";
+    if (searchTerm.includes("sneaker")) return "sneakers";
+    if (searchTerm.includes("woman")) return "women products";
+    if (searchTerm.includes("man")) return "men products";
+    return "products";
+  };
+  
 
   return (
     <div>
@@ -144,7 +149,7 @@ function ProductsPage() {
 
         <main className="products-main">
           <div className="filter-actions">
-            <h4>{filteredProducts.length} products found</h4>
+            <h4>{filteredProducts.length} {getCategoryLabel()} found</h4>
             <button onClick={resetFilters}>Reset Filters</button>
           </div>
 

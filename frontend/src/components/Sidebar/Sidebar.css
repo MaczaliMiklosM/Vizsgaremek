@@ -53,10 +53,20 @@
   background: none !important;
 }
 
-.filter-group {
-  margin-bottom: 20px;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 12px;
+.filter-group input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  cursor: pointer;  
+}
+
+.filter-group input[type="range"] {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  accent-color: #2563eb;
+  cursor: pointer;
+  display: block;
+  box-sizing: border-box;
 }
 
 .filter-group h4 {

@@ -48,7 +48,10 @@ public class SecurityConfig {
                                 "/v2/api-docs", "/v3/api-docs/**", "/swagger-resources/**",
                                 "/swagger-ui/**", "/webjars/**", "/swagger-ui.html",
                                 "/products/getProducts", "/products/getProductById/**"
+
                         ).permitAll()
+                        .requestMatchers("/api/notifications/**").authenticated()
+                        .requestMatchers("/api/orders/**").hasAnyAuthority("USER", "ADMIN") // ⬅️ ADD THIS
 
                         .requestMatchers("/api/wishlist/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/admin/**", "/products/deleteProduct/**").hasAuthority("ADMIN")

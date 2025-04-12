@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 
-const categoryOptions = ["Sneakers", "Watches", "Bags"];
 const filterOptions = {
-  gender: ["Women", "Men", "Unisex"],
-  brands: ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Dior", "Louis Vuitton"],
+  productCondition: ["New", "Used"],
+  brands: ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Christian Dior", "Louis Vuitton"],
   colors: [
     "White", "Black", "Blue", "Red", "Pink", "Green", "Purple",
     "Yellow", "Grey", "Brown", "Orange", "Multicolor"
@@ -13,8 +12,7 @@ const filterOptions = {
 
 function FilterSidebar({ filters, onCheckboxChange, onPriceChange, isMobile, isOpen, onClose }) {
   const [expanded, setExpanded] = useState({
-    category: false,
-    gender: false,
+    productCondition: false,
     brands: false,
     colors: false,
     price: false
@@ -36,47 +34,32 @@ function FilterSidebar({ filters, onCheckboxChange, onPriceChange, isMobile, isO
 
   return (
     <>
-      {isMobile && isOpen && (
-        <div className="overlay" onClick={onClose}></div>
-      )}
+      {isMobile && isOpen && <div className="overlay" onClick={onClose}></div>}
       <aside className={`sidebar ${isMobile ? (isOpen ? "open" : "") : ""}`}>
         {isMobile && <button className="sidebar-close" onClick={onClose}>×</button>}
         <h2>Filter</h2>
 
-        <div className="filter-group">
-          <h4 onClick={() => toggleSection("category")}>Categories</h4>
-          <div className={`filter-content ${!expanded.category ? "collapsed" : ""}`}>
-            {categoryOptions.map((option) => {
-              const val = option.toLowerCase();
-              return (
-                <label key={option}>
-                  {option}
-                  <input
-                    type="checkbox"
-                    checked={filters.category.includes(val)}
-                    onChange={() => onCheckboxChange("category", val)}
-                  />
-                </label>
-              );
-            })}
-          </div>
-        </div>
-
         {Object.entries(filterOptions).map(([key, options]) => (
           <div className="filter-group" key={key}>
-            <h4 onClick={() => toggleSection(key)}>{key.charAt(0).toUpperCase() + key.slice(1)}</h4>
+            <h4 onClick={() => toggleSection(key)}>
+              {key === "productCondition" ? "Condition" : key.charAt(0).toUpperCase() + key.slice(1)}
+            </h4>
             <div className={`filter-content ${!expanded[key] ? "collapsed" : ""}`}>
-              {options.map((option) => (
-                <label key={option}>
-                  {option}
-                  <input
-                    type="checkbox"
-                    checked={Array.isArray(filters[key]) && filters[key].includes(option.toLowerCase())}
-                    onChange={() => onCheckboxChange(key, option.toLowerCase())}
-                  />
-                </label>
-              ))}
-            </div>
+            {options.map((option) => {
+            const normalizedValue = option.toLowerCase().replace(/\s/g, '');
+            return (
+              <label key={option}>
+                {option}
+                <input
+                  type="checkbox"
+                  checked={Array.isArray(filters[key]) && filters[key].includes(normalizedValue)}
+                  onChange={() => onCheckboxChange(key, normalizedValue)}
+                />
+              </label>
+            );
+          })}
+
+         </div>
           </div>
         ))}
 

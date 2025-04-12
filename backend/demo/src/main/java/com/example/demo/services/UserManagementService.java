@@ -17,6 +17,8 @@ import java.util.Optional;
 
 @Service
 public class UserManagementService {
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private UserRepository userRepository;
@@ -30,8 +32,14 @@ public class UserManagementService {
 
     public ReqRes register(RegisterRequest registrationRequest) {
         ReqRes resp = new ReqRes();
-
         try {
+            // Ellenőrizd, hogy az email cím már létezik-e
+            if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
+                resp.setStatusCode(400);  // 400: Bad Request
+                resp.setMessage("Email address is already in use.");
+                return resp;
+            }
+
             User user = new User();
             user.setEmail(registrationRequest.getEmail());
             user.setCountry(registrationRequest.getCountry());
@@ -42,17 +50,18 @@ public class UserManagementService {
             user.setPassword_hash(passwordEncoder.encode(registrationRequest.getPassword()));
             User userResult = userRepository.save(user);
             if (userResult.getId() > 0) {
-                resp.setUser((userResult));
+                resp.setUser(userResult);
                 resp.setMessage("User Saved Successfully");
                 resp.setStatusCode(200);
+                notificationService.sendNotification(userResult, "Successful registration!");
             }
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }
         return resp;
     }
+
 
     public ReqRes login(LoginRequest loginRequest) {
         ReqRes response = new ReqRes();
