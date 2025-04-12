@@ -24,6 +24,7 @@
 .logo img {
     width: 180px;
     height: auto;
+    cursor: pointer;
 }
 
 .profile-links {
@@ -38,6 +39,8 @@
     font-size: 18px;
     padding: 8px;
     float: right;
+}.profile-links :hover{
+    cursor: pointer;
 }
 
 .search-container {

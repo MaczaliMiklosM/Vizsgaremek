@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ShoppingBasket as ShoppingBasketIcon } from '@mui/icons-material';
@@ -7,6 +7,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import AuthModal from '../Auth/AuthModal';
+import AccessDeniedPopup from '../Auth/AccessDeniedPopup';
 import './Header.css';
 
 function Header() {
@@ -15,6 +16,7 @@ function Header() {
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [showAccessDenied, setShowAccessDenied] = useState(false);
     const menuRef = useRef(null);
     const navigate = useNavigate();
 
@@ -30,12 +32,11 @@ function Header() {
 
     const handleProtectedRoute = (path) => {
         if (isLoggedIn) {
-          navigate(path);
+            navigate(path);
         } else {
-          setShowAuthModal(true);
+            setShowAccessDenied(true);
         }
-      };
-      
+    };
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -72,9 +73,9 @@ function Header() {
 
                 {!isMobile || !searchOpen ? (
                     <div className="logo-container">
-                        <Link to="/" className="logo" style={{ textDecoration: 'none' }}>
+                        <span className="logo" style={{ textDecoration: 'none' }} onClick={() => navigate("/")}>
                             <img src="/Images/logo_images/luxshop_logo.png" alt="LuxShop" />
-                        </Link>
+                        </span>
                     </div>
                 ) : null}
 
@@ -101,7 +102,7 @@ function Header() {
                 {!isMobile && (
                     <div className="profile-links">
                         {isLoggedIn ? (
-                            <span onClick={handleLogout} className="nav-link" style={{ cursor: 'pointer'}}>
+                            <span onClick={handleLogout} className="nav-link" style={{ cursor: 'pointer' }}>
                                 Sign Out
                             </span>
                         ) : (
@@ -109,11 +110,11 @@ function Header() {
                                 Sign In
                             </span>
                         )}
-                        <Link to="/profile" className="nav-link">Profil</Link>
-                        <Link to="/about" className="nav-link">About Us</Link>
-                        <Link to="/wishlist" className="nav-link"><FavoriteBorderIcon /></Link>
-                        <Link to="/basket" className="nav-link"><ShoppingBasketIcon /></Link>
-                        <Link to="/notifications" className="nav-link"><NotificationsIcon /></Link>
+                        <span onClick={() => handleProtectedRoute("/profile")} className="nav-link">Profil</span>
+                        <span onClick={() => navigate("/about")} className="nav-link">About Us</span>
+                        <span onClick={() => handleProtectedRoute("/wishlist")} className="nav-link"><FavoriteBorderIcon /></span>
+                        <span onClick={() => handleProtectedRoute("/basket")} className="nav-link"><ShoppingBasketIcon /></span>
+                        <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link"><NotificationsIcon /></span>
                     </div>
                 )}
 
@@ -126,24 +127,25 @@ function Header() {
             {isMobile && (
                 <div ref={menuRef} className={`sidebar-menu ${menuOpen ? "active" : ""}`}>
                     <button className="close-menu" onClick={() => setMenuOpen(false)} style={{ background: 'none', border: 'none' }}>
-                        <Link to="/" className="logo" style={{ textDecoration: 'none' }}>
+                        <span className="logo" style={{ textDecoration: 'none' }} onClick={() => navigate("/")}>
                             <img src="/Images/logo_images/luxshop_logo.png" alt="LuxShop" />
-                        </Link>
+                        </span>
                     </button>
                     {isLoggedIn ? (
                         <span onClick={handleLogout} className="nav-link" style={{ cursor: 'pointer' }}>Sign Out</span>
                     ) : (
                         <span onClick={() => setShowAuthModal(true)} className="nav-link" style={{ cursor: 'pointer' }}>Sign In</span>
                     )}
-                    <Link to="/profile" className="nav-link">Profil</Link>
-                    <Link to="/about" className="nav-link">About Us</Link>
-                    <Link to="/wishlist" className="nav-link">Wishlist</Link>
-                    <Link to="/basket" className="nav-link">Basket</Link>
-                    <Link to="/notifications" className="nav-link">Notifications</Link>
+                    <span onClick={() => handleProtectedRoute("/profile")} className="nav-link">Profil</span>
+                    <span onClick={() => handleProtectedRoute("/about")} className="nav-link">About Us</span>
+                    <span onClick={() => handleProtectedRoute("/wishlist")} className="nav-link">Wishlist</span>
+                    <span onClick={() => handleProtectedRoute("/basket")} className="nav-link">Basket</span>
+                    <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link">Notifications</span>
                 </div>
             )}
 
             {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+            {showAccessDenied && <AccessDeniedPopup onClose={() => setShowAccessDenied(false)} />}
         </header>
     );
 }

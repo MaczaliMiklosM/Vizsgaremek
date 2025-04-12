@@ -23,7 +23,7 @@ function ProductsPage() {
 
   const [allProducts, setAllProducts] = useState([]);
   const [filters, setFilters] = useState({
-    category: "",
+    category: [],
     gender: [],
     brands: [],
     colors: [],
@@ -66,7 +66,7 @@ function ProductsPage() {
     const validGenders = ["man", "woman", "unisex"];
 
     if (validCategories.includes(lower)) {
-      setFilters(prev => ({ ...prev, category: lower }));
+      setFilters(prev => ({ ...prev, category: [lower] }));
     } else if (validGenders.includes(lower)) {
       setFilters(prev => ({ ...prev, gender: [lower] }));
     }
@@ -78,17 +78,13 @@ function ProductsPage() {
   }, [category, location.search]);
 
   const handleCheckboxChange = (type, value) => {
-    if (type === "category") {
-      setFilters((prev) => ({ ...prev, category: value }));
-    } else {
-      setFilters((prev) => {
-        const current = prev[type];
-        const updated = current.includes(value)
-          ? current.filter((v) => v !== value)
-          : [...current, value];
-        return { ...prev, [type]: updated };
-      });
-    }
+    setFilters((prev) => {
+      const current = prev[type];
+      const updated = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+      return { ...prev, [type]: updated };
+    });
   };
 
   const handlePriceChange = (value) => {
@@ -96,19 +92,33 @@ function ProductsPage() {
   };
 
   const resetFilters = () => {
-    setFilters({ category: "", gender: [], brands: [], colors: [], price: 10000 });
+    setFilters({ category: [], gender: [], brands: [], colors: [], price: 10000 });
   };
 
   const normalizedProducts = normalizeProducts(allProducts);
   const filteredProducts = normalizedProducts.filter((product) => {
-    return (
-      (!filters.category || product.category === filters.category) &&
-      (filters.gender.length === 0 || filters.gender.includes(product.gender)) &&
-      (filters.brands.length === 0 || filters.brands.includes(product.brand)) &&
-      (filters.colors.length === 0 || filters.colors.includes(product.color)) &&
-      product.price <= filters.price &&
-      (!searchTerm || product.name.toLowerCase().includes(searchTerm))
-    );
+    const matchCategory =
+      filters.category.length === 0 ||
+      filters.category.length === 3 ||
+      filters.category.includes(product.category);
+
+    const matchGender =
+      filters.gender.length === 0 ||
+      filters.gender.length === 3 ||
+      filters.gender.includes(product.gender);
+
+    const matchBrand =
+      filters.brands.length === 0 || filters.brands.includes(product.brand);
+
+    const matchColor =
+      filters.colors.length === 0 || filters.colors.includes(product.color);
+
+    const matchPrice = product.price <= filters.price;
+
+    const matchSearch =
+      !searchTerm || product.name.toLowerCase().includes(searchTerm);
+
+    return matchCategory && matchGender && matchBrand && matchColor && matchPrice && matchSearch;
   });
 
   return (

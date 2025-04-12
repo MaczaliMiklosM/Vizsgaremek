@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Footer.css';
 import { Facebook, Instagram, LinkedIn, GitHub, Home, Email, Phone } from '@mui/icons-material';
 import XIcon from '@mui/icons-material/X';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import AuthModal from '../Auth/AuthModal';
+import AccessDeniedPopup from '../Auth/AccessDeniedPopup';
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isLoggedIn = !!user;
+
+  const handleProtectedRoute = (path) => {
+    if (isLoggedIn) {
+      navigate(path);
+    } else {
+      setShowAccessDenied(true);
+    }
+  };
+
   return (
     <footer className="footer-fullwidth">
       <div className="footer-social">
@@ -23,32 +40,31 @@ const Footer = () => {
           <div className="footer-section company">
             <h6>Lux Shop</h6>
             <p>Discover our commitment to providing a safe, transparent platform for collectors and investors of luxury goods.</p>
-           
           </div>
 
           <div className="footer-sections">
             <div className="footer-section products">
               <h6>Products</h6>
               <ul>
-                <li><Link to="/products/women">Women</Link></li>
-                <li><Link to="/products/men">Men</Link></li>
-                <li><Link to="/products/sneakers">Sneakers</Link></li>
-                <li><Link to="/products/bags">Bags</Link></li>
-                <li><Link to="/products/watches">Watches</Link></li>
+                <li onClick={() => navigate("/products/women")} className="footer-link">Women</li>
+                <li onClick={() => navigate("/products/men")} className="footer-link">Men</li>
+                <li onClick={() => navigate("/products/sneakers")} className="footer-link">Sneakers</li>
+                <li onClick={() => navigate("/products/bags")} className="footer-link">Bags</li>
+                <li onClick={() => navigate("/products/watches")} className="footer-link">Watches</li>
               </ul>
             </div>
 
             <div className="footer-section links">
               <h6>Useful Links</h6>
               <ul>
-                <li><Link to="/profile">Your Account</Link></li>
-                <li><Link to="/wishlist">Your Wishlist</Link></li>
-                <li><Link to="/myproducts">Sell Item</Link></li>
-                <li><Link to="/about">About Us</Link></li>
-                <li><Link to="/terms">Terms And Conditions</Link></li>
+                <li onClick={() => handleProtectedRoute("/profile")} className="footer-link">Your Account</li>
+                <li onClick={() => handleProtectedRoute("/wishlist")} className="footer-link">Your Wishlist</li>
+                <li onClick={() => handleProtectedRoute("/myproducts")} className="footer-link">Sell Item</li>
+                <li onClick={() => navigate("/about")} className="footer-link">About Us</li>
+                <li onClick={() => navigate("/terms")} className="footer-link">Terms And Conditions</li>
               </ul>
             </div>
-            
+
             <div className="footer-section contact">
               <h6>Contact</h6>
               <ul>
@@ -64,6 +80,9 @@ const Footer = () => {
       <div className="footer-copyright">
         © 2025 Copyright: LuxShop LLC
       </div>
+
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+      {showAccessDenied && <AccessDeniedPopup onClose={() => setShowAccessDenied(false)} />}
     </footer>
   );
 };

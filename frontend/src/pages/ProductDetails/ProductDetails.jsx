@@ -7,20 +7,23 @@ import './ProductDetails.css';
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
+import AccessDeniedPopup from '../../components/Auth/AccessDeniedPopup';
 
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
+
+  const isLoggedIn = !!localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`/api/products/getProductById/${id}`);
         const data = response.data;
-        console.log("📦 Termék:", data);
-
         setProduct(data);
         const baseImages = data.imageUrl?.split(',') || [];
         setSelectedImage(`/Images/product_images/${baseImages[0]}`);
@@ -43,34 +46,41 @@ function ProductDetails() {
   };
 
   const addToBasket = () => {
+    if (!isLoggedIn) {
+      setShowAccessDenied(true);
+      return;
+    }
+
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
-  
-    // Ha nem található a termék a kosárban, hozzáadjuk
     if (!basket.find(p => p.id === product.id)) {
       basket.push({
         id: product.id,
         name: product.name,
         price: product.price,
         image: `/Images/product_images/${product.imageUrl?.split(',')[0]}`,
-        quantity: 1,  // Mivel a quantity mindig 1
-        stock: 2,  // Példa raktárkészlet, ha szükséges változtasd
+        quantity: 1,
+        stock: 2,
         size: product.size || 'N/A'
       });
       localStorage.setItem("basket", JSON.stringify(basket));
       alert("Added to basket!");
+      navigate('/basket');
     } else {
-      alert("Already in basket!");  // Ha már van a kosárban, értesítjük a felhasználót
+      alert("Already in basket!");
+      navigate('/basket');
     }
-  
-    navigate('/basket');  // Átnavigálás a kosár oldalra
   };
-  
 
   const addToWishlist = async () => {
+    if (!isLoggedIn) {
+      setShowAccessDenied(true);
+      return;
+    }
+
     const token = localStorage.getItem("token");
     try {
       const response = await axios.post('/api/wishlist/addWishlistItem', {
-        userId: JSON.parse(localStorage.getItem("user")).id,
+        userId: user.id,
         productId: product.id
       }, {
         headers: {
@@ -87,6 +97,14 @@ function ProductDetails() {
       console.error("❌ Error adding product to wishlist:", error);
       alert("An error occurred while adding the product to your wishlist.");
     }
+  };
+
+  const handleBid = () => {
+    if (!isLoggedIn) {
+      setShowAccessDenied(true);
+      return;
+    }
+    navigate(`/bid/${id}`);
   };
 
   if (!product) return <div>Loading...</div>;
@@ -127,7 +145,7 @@ function ProductDetails() {
             </div>
 
             <div className="product-actions">
-              <button className="btn bid-btn" onClick={() => navigate(`/bid/${id}`)}>
+              <button className="btn bid-btn" onClick={handleBid}>
                 <span>Place Bid</span>
               </button>
 
@@ -157,6 +175,7 @@ function ProductDetails() {
         </div>
       </div>
 
+      {showAccessDenied && <AccessDeniedPopup onClose={() => setShowAccessDenied(false)} />}
       <Footer />
     </div>
   );

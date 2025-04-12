@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
 import com.example.demo.enums.OrderStatus;
-import com.example.demo.enums.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

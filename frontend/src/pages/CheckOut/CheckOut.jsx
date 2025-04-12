@@ -16,21 +16,31 @@ const Checkout = () => {
     name: '',
     email: '',
     address: '',
-    city: '',
-    zip: '',
     country: '',
-    phone: '',  // Added phone to match the profile data
-    paymentMethod: 'cash', // Just cash on delivery option
+    phone: '',
+    paymentMethod: 'cash',
   });
 
   const cart = JSON.parse(localStorage.getItem('basket')) || [];
-  const [user, setUser] = useState(null); // State to hold user data
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Fetch user data from localStorage if it exists
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser); // Set user state when data is fetched
-  }, []); // Only run once when component mounts
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    fetch('http://localhost:8080/api/adminuser/get-profile', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setUser(data.user);
+      })
+      .catch(err => {
+        console.error("❌ Failed to fetch profile:", err);
+      });
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -38,14 +48,12 @@ const Checkout = () => {
         name: user.full_name || '',
         email: user.email || '',
         address: user.address || '',
-        city: user.city || '',
-        zip: user.zip || '',
         country: user.country || '',
-        phone: user.phone_number || '', // Map phone number
-        paymentMethod: 'cash', // Ensure payment method is set for cash
+        phone: user.phone_number || '',
+        paymentMethod: 'cash'
       });
     }
-  }, [user]); // Only run this when user data changes
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,13 +61,12 @@ const Checkout = () => {
   };
 
   const validateShipping = () => {
-    const { name, email, address, city, zip, country, phone } = formData;
-    if (!name || !email || !address || !city || !zip || !country || !phone) {
+    const { name, email, address, country, phone } = formData;
+    if (!name || !email || !address || !country || !phone) {
       return 'Please fill out all shipping fields.';
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) return 'Please enter a valid email address.';
-    if (isNaN(zip)) return 'ZIP code must be a number.';
     if (isNaN(phone)) return 'Phone number must be valid.';
     return '';
   };
@@ -80,32 +87,24 @@ const Checkout = () => {
   };
 
   const handlePayment = () => {
-    // A kosár adatai
     const cart = JSON.parse(localStorage.getItem('basket')) || [];
-  
-    // Megvásárolt termékek hozzáadása a Collection-hoz
     const existingCollection = JSON.parse(localStorage.getItem('purchasedItems')) || [];
     const updatedCollection = [...existingCollection, ...cart];
-  
-    // Frissítjük a collection-t a localStorage-ban
     localStorage.setItem('purchasedItems', JSON.stringify(updatedCollection));
-  
-    // Kosár törlése
     localStorage.removeItem('basket');
-  
     alert('Order placed! Redirecting to Collection page...');
-    navigate('/collection');  // Átirányítás a Collection oldalra
+    navigate('/collection');
   };
 
   const handleUseProfileInfo = () => {
     if (user) {
       setFormData({
         ...formData,
-        name: user.full_name,
-        email: user.email,
-        address: user.address,
-        country: user.country,
-        phone: user.phone_number, // Added phone number field
+        name: user.full_name || '',
+        email: user.email || '',
+        address: user.address || '',
+        country: user.country || '',
+        phone: user.phone_number || '',
       });
     }
   };
@@ -116,7 +115,7 @@ const Checkout = () => {
         return (
           <div className="checkout-step">
             <h2>Shipping Information</h2>
-            {['name', 'email', 'address', 'city', 'zip', 'country', 'phone'].map((field) => (
+            {['name', 'email', 'address', 'country', 'phone'].map((field) => (
               <input
                 key={field}
                 name={field}
@@ -125,7 +124,7 @@ const Checkout = () => {
                 onChange={handleChange}
               />
             ))}
-            <button onClick={handleUseProfileInfo}>Use Profile Info</button> {/* Button to load profile data */}
+            <button onClick={handleUseProfileInfo}>Use Profile Info</button>
             {error && <p className="form-error">{error}</p>}
             <button onClick={handleNext}>Next</button>
           </div>
@@ -136,8 +135,8 @@ const Checkout = () => {
             <h2>Order Summary</h2>
             <p><strong>Name:</strong> {formData.name}</p>
             <p><strong>Email:</strong> {formData.email}</p>
-            <p><strong>Phone:</strong> {formData.phone}</p> {/* Displaying the phone number */}
-            <p><strong>Address:</strong> {formData.address}, {formData.city}, {formData.zip}</p>
+            <p><strong>Phone:</strong> {formData.phone}</p>
+            <p><strong>Address:</strong> {formData.address}</p>
             <p><strong>Country:</strong> {formData.country}</p>
 
             <h3>Items in your basket:</h3>
@@ -173,7 +172,7 @@ const Checkout = () => {
     }
   };
 
-  if (!user) return <p>Loading user data...</p>;  // Ensure user data is loaded
+  if (!user) return <p>Loading user data...</p>;
 
   return (
     <RequireAuth>

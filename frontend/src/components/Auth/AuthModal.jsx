@@ -14,6 +14,7 @@ const AuthModal = ({ onClose }) => {
     phoneNumber: '',
     address: '',
     country: '',
+    dialCode: '',
     password: '',
     confirmPassword: '',
   });
@@ -28,7 +29,16 @@ const AuthModal = ({ onClose }) => {
   const [passwordStrength, setPasswordStrength] = useState('');
 
   const handleChange = ({ target: { name, value } }) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'country') {
+      const selected = countries.find(c => c.name === value);
+      setFormData(prev => ({
+        ...prev,
+        country: selected.name,
+        dialCode: selected.dial_code
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
     if (name === 'password') updatePasswordStrength(value);
   };
 
@@ -41,11 +51,11 @@ const AuthModal = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const {
-      fullName, email, phoneNumber, address, country, password, confirmPassword,
+      fullName, email, phoneNumber, address, country, dialCode, password, confirmPassword,
     } = formData;
 
     if (isSignUp) {
-      if (Object.values({ fullName, email, phoneNumber, address, country, password, confirmPassword }).some(val => !val)) {
+      if (Object.values({ fullName, email, phoneNumber, address, country, dialCode, password, confirmPassword }).some(val => !val)) {
         return alert('Please fill out all fields.');
       }
       if (password !== confirmPassword) return alert('Passwords do not match!');
@@ -57,13 +67,13 @@ const AuthModal = ({ onClose }) => {
         name: fullName,
         email,
         password,
-        phoneNumber,
+        phoneNumber: dialCode + phoneNumber,
         address,
         country
       };
 
       try {
-        await axios.post('/api/auth/register', payload, {
+        await axios.post('/api/api/auth/register', payload, {
           headers: { 'Content-Type': 'application/json' },
         });
         alert('Registration successful! You can now sign in.');
@@ -86,7 +96,6 @@ const AuthModal = ({ onClose }) => {
 
         localStorage.setItem('token', token);
 
-        // 🔐 Fetch user profile to get role and id
         const profileResponse = await axios.get('/api/api/adminuser/get-profile', {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -96,7 +105,6 @@ const AuthModal = ({ onClose }) => {
         const user = profileResponse.data.user;
         const role = user?.role || user?.authorities?.[0]?.authority || 'USER';
 
-        // 💾 Save everything including user ID
         localStorage.setItem('user', JSON.stringify({
           email,
           role,
@@ -120,17 +128,38 @@ const AuthModal = ({ onClose }) => {
   const renderInputPair = (leftField, rightField) => (
     <div className="input-pair">
       {[leftField, rightField].map((field) => (
-        <div className="input-box" key={field}>
-          <input
-            type={field === 'email' ? 'email' : 'text'}
-            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-            name={field}
-            value={formData[field]}
-            onChange={handleChange}
-            className="input-field"
-            required
-          />
-        </div>
+        field === 'phoneNumber' ? (
+          <div className="input-box" key={field}>
+            <div className="phone-wrapper">
+              <span className="prefix">{formData.dialCode || '+XX'}</span>
+              <input
+                type="text"
+                placeholder="Phone Number (without country code)"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="phone-input"
+                required
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="input-box" key={field}>
+            <input
+              type={field === 'email' ? 'email' : 'text'}
+              placeholder={
+                field === 'fullName' ? 'Full Name' :
+                field === 'address' ? 'Street, House number, ZIP, City' :
+                field.charAt(0).toUpperCase() + field.slice(1)
+              }
+              name={field}
+              value={formData[field]}
+              onChange={handleChange}
+              className="input-field"
+              required
+            />
+          </div>
+        )
       ))}
     </div>
   );
@@ -147,7 +176,6 @@ const AuthModal = ({ onClose }) => {
           {isSignUp ? (
             <>
               {renderInputPair("fullName", "email")}
-              {renderInputPair("phoneNumber", "address")}
               <div className="input-box">
                 <select
                   name="country"
@@ -158,10 +186,11 @@ const AuthModal = ({ onClose }) => {
                 >
                   <option value="" disabled>Select Country</option>
                   {countries.map((country, i) => (
-                    <option key={i} value={country}>{country}</option>
+                    <option key={i} value={country.name}>{country.name}</option>
                   ))}
                 </select>
               </div>
+              {renderInputPair("phoneNumber", "address")}
             </>
           ) : (
             <div className="input-box">
@@ -187,12 +216,13 @@ const AuthModal = ({ onClose }) => {
               className="input-field"
               required
             />
-            {isSignUp && formData.password && (
-              <p className={`password-strength ${passwordStrength.toLowerCase()}`}>
-                Strength: {passwordStrength}
-              </p>
-            )}
           </div>
+
+          {isSignUp && formData.password && (
+            <p className={`password-strength ${passwordStrength.toLowerCase()}`}>
+              Strength: {passwordStrength}
+            </p>
+          )}
 
           {isSignUp && (
             <div className="input-box">

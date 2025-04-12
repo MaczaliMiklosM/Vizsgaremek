@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import AccessDeniedPopup from './AccessDeniedPopup';
 import './RequireAuth.css';
 
 const RequireAuth = ({ children }) => {
@@ -11,12 +12,15 @@ const RequireAuth = ({ children }) => {
     if (!token) {
       setShowPopup(true);
       document.body.classList.add('no-scroll');
+      document.documentElement.classList.add('no-scroll'); 
     }
-
+  
     return () => {
       document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
     };
   }, []);
+  
 
   const handleGoBack = () => {
     navigate(-1);
@@ -25,17 +29,7 @@ const RequireAuth = ({ children }) => {
   return (
     <>
       {children}
-      {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-content fade-in">
-            <h2>Access Denied</h2>
-            <p>You must be signed in to view this page.</p>
-            <div className="popup-buttons">
-              <button onClick={handleGoBack} className="btn-secondary">Go Back</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {showPopup && <AccessDeniedPopup onClose={handleGoBack} />}
     </>
   );
 };
