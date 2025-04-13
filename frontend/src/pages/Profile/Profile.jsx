@@ -78,7 +78,6 @@ const Profile = () => {
 
             <div className="profile-section">
               <h2><BookmarkBorderIcon /> Your Collection</h2>
-              <div className="cart-total">Total: $0</div>
               <Link to="/collection" className="checkout-btn">Your Collection</Link>
             </div>
 

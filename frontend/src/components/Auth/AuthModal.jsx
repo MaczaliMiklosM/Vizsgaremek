@@ -116,7 +116,7 @@ const AuthModal = ({ onClose }) => {
         if (role === 'ADMIN') {
           window.location.hash = '#/admin';
         } else {
-          window.location.hash = '#/profile';
+          window.location.hash = '#/';
         }
       } catch (error) {
         console.error("❌ Login error:", error);

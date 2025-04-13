@@ -3,8 +3,11 @@ import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import { Link } from 'react-router-dom';
-import { Add, Remove, Delete } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import RequireAuth from '../../components/Auth/RequireAuth';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './Basket.css';
 
 const Basket = () => {
@@ -16,22 +19,27 @@ const Basket = () => {
   }, []);
 
   const removeFromCart = (id) => {
+    const removedItem = cart.find(item => item.id === id);
     const updated = cart.filter(item => item.id !== id);
     setCart(updated);
     localStorage.setItem('basket', JSON.stringify(updated));
-  };
 
-  const updateQuantity = (id, change) => {
-    const updated = cart.map(item =>
-      item.id === id
-        ? {
-            ...item,
-            quantity: Math.max(1, Math.min((item.quantity || 1) + change, item.stock || 1)),
-          }
-        : item
+    toast.success(
+      <div className="toast-message">
+        🗑️ Removed from basket
+        <button
+          className="toast-undo-button"
+          onClick={() => {
+            const restored = [...updated, removedItem];
+            setCart(restored);
+            localStorage.setItem('basket', JSON.stringify(restored));
+            toast.dismiss();
+          }}
+        >
+          Undo
+        </button>
+      </div>
     );
-    setCart(updated);
-    localStorage.setItem('basket', JSON.stringify(updated));
   };
 
   const getTotal = () =>
@@ -52,18 +60,9 @@ const Basket = () => {
                   <div className="basket-details">
                     <h2>{item.name}</h2>
                     <p className="basket-price">${item.price.toLocaleString()}</p>
-                    <div className="quantity-control">
-                      <button onClick={() => updateQuantity(item.id, -1)} className="quantity-btn">
-                        <Remove />
-                      </button>
-                      <span>{item.quantity || 1}</span>
-                      <button onClick={() => updateQuantity(item.id, 1)} className="quantity-btn">
-                        <Add />
-                      </button>
-                    </div>
                     {item.size && (
                       <p>
-                        <strong>Selected Size:</strong> {item.size}
+                        <strong>Size:</strong> {item.size}
                       </p>
                     )}
                     {item.stock === 1 && (
@@ -90,6 +89,7 @@ const Basket = () => {
         </div>
         <Footer />
       </div>
+      <ToastContainer position="bottom-right" autoClose={3000} closeButton={false} />
     </RequireAuth>
   );
 };

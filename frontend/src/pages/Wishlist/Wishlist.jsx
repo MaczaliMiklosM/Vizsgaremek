@@ -1,5 +1,3 @@
-// ✅ Frissített Favorites.jsx – Wishlist elemek kattinthatók, de nem blokkolják újra felvételt
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../../components/Header/Header';
@@ -7,8 +5,11 @@ import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RequireAuth from '../../components/Auth/RequireAuth';
-import './Wishlist.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+
+import './Wishlist.css';
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -30,25 +31,26 @@ const Favorites = () => {
       });
 
       const backendList = response.data
-  .filter(item => item.status?.toLowerCase() !== "sold") // ⬅️ ezt tedd bele
-  .map(item => ({
-    id: item.id,
-    name: item.productName,
-    price: item.productPrice + " $",
-    image: `/Images/product_images/${item.productImageUrl?.split(',')[0]}`,
-    productId: item.productId,
-  }));
-
+        .filter(item => item.status?.toLowerCase() !== "sold")
+        .map(item => ({
+          id: item.id,
+          name: item.productName,
+          price: item.productPrice + " $",
+          image: `/Images/product_images/${item.productImageUrl?.split(',')[0]}`,
+          productId: item.productId,
+        }));
 
       setFavorites(backendList);
     } catch (error) {
-      console.error("❌ Failed to load wishlist", error);
+      console.error("Failed to load wishlist", error);
     }
   };
 
   const removeFromFavorites = async (productId) => {
     try {
       const token = localStorage.getItem("token");
+      const removedItem = favorites.find(item => item.productId === productId);
+
       await axios.delete('/api/wishlist/removeWishlistItem', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -59,9 +61,39 @@ const Favorites = () => {
         },
       });
 
-      setFavorites(prev => prev.filter(item => item.productId !== productId));
+      const updated = favorites.filter(item => item.productId !== productId);
+      setFavorites(updated);
+
+      toast.success(
+        <div className="toast-message">
+          🗑️ Removed from wishlist
+          <button
+            className="toast-undo-button"
+            onClick={async () => {
+              try {
+                await axios.post('/api/wishlist/addWishlistItem', {
+                  userId: user.id,
+                  productId: removedItem.productId,
+                }, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+
+                const restored = [...updated, removedItem];
+                setFavorites(restored);
+                toast.dismiss();
+              } catch (err) {
+                console.error("❌ Undo failed", err);
+                toast.error("Undo failed");
+              }
+            }}
+          >
+            Undo
+          </button>
+        </div>
+      );
     } catch (error) {
       console.error("❌ Failed to remove item", error);
+      toast.error("Failed to remove item");
     }
   };
 
@@ -75,19 +107,17 @@ const Favorites = () => {
           <div className="favorites-list">
             {favorites.length > 0 ? (
               favorites.map(product => (
-                <div key={product.id} className="favorite-item-wrapper">
+                <div key={product.id} className="favorite-item">
                   <Link to={`/product-details/${product.productId}`} className="favorite-item-link">
-                    <div className="favorite-item">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="favorite-image"
-                        onError={(e) => { e.target.onerror = null; e.target.src = '/Images/placeholder.jpg'; }}
-                      />
-                      <div className="favorite-details">
-                        <h2>{product.name}</h2>
-                        <p className="favorite-price">{product.price}</p>
-                      </div>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="favorite-image"
+                      onError={(e) => { e.target.onerror = null; e.target.src = '/Images/placeholder.jpg'; }}
+                    />
+                    <div className="favorite-details">
+                      <h2>{product.name}</h2>
+                      <p className="favorite-price">{product.price}</p>
                     </div>
                   </Link>
                   <button
@@ -105,6 +135,7 @@ const Favorites = () => {
           </div>
         </div>
         <Footer />
+        <ToastContainer position="bottom-right" autoClose={3000} closeButton={false} />
       </div>
     </RequireAuth>
   );

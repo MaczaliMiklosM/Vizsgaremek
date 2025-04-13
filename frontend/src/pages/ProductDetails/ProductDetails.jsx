@@ -8,6 +8,8 @@ import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import AccessDeniedPopup from '../../components/Auth/AccessDeniedPopup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -16,38 +18,41 @@ function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState('');
   const [showAccessDenied, setShowAccessDenied] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
+  const [inBasket, setInBasket] = useState(false);
 
   const isLoggedIn = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-useEffect(() => {
-  const fetchProduct = async () => {
-    try {
-      const response = await axios.get(`/api/products/getProductById/${id}`);
-      const data = response.data;
-      setProduct(data);
 
-      const baseImages = data.imageUrl?.split(',') || [];
-      setSelectedImage(`/Images/product_images/${baseImages[0]}`);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`/api/products/getProductById/${id}`);
+        const data = response.data;
+        setProduct(data);
 
-      // 💡 Friss ellenőrzés szerverről:
-      if (isLoggedIn && user?.id) {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(`/api/wishlist/${user.id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const baseImages = data.imageUrl?.split(',') || [];
+        setSelectedImage(`/Images/product_images/${baseImages[0]}`);
 
-        const exists = res.data.some(item => item.productId === data.id);
-        setInWishlist(exists);
+        if (isLoggedIn && user?.id) {
+          const token = localStorage.getItem("token");
+
+          const wishlistRes = await axios.get(`/api/wishlist/${user.id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const wishExists = wishlistRes.data.some(item => item.productId === data.id);
+          setInWishlist(wishExists);
+        }
+
+        const basket = JSON.parse(localStorage.getItem("basket")) || [];
+        const basketExists = basket.some(p => p.id === data.id);
+        setInBasket(basketExists);
+      } catch (error) {
+        console.error('Failed to load product:', error);
       }
+    };
 
-    } catch (error) {
-      console.error('❌ Failed to load product:', error);
-    }
-  };
-
-  fetchProduct();
-}, [id, isLoggedIn, user?.id]);
-
+    fetchProduct();
+  }, [id, isLoggedIn, user?.id]);
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -56,7 +61,7 @@ useEffect(() => {
   const handleShare = () => {
     const link = `${window.location.origin}/#/product-details/${id}`;
     navigator.clipboard.writeText(link);
-    alert("Product link copied to clipboard!");
+    toast.success("🔗 Product link copied to clipboard!");
   };
 
   const addToBasket = () => {
@@ -66,28 +71,36 @@ useEffect(() => {
     }
 
     const basket = JSON.parse(localStorage.getItem("basket")) || [];
-    if (!basket.find(p => p.id === product.id)) {
-      basket.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: `/Images/product_images/${product.imageUrl?.split(',')[0]}`,
-        quantity: 1,
-        stock: 2,
-        size: product.size || 'N/A'
-      });
-      localStorage.setItem("basket", JSON.stringify(basket));
-      alert("Added to basket!");
-      navigate('/basket');
-    } else {
-      alert("Already in basket!");
-      navigate('/basket');
+    const exists = basket.find(p => p.id === product.id);
+
+    if (exists) {
+      toast.info("Already in basket");
+      return;
     }
+
+    basket.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: `/Images/product_images/${product.imageUrl?.split(',')[0]}`,
+      quantity: 1,
+      stock: 2,
+      size: product.size || 'N/A'
+    });
+
+    localStorage.setItem("basket", JSON.stringify(basket));
+    setInBasket(true);
+    toast.success("🛒 Added to basket!");
   };
 
   const addToWishlist = async () => {
     if (!isLoggedIn) {
       setShowAccessDenied(true);
+      return;
+    }
+
+    if (inWishlist) {
+      toast.info("Already in wishlist");
       return;
     }
 
@@ -108,13 +121,13 @@ useEffect(() => {
         }];
         localStorage.setItem("wishlist", JSON.stringify(updated));
         setInWishlist(true);
-        alert("Added to wishlist!");
+        toast.success("Added to wishlist!");
       } else {
-        alert("Failed to add to wishlist.");
+        toast.error("Failed to add to wishlist.");
       }
     } catch (error) {
-      console.error("❌ Error adding product to wishlist:", error);
-      alert("An error occurred while adding the product to your wishlist.");
+      console.error("Error adding product to wishlist:", error);
+      toast.error("Something went wrong with the wishlist.");
     }
   };
 
@@ -127,6 +140,23 @@ useEffect(() => {
   };
 
   if (!product) return <div>Loading...</div>;
+
+  if (product.status === "SOLD") {
+    return (
+      <div className="container">
+        <Header />
+        <Navbar />
+        <div style={{
+          textAlign: "center",
+          padding: "100px 20px",
+          fontSize: "1.5rem"
+        }}>
+          <p>🚫 <strong>The requested product is no longer available.</strong></p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   const imageList = product.imageUrl?.split(',') || [];
 
@@ -169,18 +199,12 @@ useEffect(() => {
               </button>
 
               <button className="btn buy-btn" onClick={addToBasket}>
-                <span>Buy Now</span>
+                <span>{inBasket ? "Already in Basket" : "Buy Now"}</span>
               </button>
 
-              {inWishlist ? (
-                <button className="btn wishlist-btn" disabled>
-                  <AddCircleIcon /> <span>Already in Wishlist</span>
-                </button>
-              ) : (
-                <button className="btn wishlist-btn" onClick={addToWishlist}>
-                  <AddCircleIcon /> <span>Wishlist</span>
-                </button>
-              )}
+              <button className="btn wishlist-btn" onClick={addToWishlist}>
+                <AddCircleIcon /> <span>{inWishlist ? "Already in Wishlist" : "Wishlist"}</span>
+              </button>
 
               <button className="btn share-btn" onClick={handleShare}>
                 <IosShareIcon /> <span>Share</span>
@@ -202,6 +226,12 @@ useEffect(() => {
 
       {showAccessDenied && <AccessDeniedPopup onClose={() => setShowAccessDenied(false)} />}
       <Footer />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeButton={false}
+      />
     </div>
   );
 }
