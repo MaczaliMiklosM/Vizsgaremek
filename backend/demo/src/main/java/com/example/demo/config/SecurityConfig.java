@@ -56,7 +56,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/wishlist/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/api/admin/update/**").hasAnyAuthority("USER", "ADMIN")
 
-                        .requestMatchers("/admin/**", "/products/deleteProduct/**").hasAuthority("ADMIN")
+                        .requestMatchers("/admin/**", "/products/deleteProduct/**", "/products/approveProduct/**").hasAuthority("ADMIN")
+
 
                         .requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()

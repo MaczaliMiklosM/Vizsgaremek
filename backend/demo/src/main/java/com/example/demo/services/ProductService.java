@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.product.ProductSave;
+import com.example.demo.enums.Status;
 import com.example.demo.model.Product;
 import com.example.demo.model.User;
 import com.example.demo.repository.ProductRepository;
@@ -61,7 +62,16 @@ public class ProductService {
         product.setUploadDate(productSave.getUploadDate());
         product.setCategory(productSave.getCategory());
         product.setTargetGender(productSave.getTargetGender());
-        product.setStatus(productSave.getStatus());
+        product.setStatus(Status.UNAPPROVED);
+
+        return productRepository.save(product);
+    }
+
+    public Optional<Product> getProductOptional(Integer id) {
+        return productRepository.findById(id);
+    }
+
+    public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 

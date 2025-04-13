@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.enums.Status;
 import com.example.demo.model.Product;
 import com.example.demo.dto.product.ProductSave;
 import com.example.demo.services.ProductService;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -44,4 +46,22 @@ public class ProductController {
     public ResponseEntity<String> deleteProduct(@PathVariable Integer id){
         return productService.deleteProduct(id);
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/approveProduct/{id}")
+    public ResponseEntity<String> approveProduct(@PathVariable Integer id) {
+        Optional<Product> productOptional = productService.getProductOptional(id);
+
+        if (productOptional.isEmpty()) {
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+        }
+
+        Product product = productOptional.get();
+        product.setStatus(Status.APPROVED);
+        productService.saveProduct(product);
+
+        return new ResponseEntity<>("Product approved successfully", HttpStatus.OK);
+    }
+
+
 }

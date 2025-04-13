@@ -99,7 +99,11 @@ function AdminDashboard() {
         <div className="admin-header-center">
           <div className="admin-logo">
             <h1>LuxShop Administrator Panel</h1>
+            
           </div>
+          <button className="sign-out-button" onClick={handleSignOut}>
+            Sign Out
+          </button>
           <div className="admin-tabs">
             <button
               className={activeTab === 'pending' ? 'active-tab' : ''}
@@ -114,8 +118,8 @@ function AdminDashboard() {
               All Products
             </button>
           </div>
+
         </div>
-        <button className="sign-out-button" onClick={handleSignOut}>Sign Out</button>
       </header>
 
       <main className="admin-panel">
