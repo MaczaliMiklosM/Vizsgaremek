@@ -31,32 +31,33 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         final String authHeader = request.getHeader("Authorization");
-        final String jwtToken;
-        final String userEmail;
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ") || authHeader.length() <= 7) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("No Bearer token found in Authorization header");
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwtToken = authHeader.substring(7);
-        userEmail = jwtUtils.extractUsername(jwtToken);
+        String token = authHeader.substring(7);
+        System.out.println("Token received: " + token);  // Token értékének kiírása
 
-
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        try {
+            String userEmail = jwtUtils.extractUsername(token);
+            System.out.println("User email extracted: " + userEmail);  // Az email kiírása
             UserDetails userDetails = ourUserDetailsService.loadUserByUsername(userEmail);
 
-            if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+            if (jwtUtils.isTokenValid(token, userDetails)) {
+                // Token validálása
+                System.out.println("Token is valid.");
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
-                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                securityContext.setAuthentication(token);
-                SecurityContextHolder.setContext(securityContext);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                System.out.println("Invalid token detected.");  // Érvénytelen token esete
             }
+        } catch (Exception e) {
+            System.out.println("Error processing token: " + e.getMessage());
         }
         filterChain.doFilter(request, response);
     }

@@ -23,7 +23,7 @@ const Checkout = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    fetch('http://localhost:8080/api/adminuser/get-profile', {
+    fetch('/api/management/adminuser/get-profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -77,7 +77,7 @@ const Checkout = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:8080/api/orders/createOrder', {
+      const res = await fetch('/api/orders/createOrder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const Checkout = () => {
 
       // 🔁 Töröljük a megvásárolt termékeket a wishlistből is
       for (const item of cart) {
-        await fetch('http://localhost:8080/api/wishlist/removeWishlistItem', {
+        await fetch('/api/wishlist/removeWishlistItem', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

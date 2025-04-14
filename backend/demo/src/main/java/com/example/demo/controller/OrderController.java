@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
 

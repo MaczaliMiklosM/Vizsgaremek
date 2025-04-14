@@ -1,0 +1,122 @@
+.mybids-container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tabs {
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tab {
+  font-weight: bold;
+  font-size: 16px;
+  color: #555;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tab.active {
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 5px;
+}
+
+.bid-cards-wrapper,
+.uploaded-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bid-card-wrapper {
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.bid-product-card {
+  flex: 2;
+  background: #f0f4ff;
+  border-radius: 10px;
+  padding: 15px;
+  text-decoration: none;
+  color: #333;
+  transition: 0.3s;
+  min-width: 220px;
+}
+
+.bid-product-card:hover {
+  background: #e0e9ff;
+}
+
+.bid-info-card {
+  flex: 1;
+  min-width: 200px;
+  background: #eef2f8;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.bid-info-card p {
+  margin: 6px 0;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.no-bids {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+}
+
+.uploaded-products-section {
+  margin-top: 40px;
+}
+
+.uploaded-products-section h2 {
+  font-size: 22px;
+  color: #1f2937;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 6px;
+  text-transform: uppercase;
+}
+
+/* 🟦 Mobil reszponzív nézet */
+@media (max-width: 768px) {
+  .bid-card-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bid-product-card,
+  .bid-info-card {
+    width: 100%;
+    margin: 0;
+  }
+
+  .tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+}

@@ -21,15 +21,16 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/createProduct")
-    public ResponseEntity<String> createProduct(@RequestBody ProductSave productSave) {
-        Product product = productService.createProduct(productSave);
-        if (product != null) {
-            return new ResponseEntity<>("Product successfully saved", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("Something happened", HttpStatus.CONFLICT);
+    @PostMapping("/create")
+    public ResponseEntity<?> createProduct(@RequestBody ProductSave productSave) {
+        try {
+            Product product = productService.createProduct(productSave);
+            return ResponseEntity.status(HttpStatus.CREATED).body(product);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product could not be created: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/getProducts")
     public List<Product> getProducts(){
@@ -50,18 +51,22 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/approveProduct/{id}")
     public ResponseEntity<String> approveProduct(@PathVariable Integer id) {
-        Optional<Product> productOptional = productService.getProductOptional(id);
-
-        if (productOptional.isEmpty()) {
-            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+        try {
+            productService.approveProduct(id); // 👈 kiszervezve a service-be
+            return new ResponseEntity<>("Product approved successfully", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-
-        Product product = productOptional.get();
-        product.setStatus(Status.APPROVED);
-        productService.saveProduct(product);
-
-        return new ResponseEntity<>("Product approved successfully", HttpStatus.OK);
     }
+
+
+    @GetMapping("/by-user/{userId}")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public List<Product> getProductsByUserId(@PathVariable Integer userId) {
+        return productService.getProductsByUserId(userId);
+    }
+
+
 
 
 }

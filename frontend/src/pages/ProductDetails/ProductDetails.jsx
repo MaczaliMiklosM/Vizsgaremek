@@ -136,8 +136,9 @@ function ProductDetails() {
       setShowAccessDenied(true);
       return;
     }
-    navigate(`/bid/${id}`);
+    navigate(`/bid/${id}`);  // Itt navigálunk a licitálás oldalára
   };
+  
 
   if (!product) return <div>Loading...</div>;
 

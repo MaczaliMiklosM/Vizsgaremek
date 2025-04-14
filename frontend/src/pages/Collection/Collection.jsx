@@ -15,13 +15,13 @@ const Collection = () => {
     const token = localStorage.getItem('token');
     if (!token) return;
   
-    fetch('http://localhost:8080/api/adminuser/get-profile', {
+    fetch('/api/management/adminuser/get-profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(data => {
         const userId = data.user.id;
-        return fetch(`http://localhost:8080/collection/${userId}`, {
+        return fetch(`/api/collection/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

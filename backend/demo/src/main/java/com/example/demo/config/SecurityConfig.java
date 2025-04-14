@@ -29,7 +29,7 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/admin", "/api/**", "/products/getProducts", "/products/getProductById/{id}", "/products/createProduct", "/api/wishlist/**"};
+            "/api/test/**", "/admin", "/management/**", "/products/getProducts", "/products/getProductById/{id}", "/products/createProduct", "/api/wishlist/**"};
 
 
     @Autowired
@@ -50,15 +50,22 @@ public class SecurityConfig {
                                 "/products/getProducts", "/products/getProductById/**"
 
                         ).permitAll()
-                        .requestMatchers("/api/notifications/**").authenticated()
-                        .requestMatchers("/api/orders/**").hasAnyAuthority("USER", "ADMIN") // ⬅️ ADD THIS
+                        .requestMatchers("/notifications/**").authenticated()
+                        .requestMatchers("/orders/**").hasAnyAuthority("USER", "ADMIN") // ⬅️ ADD THIS
+                        .requestMatchers(WHITE_LIST_URL).permitAll()
+                        .requestMatchers("/wishlist/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/management/admin/update/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/products/getProductById/**").permitAll()
+                        .requestMatchers("/bids/place").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/bids/user/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/bids/received/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/products/by-user/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/products/create").hasAnyAuthority("USER", "ADMIN")
 
-                        .requestMatchers("/api/wishlist/**").hasAnyAuthority("USER", "ADMIN")
-                        .requestMatchers("/api/admin/update/**").hasAnyAuthority("USER", "ADMIN")
 
+                        //.requestMatchers("/bids/place").permitAll()
+                        .requestMatchers("/bids/product/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/admin/**", "/products/deleteProduct/**", "/products/approveProduct/**").hasAuthority("ADMIN")
-
-
                         .requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()
 

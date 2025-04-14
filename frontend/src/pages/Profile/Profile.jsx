@@ -25,7 +25,7 @@ const Profile = () => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    axios.get('http://localhost:8080/api/adminuser/get-profile', {
+    axios.get('/api/management/adminuser/get-profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(response => {
@@ -48,7 +48,7 @@ const Profile = () => {
     const token = localStorage.getItem('token');
     if (!user || !token) return;
 
-    axios.put(`http://localhost:8080/api/admin/update/${user.id}`, formData, {
+    axios.put(`/api/management/admin/update/${user.id}`, formData, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(response => {
@@ -82,8 +82,13 @@ const Profile = () => {
             </div>
 
             <div className="profile-section">
-              <h2><ChecklistIcon /> Your Own Products and Your Bids</h2>
+              <h2><ChecklistIcon /> Your Own Products</h2>
               <Link to="/myproducts" className="checkout-btn">Your Products</Link>
+            </div>
+
+            <div className="profile-section">
+              <h2><ChecklistIcon /> Your Bids</h2>
+              <Link to="/mybids" className="checkout-btn">Your Products</Link>
             </div>
 
             <div className="profile-section">

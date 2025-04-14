@@ -1,7 +1,7 @@
 package com.example.demo.enums;
 
-public enum ProductStatus {
+public enum BidStatus {
     PENDING,
-    APPROVED,
+    ACCEPTED,
     REJECTED
 }

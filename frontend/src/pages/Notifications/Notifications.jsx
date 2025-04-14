@@ -18,7 +18,7 @@ const Notifications = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:8080/api/notifications/my', {
+      const response = await axios.get('/api/notifications/my', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -73,7 +73,7 @@ const AuthModal = ({ onClose }) => {
       };
 
       try {
-        await axios.post('/api/api/auth/register', payload, {
+        await axios.post('/api/management/auth/register', payload, {
           headers: { 'Content-Type': 'application/json' },
         });
         alert('Registration successful! You can now sign in.');
@@ -84,7 +84,7 @@ const AuthModal = ({ onClose }) => {
       }
     } else {
       try {
-        const response = await axios.post('/api/api/auth/login', { email, password }, {
+        const response = await axios.post('/api/management/auth/login', { email, password }, {
           headers: { 'Content-Type': 'application/json' },
         });
 
@@ -96,7 +96,7 @@ const AuthModal = ({ onClose }) => {
 
         localStorage.setItem('token', token);
 
-        const profileResponse = await axios.get('/api/api/adminuser/get-profile', {
+        const profileResponse = await axios.get('/api/management/adminuser/get-profile', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

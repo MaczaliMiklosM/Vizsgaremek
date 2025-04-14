@@ -17,6 +17,7 @@ import MyProductsPage from './pages/MyProducts/MyProductsPage';
 import TermsPage from './pages/Terms/TermsPage';
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 import RequireAdmin from './components/Auth/RequireAdmin';
+import MyBidsPage from './pages/MyBidPage/MyBidsPage';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/collection" element={<Collection />} />
+        <Route path="/mybids" element={<MyBidsPage />} />
         <Route path="/basket" element={<Basket />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="/products" element={<ProductsPage />} />

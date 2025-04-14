@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/manag")
-public class UserManagmentController {
+@RequestMapping("/management")
+public class UserManagementController {
     private final UserManagementService userManagementService;
 
     @Autowired
     private UserManagementService RegisterRequest;
     private UserManagementService LoginRequest;
 
-    public UserManagmentController(UserManagementService userManagementService) {
+    public UserManagementController(UserManagementService userManagementService) {
         this.userManagementService = userManagementService;
     }
 

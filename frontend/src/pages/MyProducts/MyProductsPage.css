@@ -171,6 +171,15 @@ h2, h3 {
 .bid-history-list li {
   margin-bottom: 6px;
 }
+.approval-banner {
+  background-color: #f59e0b;
+  color: white;
+  padding: 4px 8px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
 
 /* Responsive Breakpoints */
 @media (max-width: 800px) {
