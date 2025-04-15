@@ -18,6 +18,7 @@ function ProductDetails() {
   const [showAccessDenied, setShowAccessDenied] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
   const [inBasket, setInBasket] = useState(false);
+  const [activeImage, setActiveImage] = useState(null);
 
   const isLoggedIn = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -29,6 +30,10 @@ function ProductDetails() {
         const response = await axios.get(`/api/products/getProductById/${id}`);
         const data = response.data;
         setProduct(data);
+
+        if (data.imageData) {
+          setActiveImage(data.imageData);
+        }
 
         if (isLoggedIn && user?.id) {
           const token = localStorage.getItem("token");
@@ -163,7 +168,36 @@ function ProductDetails() {
         <div className="product-content">
           <div className="product-images">
             <div className="main-image">
-              <img src={`data:image/jpeg;base64,${product.imageData}`} alt="Product" />
+              <img
+                src={`data:image/jpeg;base64,${activeImage}`}
+                alt="Product"
+              />
+            </div>
+            <div className="thumbnail-row">
+              {product.imageData && (
+                <img
+                  src={`data:image/jpeg;base64,${product.imageData}`}
+                  alt="Thumbnail 1"
+                  className={`thumbnail ${activeImage === product.imageData ? 'active' : ''}`}
+                  onClick={() => setActiveImage(product.imageData)}
+                />
+              )}
+              {product.imageData2 && (
+                <img
+                  src={`data:image/jpeg;base64,${product.imageData2}`}
+                  alt="Thumbnail 2"
+                  className={`thumbnail ${activeImage === product.imageData2 ? 'active' : ''}`}
+                  onClick={() => setActiveImage(product.imageData2)}
+                />
+              )}
+              {product.imageData3 && (
+                <img
+                  src={`data:image/jpeg;base64,${product.imageData3}`}
+                  alt="Thumbnail 3"
+                  className={`thumbnail ${activeImage === product.imageData3 ? 'active' : ''}`}
+                  onClick={() => setActiveImage(product.imageData3)}
+                />
+              )}
             </div>
           </div>
 

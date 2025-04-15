@@ -162,6 +162,34 @@
   margin-top: 10px;
 }
 
+/* ... a meglévő stílusok után fűzd hozzá az alábbit ... */
+
+.thumbnail-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.thumbnail-row img.thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.thumbnail-row img.thumbnail:hover {
+  transform: scale(1.05);
+  border-color: #60a5fa; /* hover kék */
+}
+
+.thumbnail-row img.thumbnail.active {
+  border-color: #2563eb; /* aktív: erősebb kék */
+  box-shadow: 0 0 0 2px #93c5fd;
+}
 
 @media (max-width: 1024px) {
   .product-actions button {

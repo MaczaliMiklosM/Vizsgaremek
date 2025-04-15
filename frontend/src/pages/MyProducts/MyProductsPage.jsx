@@ -11,10 +11,10 @@ function MyProductsPage() {
     name: "", description: "", price: "", brand: "", color: "", size: "",
     category: "", product_condition: "NEW", target_gender: "WOMAN"
   });
-  const [imageFile, setImageFile] = useState(null);
+
+  const [imageFiles, setImageFiles] = useState([null, null, null]);
   const [myProducts, setMyProducts] = useState([]);
   const [error, setError] = useState("");
-  const [sizeOptions, setSizeOptions] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -39,29 +39,91 @@ function MyProductsPage() {
     fetchMyProducts();
   }, [user.id]);
 
-  useEffect(() => {
-    switch (formData.category) {
-      case "sneaker":
-        setSizeOptions(Array.from({ length: 21 }, (_, i) => `${35 + i}`));
-        break;
-      case "bag":
-        setSizeOptions(["Small", "Medium", "Large"]);
-        break;
-      case "watch":
-        setSizeOptions([]);
-        break;
-      default:
-        setSizeOptions([]);
-    }
-  }, [formData.category]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
+  const handleFileChange = (index) => async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const resizedFile = await resizeImage(file, 508, 508);
+    const newFiles = [...imageFiles];
+    newFiles[index] = resizedFile;
+    setImageFiles(newFiles);
+  };
+
+  const resizeImage = (file, maxWidth, maxHeight) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width *= ratio;
+            height *= ratio;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            const resizedFile = new File([blob], file.name, { type: file.type });
+            resolve(resizedFile);
+          }, file.type);
+        };
+      };
+    });
+  };
+
+  const getSizePlaceholder = () => {
+    switch (formData.category) {
+      case "sneaker":
+        return "Recommended: EU size 35 - 45";
+      case "bag":
+        return "Recommended: Small / Medium / Large";
+      case "watch":
+        return "Recommended: 30mm - 50mm";
+      default:
+        return "Enter size";
+    }
+  };
+
+  const validateSize = () => {
+    const size = formData.size.trim();
+
+    if (!size) return "Size is required.";
+
+    switch (formData.category) {
+      case "sneaker":
+        const num = parseInt(size, 10);
+        if (isNaN(num) || num < 35 || num > 45) return "Sneaker size should be between 35 and 45.";
+        break;
+      case "watch":
+        const mm = parseInt(size, 10);
+        if (isNaN(mm) || mm < 30 || mm > 50) return "Watch size should be between 30mm and 50mm.";
+        break;
+      case "bag":
+        if (!["small", "medium", "large"].includes(size.toLowerCase())) {
+          return "Bag size must be: Small, Medium, or Large.";
+        }
+        break;
+    }
+
+    return "";
   };
 
   const handleSubmit = async (e) => {
@@ -71,13 +133,14 @@ function MyProductsPage() {
       product_condition, target_gender
     } = formData;
 
-    if (!name || !description || !price || !brand || !color || !size || !category || !imageFile) {
-      setError("Please fill out all required fields.");
+    if (!name || !description || !price || !brand || !color || !size || !category || imageFiles.some((file) => !file)) {
+      setError("Please fill out all required fields and upload 3 images.");
       return;
     }
 
-    if (category === "sneaker" && isNaN(size)) {
-      setError("Size must be a number for sneakers.");
+    const sizeValidation = validateSize();
+    if (sizeValidation) {
+      setError(sizeValidation);
       return;
     }
 
@@ -95,7 +158,10 @@ function MyProductsPage() {
       form.append("targetGender", target_gender.toUpperCase());
       form.append("uploaderId", user.id);
       form.append("status", "UNAPPROVED");
-      form.append("imageData", imageFile);
+
+      form.append("imageData", imageFiles[0]);
+      form.append("imageData2", imageFiles[1]);
+      form.append("imageData3", imageFiles[2]);
 
       await axios.post("/api/products/createProduct", form, {
         headers: {
@@ -109,7 +175,7 @@ function MyProductsPage() {
         name: "", description: "", price: "", brand: "", color: "", size: "", category: "",
         product_condition: "NEW", target_gender: "WOMAN"
       });
-      setImageFile(null);
+      setImageFiles([null, null, null]);
 
       const updated = await axios.get(`/api/products/by-user/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -162,21 +228,12 @@ function MyProductsPage() {
             </select>
 
             <label>Size</label>
-            {formData.category === "watch" ? (
-              <input
-                name="size"
-                placeholder="Size"
-                value={formData.size}
-                onChange={handleChange}
-              />
-            ) : (
-              <select name="size" value={formData.size} onChange={handleChange}>
-                <option value="">Select Size</option>
-                {sizeOptions.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-            )}
+            <input
+              name="size"
+              placeholder={getSizePlaceholder()}
+              value={formData.size}
+              onChange={handleChange}
+            />
 
             <label>Condition</label>
             <select name="product_condition" value={formData.product_condition} onChange={handleChange}>
@@ -188,10 +245,13 @@ function MyProductsPage() {
             <select name="target_gender" value={formData.target_gender} onChange={handleChange}>
               <option value="MAN">Man</option>
               <option value="WOMAN">Woman</option>
+              <option value="UNISEX">Unisex</option>
             </select>
 
-            <label>Upload Image</label>
-            <input type="file" name="imageFile" accept="image/*" onChange={handleFileChange} />
+            <label>Upload 3 Images (first will be thumbnail)</label>
+            <input type="file" accept="image/*" onChange={handleFileChange(0)} />
+            <input type="file" accept="image/*" onChange={handleFileChange(1)} />
+            <input type="file" accept="image/*" onChange={handleFileChange(2)} />
 
             <button type="submit">Upload Product</button>
           </form>

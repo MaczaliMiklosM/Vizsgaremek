@@ -20,9 +20,7 @@ const Collection = () => {
       .then(data => {
         const userId = data.user.id;
         return fetch(`/api/collection/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          headers: { Authorization: `Bearer ${token}` }
         });
       })
       .then(res => {
@@ -30,11 +28,12 @@ const Collection = () => {
         return res.json();
       })
       .then(data => {
+        console.log("✅ Collection data:", data);
         setCollection(data);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Failed to fetch collection:', err);
+        console.error('❌ Failed to fetch collection:', err);
         setLoading(false);
       });
   }, []);
@@ -46,6 +45,7 @@ const Collection = () => {
       <div className="container">
         <Header />
         <Navbar />
+
         <div className="collection-container">
           <h1>My Collection</h1>
 
@@ -57,7 +57,11 @@ const Collection = () => {
                 collection.map((item) => (
                   <div key={item.id} className="collection-item">
                     <img
-                      src={`data:image/jpeg;base64,${item.productImageData}`}
+                      src={
+                        item.productImage
+                          ? `data:image/jpeg;base64,${item.productImage}`
+                          : ''
+                      }
                       alt={item.productName}
                       className="collection-image"
                     />
@@ -73,12 +77,13 @@ const Collection = () => {
             </div>
           )}
 
-          {!loading && (
+          {!loading && collection.length > 0 && (
             <div className="collection-total">
               Total Collection Value: ${totalValue}
             </div>
           )}
         </div>
+
         <Footer />
       </div>
     </RequireAuth>

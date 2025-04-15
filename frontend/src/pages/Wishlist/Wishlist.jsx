@@ -30,19 +30,29 @@ const Favorites = () => {
         },
       });
 
+      console.log("✅ Raw wishlist response:", response.data);
+
       const backendList = response.data
         .filter(item => item.status?.toLowerCase() !== "sold")
-        .map(item => ({
-          id: item.id,
-          name: item.productName,
-          price: item.productPrice + " $",
-          imageData: item.productImageData,
-          productId: item.productId,
-        }));
+        .map(item => {
+          console.log("🛠️ Processed wishlist item:", {
+            id: item.id,
+            name: item.productName,
+            image: item.productImage?.substring(0, 30) + '...' // Rövidített
+          });
+
+          return {
+            id: item.id,
+            name: item.productName,
+            price: item.productPrice + " $",
+            imageData: item.productImage, // ✅ Ez jön a backendről
+            productId: item.productId,
+          };
+        });
 
       setFavorites(backendList);
     } catch (error) {
-      console.error("Failed to load wishlist", error);
+      console.error("❌ Failed to load wishlist", error);
     }
   };
 

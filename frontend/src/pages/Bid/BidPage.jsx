@@ -15,6 +15,7 @@ function BidPage() {
   const [message, setMessage] = useState("");
   const [hasActiveBid, setHasActiveBid] = useState(false);
   const [isOwnProduct, setIsOwnProduct] = useState(false);
+  const [activeImage, setActiveImage] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
@@ -24,6 +25,10 @@ function BidPage() {
       try {
         const productRes = await axios.get(`/api/products/getProductById/${id}`);
         setProduct(productRes.data);
+
+        if (productRes.data.imageData) {
+          setActiveImage(productRes.data.imageData);
+        }
 
         if (user && productRes.data.user.id === user.id) {
           setIsOwnProduct(true);
@@ -114,11 +119,40 @@ function BidPage() {
         <div className="bid-container">
           <div className="bid-card">
             <h2>{product.name}</h2>
+
             <img
-              src={`data:image/jpeg;base64,${product.imageData}`}
+              src={`data:image/jpeg;base64,${activeImage}`}
               alt={product.name}
               className="bid-image"
             />
+
+            <div className="bid-thumbnails">
+              {product.imageData && (
+                <img
+                  src={`data:image/jpeg;base64,${product.imageData}`}
+                  className={`bid-thumb ${activeImage === product.imageData ? 'active' : ''}`}
+                  alt="thumb1"
+                  onClick={() => setActiveImage(product.imageData)}
+                />
+              )}
+              {product.imageData2 && (
+                <img
+                  src={`data:image/jpeg;base64,${product.imageData2}`}
+                  className={`bid-thumb ${activeImage === product.imageData2 ? 'active' : ''}`}
+                  alt="thumb2"
+                  onClick={() => setActiveImage(product.imageData2)}
+                />
+              )}
+              {product.imageData3 && (
+                <img
+                  src={`data:image/jpeg;base64,${product.imageData3}`}
+                  className={`bid-thumb ${activeImage === product.imageData3 ? 'active' : ''}`}
+                  alt="thumb3"
+                  onClick={() => setActiveImage(product.imageData3)}
+                />
+              )}
+            </div>
+
             <p><strong>Starting Price:</strong> ${product.price}</p>
             <p><strong>Minimum Bid:</strong> ${product.price / 2}</p>
             <p><strong>Highest Bid:</strong> ${highestBid}</p>
@@ -158,7 +192,7 @@ function BidPage() {
                 <ul>
                   {bids.map((b, i) => (
                     <li key={i}>
-                       ${b.amount} ({b.status})
+                      ${b.amount} ({b.status})
                       <span className="time"> — {formatDate(b.time)}</span>
                     </li>
                   ))}

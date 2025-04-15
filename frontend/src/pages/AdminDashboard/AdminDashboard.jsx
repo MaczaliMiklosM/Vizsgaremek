@@ -7,6 +7,7 @@ function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeImages, setActiveImages] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +20,12 @@ function AdminDashboard() {
           }
         });
         setProducts(res.data);
+
+        const defaultImages = {};
+        res.data.forEach(p => {
+          if (p.imageData) defaultImages[p.id] = p.imageData;
+        });
+        setActiveImages(defaultImages);
       } catch (err) {
         console.error("❌ Failed to fetch products", err);
       }
@@ -138,10 +145,36 @@ function AdminDashboard() {
           <div key={product.id} className="product-row">
             <div className="product-image-column">
               <img
-                src={`data:image/jpeg;base64,${product.imageData}`}
-                alt="Thumbnail"
+                src={`data:image/jpeg;base64,${activeImages[product.id]}`}
+                alt="Main"
                 className="main-image"
               />
+              <div className="thumbnail-row">
+                {product.imageData && (
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageData}`}
+                    className={`thumbnail ${activeImages[product.id] === product.imageData ? 'selected-thumbnail' : ''}`}
+                    onClick={() => setActiveImages(prev => ({ ...prev, [product.id]: product.imageData }))}
+                    alt="thumb1"
+                  />
+                )}
+                {product.imageData2 && (
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageData2}`}
+                    className={`thumbnail ${activeImages[product.id] === product.imageData2 ? 'selected-thumbnail' : ''}`}
+                    onClick={() => setActiveImages(prev => ({ ...prev, [product.id]: product.imageData2 }))}
+                    alt="thumb2"
+                  />
+                )}
+                {product.imageData3 && (
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageData3}`}
+                    className={`thumbnail ${activeImages[product.id] === product.imageData3 ? 'selected-thumbnail' : ''}`}
+                    onClick={() => setActiveImages(prev => ({ ...prev, [product.id]: product.imageData3 }))}
+                    alt="thumb3"
+                  />
+                )}
+              </div>
             </div>
 
             <div className="product-details">

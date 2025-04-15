@@ -15,7 +15,6 @@ const Basket = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const basketKey = `basket_${user?.id}`;
 
-  // Betöltés + storage esemény figyelése
   useEffect(() => {
     const loadCart = () => {
       const stored = JSON.parse(localStorage.getItem(basketKey)) || [];
@@ -24,7 +23,6 @@ const Basket = () => {
 
     loadCart();
     window.addEventListener('storage', loadCart);
-
     return () => {
       window.removeEventListener('storage', loadCart);
     };
@@ -62,8 +60,10 @@ const Basket = () => {
       <div className="container" style={{ overflowX: 'hidden' }}>
         <Header />
         <Navbar />
+
         <div className="basket-container">
           <h1>Your Basket</h1>
+
           {cart.length > 0 ? (
             <div className="basket-list">
               {cart.map((item, index) => (
@@ -89,6 +89,7 @@ const Basket = () => {
                   </button>
                 </div>
               ))}
+
               <div className="summary">
                 <h2>Total: ${getTotal().toLocaleString()}</h2>
                 <h3>Order Summary</h3>
@@ -101,6 +102,7 @@ const Basket = () => {
             <p className="empty-basket">Your basket is empty.</p>
           )}
         </div>
+
         <Footer />
         <ToastContainer position="bottom-right" autoClose={3000} closeButton={false} />
       </div>

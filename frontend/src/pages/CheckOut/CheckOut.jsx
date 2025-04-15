@@ -96,7 +96,6 @@ const Checkout = () => {
 
       if (!res.ok) throw new Error('Order failed');
 
-      // Remove from wishlist
       for (const item of cart) {
         await fetch('/api/wishlist/removeWishlistItem', {
           method: 'DELETE',
@@ -107,7 +106,6 @@ const Checkout = () => {
           body: JSON.stringify({ userId: userData.id, productId: item.id })
         });
 
-        // Add to collection
         await fetch('/api/collections/add', {
           method: 'POST',
           headers: {

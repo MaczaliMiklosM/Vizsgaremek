@@ -101,6 +101,15 @@
   padding-bottom: 6px;
   text-transform: uppercase;
 }
+.bid-thumbnail {
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
 
 /* 🟦 Mobil reszponzív nézet */
 @media (max-width: 768px) {

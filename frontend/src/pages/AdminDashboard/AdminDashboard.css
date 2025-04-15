@@ -4,20 +4,20 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-.admin-dashboard .admin-header {
+.admin-header {
   background-color: #ffffff;
   padding: 20px 40px;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.admin-dashboard .admin-header-center {
+.admin-header-center {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
 }
 
-.admin-dashboard .admin-logo h1 {
+.admin-logo h1 {
   font-size: 28px;
   font-weight: 700;
   color: #1f2937;
@@ -25,14 +25,14 @@
   text-align: center;
 }
 
-.admin-dashboard .admin-tabs {
+.admin-tabs {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.admin-dashboard .admin-tabs button {
+.admin-tabs button {
   background-color: #e5e7eb;
   border: none;
   padding: 8px 16px;
@@ -43,12 +43,12 @@
   color: #1f2937;
 }
 
-.admin-dashboard .admin-tabs .active-tab {
+.admin-tabs .active-tab {
   background-color: #2563eb;
   color: white;
 }
 
-.admin-dashboard .sign-out-button {
+.sign-out-button {
   background-color: #ef4444;
   color: white;
   padding: 10px 20px;
@@ -62,60 +62,42 @@
   align-self: center;
 }
 
-.admin-dashboard .sign-out-button:hover {
+.sign-out-button:hover {
   background-color: #dc2626;
 }
 
-.admin-dashboard .admin-panel {
+.admin-panel {
   padding: 40px 24px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.admin-dashboard .admin-panel h2 {
+.admin-panel h2 {
   font-size: 22px;
   color: #1f2937;
   margin-bottom: 24px;
 }
 
-.admin-dashboard .product-row {
+.product-row {
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   padding: 24px;
   margin-bottom: 30px;
   display: flex;
+  flex-wrap: wrap;
   gap: 24px;
-  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
-.admin-dashboard .product-image-column {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.admin-dashboard .thumbnail-row {
+.product-image-column {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  flex: 1;
 }
 
-.admin-dashboard .thumbnail-row img {
-  width: 70px;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  object-fit: contain;
-  transition: border 0.2s ease;
-}
-
-.admin-dashboard .thumbnail-row img.selected-thumbnail {
-  border-color: #2563eb;
-}
-
-.admin-dashboard .main-image {
+.main-image {
   width: 360px;
   max-height: 360px;
   border-radius: 10px;
@@ -124,35 +106,60 @@
   border: 1px solid #e5e7eb;
 }
 
-/* DETAILS */
-.admin-dashboard .product-details {
+.thumbnail-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.thumbnail-row img.thumbnail {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.thumbnail-row img.thumbnail:hover {
+  transform: scale(1.05);
+  border-color: #60a5fa;
+}
+
+.thumbnail-row img.thumbnail.selected-thumbnail {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #93c5fd;
+}
+
+.product-details {
   flex: 1;
   min-width: 260px;
 }
 
-.admin-dashboard .product-details h3 {
+.product-details h3 {
   font-size: 20px;
   margin-bottom: 8px;
   color: #1f2937;
 }
 
-.admin-dashboard .product-details p {
+.product-details p {
   font-size: 15px;
   color: #374151;
   margin: 4px 0;
 }
 
-/* ACTION BUTTONS */
-.admin-dashboard .product-actions {
+.product-actions {
   margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.admin-dashboard .approve-btn,
-.admin-dashboard .unapprove-btn,
-.admin-dashboard .delete-btn {
+.approve-btn,
+.unapprove-btn,
+.delete-btn {
   padding: 10px 16px;
   border: none;
   border-radius: 6px;
@@ -162,78 +169,77 @@
   color: white;
 }
 
-.admin-dashboard .approve-btn {
+.approve-btn {
   background-color: #2563eb;
 }
 
-.admin-dashboard .approve-btn:hover {
+.approve-btn:hover {
   background-color: #1d4ed8;
 }
 
-.admin-dashboard .unapprove-btn {
+.unapprove-btn {
   background-color: #6b7280;
 }
 
-.admin-dashboard .unapprove-btn:hover {
+.unapprove-btn:hover {
   background-color: #4b5563;
 }
 
-.admin-dashboard .delete-btn {
+.delete-btn {
   background-color: #ef4444;
 }
 
-.admin-dashboard .delete-btn:hover {
+.delete-btn:hover {
   background-color: #dc2626;
 }
 
-/* 📱 MOBILE VIEW */
+/* 📱 Mobile View */
 @media (max-width: 768px) {
-  .admin-dashboard .admin-header {
+  .admin-header {
     padding: 20px;
   }
 
-  .admin-dashboard .admin-header-center {
+  .admin-header-center {
     align-items: center;
     text-align: center;
   }
 
-  .admin-dashboard .admin-tabs {
+  .admin-tabs {
     justify-content: center;
     width: 40%;
     min-width: 100px;
   }
 
-  .admin-dashboard .sign-out-button {
+  .sign-out-button {
     margin-top: 8px;
     margin-bottom: 4px;
   }
 
-  .admin-dashboard .product-row {
+  .product-row {
     flex-direction: column;
     align-items: center;
   }
 
-  .admin-dashboard .thumbnail-row {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .admin-dashboard .main-image {
+  .main-image {
     width: 100%;
     max-width: 100%;
   }
 
-  .admin-dashboard .product-image-column {
+  .product-image-column {
     flex-direction: column;
     align-items: center;
   }
 
-  .admin-dashboard .product-actions {
+  .thumbnail-row {
+    justify-content: center;
+  }
+
+  .product-actions {
     justify-content: center;
     width: 100%;
   }
 
-  .admin-dashboard .product-details {
+  .product-details {
     text-align: center;
   }
 }
