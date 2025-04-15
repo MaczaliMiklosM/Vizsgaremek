@@ -103,6 +103,7 @@
 }
 
 
+
 .auth-button {
     min-width: 80px;
     display: inline-block;
@@ -117,11 +118,21 @@
     border: none;
     font-weight: bold;
 }
-
-/* Mobile view adjustments */
+.logo {
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .logo:focus,
+  .logo:active {
+    outline: none !important;
+    background: none !important;
+    box-shadow: none !important;
+  }
+  
 @media (max-width: 1024px) {
     .profile-links {
-        display: none; /* Hide desktop profile links */
+        display: none; 
     }
 
     .logo-container {
@@ -190,8 +201,7 @@
         font-weight: bold;
     }
 
-    /* Specific for Sign In/Out button to match the rest */
     .sidebar-menu .nav-link {
-        margin-bottom: 20px; /* Ensure spacing */
+        margin-bottom: 20px; 
     }
 }

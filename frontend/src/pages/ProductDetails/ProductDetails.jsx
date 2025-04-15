@@ -21,6 +21,7 @@ function ProductDetails() {
 
   const isLoggedIn = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
+  const basketKey = `basket_${user?.id}`;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,6 +32,8 @@ function ProductDetails() {
 
         if (isLoggedIn && user?.id) {
           const token = localStorage.getItem("token");
+
+          // Check wishlist
           const wishlistRes = await axios.get(`/api/wishlist/${user.id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
@@ -38,8 +41,9 @@ function ProductDetails() {
           setInWishlist(wishExists);
         }
 
-        const basket = JSON.parse(localStorage.getItem("basket")) || [];
-        const basketExists = basket.some(p => p.id === data.id);
+        // Check basket
+        const basket = JSON.parse(localStorage.getItem(basketKey)) || [];
+        const basketExists = basket.some(p => Number(p.id) === Number(data.id));
         setInBasket(basketExists);
       } catch (error) {
         console.error('Failed to load product:', error);
@@ -47,7 +51,7 @@ function ProductDetails() {
     };
 
     fetchProduct();
-  }, [id, isLoggedIn, user?.id]);
+  }, [id, isLoggedIn, user?.id, basketKey]);
 
   const handleShare = () => {
     const link = `${window.location.origin}/#/product-details/${id}`;
@@ -61,8 +65,8 @@ function ProductDetails() {
       return;
     }
 
-    const basket = JSON.parse(localStorage.getItem("basket")) || [];
-    const exists = basket.find(p => p.id === product.id);
+    const basket = JSON.parse(localStorage.getItem(basketKey)) || [];
+    const exists = basket.find(p => Number(p.id) === Number(product.id));
 
     if (exists) {
       toast.info("Already in basket");
@@ -79,7 +83,7 @@ function ProductDetails() {
       size: product.size || 'N/A'
     });
 
-    localStorage.setItem("basket", JSON.stringify(basket));
+    localStorage.setItem(basketKey, JSON.stringify(basket));
     setInBasket(true);
     toast.success("🛒 Added to basket!");
   };
@@ -112,7 +116,7 @@ function ProductDetails() {
         }];
         localStorage.setItem("wishlist", JSON.stringify(updated));
         setInWishlist(true);
-        toast.success("Added to wishlist!");
+        toast.success("❤️ Added to wishlist!");
       } else {
         toast.error("Failed to add to wishlist.");
       }

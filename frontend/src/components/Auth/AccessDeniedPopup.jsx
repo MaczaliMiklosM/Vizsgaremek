@@ -3,12 +3,10 @@ import './RequireAuth.css';
 
 const AccessDeniedPopup = ({ onClose }) => {
   useEffect(() => {
-    // Scroll tiltás
     document.body.classList.add('no-scroll');
     document.documentElement.classList.add('no-scroll');
 
     return () => {
-      // Scroll visszaengedés
       document.body.classList.remove('no-scroll');
       document.documentElement.classList.remove('no-scroll');
     };

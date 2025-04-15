@@ -11,7 +11,7 @@ function normalizeProducts(products) {
   return products.map(p => ({
     ...p,
     category: p.category?.toLowerCase(),
-    gender: (p.gender || p.targetGender)?.toLowerCase(),
+    gender: (p.targetGender || '').toLowerCase(),
     brand: p.brand?.toLowerCase().replace(/\s/g, ''),
     color: p.color?.toLowerCase(),
     productCondition: p.productCondition?.toLowerCase().replace(/\s/g, '')
@@ -94,33 +94,28 @@ function ProductsPage() {
   const visibleProducts = normalizedProducts.filter(p => p.status?.toLowerCase() !== 'sold');
 
   const filteredProducts = visibleProducts.filter((product) => {
-    const matchBrand =
-      filters.brands.length === 0 || filters.brands.includes(product.brand);
-
-    const matchColor =
-      filters.colors.length === 0 || filters.colors.includes(product.color);
-
-    const matchCondition =
-      filters.productCondition.length === 0 ||
-      filters.productCondition.includes(product.productCondition?.toLowerCase().replace(/\s/g, ''));
-
+    const matchBrand = filters.brands.length === 0 || filters.brands.includes(product.brand);
+    const matchColor = filters.colors.length === 0 || filters.colors.includes(product.color);
+    const matchCondition = filters.productCondition.length === 0 || filters.productCondition.includes(product.productCondition);
     const matchPrice = product.price <= filters.price;
 
+    const search = searchTerm.trim().toLowerCase();
     const matchSearch =
-      !searchTerm ||
-      product.name.toLowerCase().includes(searchTerm) ||
-      product.gender?.toLowerCase().includes(searchTerm) ||
-      product.category?.toLowerCase().includes(searchTerm);
+      !search ||
+      product.name.toLowerCase().includes(search) ||
+      product.category?.toLowerCase().includes(search) ||
+      (search === "man" && product.gender === "man") ||
+      (search === "woman" && product.gender === "woman");
 
     return matchBrand && matchColor && matchCondition && matchPrice && matchSearch;
   });
 
   const getCategoryLabel = () => {
-    if (searchTerm.includes("bag")) return "bags";
-    if (searchTerm.includes("watch")) return "watches";
-    if (searchTerm.includes("sneaker")) return "sneakers";
-    if (searchTerm.includes("woman")) return "women products";
-    if (searchTerm.includes("man")) return "men products";
+    if (searchTerm === "bag") return "bags";
+    if (searchTerm === "watch") return "watches";
+    if (searchTerm === "sneaker") return "sneakers";
+    if (searchTerm === "woman") return "women products";
+    if (searchTerm === "man") return "men products";
     return "products";
   };
 

@@ -46,11 +46,11 @@ const Footer = () => {
             <div className="footer-section products">
               <h6>Products</h6>
               <ul>
-                <li onClick={() => navigate("/products/women")} className="footer-link">Women</li>
-                <li onClick={() => navigate("/products/men")} className="footer-link">Men</li>
-                <li onClick={() => navigate("/products/sneakers")} className="footer-link">Sneakers</li>
-                <li onClick={() => navigate("/products/bags")} className="footer-link">Bags</li>
-                <li onClick={() => navigate("/products/watches")} className="footer-link">Watches</li>
+                <li onClick={() => navigate("/products?search=woman")} className="footer-link">Women</li>
+                <li onClick={() => navigate("/products?search=man")} className="footer-link">Men</li>
+                <li onClick={() => navigate("/products?search=sneaker")} className="footer-link">Sneakers</li>
+                <li onClick={() => navigate("/products?search=bag")} className="footer-link">Bags</li>
+                <li onClick={() => navigate("/products?search=watch")} className="footer-link">Watches</li>
               </ul>
             </div>
 
@@ -69,7 +69,7 @@ const Footer = () => {
               <h6>Contact</h6>
               <ul>
                 <li><Home /> 4400, Nyíregyháza Városmajor u. 4.</li>
-                <li><Email /> support@luxcollect.com</li>
+                <li><Email /> support@luxshop.com</li>
                 <li><Phone /> +36 1 234 5678</li>
               </ul>
             </div>

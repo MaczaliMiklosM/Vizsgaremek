@@ -16,11 +16,19 @@ const Checkout = () => {
     name: '', email: '', address: '', country: '', phone: '', paymentMethod: 'cash'
   });
   const [user, setUser] = useState(null);
-  const cart = JSON.parse(localStorage.getItem('basket')) || [];
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (!token || !userData) return;
+
+    setUser(userData);
+
+    const basketKey = `basket_${userData.id}`;
+    const basket = JSON.parse(localStorage.getItem(basketKey)) || [];
+    setCart(basket);
+
     fetch('/api/management/adminuser/get-profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -62,10 +70,12 @@ const Checkout = () => {
 
   const handlePayment = async () => {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const basketKey = `basket_${userData.id}`;
+    if (!token || !userData) return;
 
     const requestBody = {
-      userId: user.id,
+      userId: userData.id,
       shippingAddress: formData.address,
       items: cart.map(item => ({
         productId: item.id,
@@ -86,6 +96,7 @@ const Checkout = () => {
 
       if (!res.ok) throw new Error('Order failed');
 
+      // Remove from wishlist
       for (const item of cart) {
         await fetch('/api/wishlist/removeWishlistItem', {
           method: 'DELETE',
@@ -93,12 +104,25 @@ const Checkout = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify({ userId: user.id, productId: item.id })
+          body: JSON.stringify({ userId: userData.id, productId: item.id })
+        });
+
+        // Add to collection
+        await fetch('/api/collections/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userId: userData.id,
+            productId: item.id
+          })
         });
       }
 
-      localStorage.removeItem('basket');
-      alert('Order placed! Redirecting to Collection...');
+      localStorage.removeItem(basketKey);
+      alert('Order placed! Redirecting to your Collection...');
       navigate('/collection');
     } catch (err) {
       console.error('Order error:', err);
@@ -112,7 +136,7 @@ const Checkout = () => {
         return (
           <div className="checkout-step">
             <h2>Shipping Information</h2>
-            {[ 'name', 'email', 'address', 'country', 'phone' ].map((field) => (
+            {['name', 'email', 'address', 'country', 'phone'].map((field) => (
               <input
                 key={field}
                 name={field}

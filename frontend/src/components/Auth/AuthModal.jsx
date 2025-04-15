@@ -79,7 +79,7 @@ const AuthModal = ({ onClose }) => {
         alert('Registration successful! You can now sign in.');
         setIsSignUp(false);
       } catch (error) {
-        console.error("❌ Registration error:", error);
+        console.error(" Registration error:", error);
         alert('Registration failed: ' + (error.response?.data?.message || error.message));
       }
     } else {
@@ -119,7 +119,7 @@ const AuthModal = ({ onClose }) => {
           window.location.hash = '#/';
         }
       } catch (error) {
-        console.error("❌ Login error:", error);
+        console.error(" Login error:", error);
         alert('Login failed: ' + (error.response?.data?.message || error.message));
       }
     }
@@ -134,7 +134,7 @@ const AuthModal = ({ onClose }) => {
               <span className="prefix">{formData.dialCode || '+XX'}</span>
               <input
                 type="text"
-                placeholder="Phone Number (without country code)"
+                placeholder="Phone Number"
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}

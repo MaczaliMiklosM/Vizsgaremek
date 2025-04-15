@@ -42,7 +42,7 @@ function BidPage() {
         setHasActiveBid(alreadyBid);
 
       } catch (error) {
-        console.error("❌ Error fetching product or bids:", error);
+        console.error(" Error fetching product or bids:", error);
         setMessage("Failed to load product or bids.");
       }
     };
@@ -158,7 +158,7 @@ function BidPage() {
                 <ul>
                   {bids.map((b, i) => (
                     <li key={i}>
-                      💰 ${b.amount} ({b.status})
+                       ${b.amount} ({b.status})
                       <span className="time"> — {formatDate(b.time)}</span>
                     </li>
                   ))}

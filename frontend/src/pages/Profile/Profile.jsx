@@ -33,7 +33,7 @@ const Profile = () => {
       setFormData(response.data.user);
     })
     .catch(error => {
-      console.error('❌ Failed to fetch user profile:', error);
+      console.error(' Failed to fetch user profile:', error);
       if (error.response?.status === 403) {
         alert("Access denied.");
       }
@@ -57,7 +57,7 @@ const Profile = () => {
       alert('Profile updated successfully');
     })
     .catch(error => {
-      console.error('❌ Failed to update profile:', error);
+      console.error(' Failed to update profile:', error);
       alert('Failed to update profile.');
     });
   };
@@ -88,7 +88,7 @@ const Profile = () => {
 
             <div className="profile-section">
               <h2><ChecklistIcon /> Your Bids</h2>
-              <Link to="/mybids" className="checkout-btn">Your Products</Link>
+              <Link to="/mybids" className="checkout-btn">Your Bids</Link>
             </div>
 
             <div className="profile-section">

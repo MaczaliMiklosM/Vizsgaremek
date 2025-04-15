@@ -12,17 +12,29 @@ import './Basket.css';
 
 const Basket = () => {
   const [cart, setCart] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const basketKey = `basket_${user?.id}`;
 
+  // Betöltés + storage esemény figyelése
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('basket')) || [];
-    setCart(stored);
-  }, []);
+    const loadCart = () => {
+      const stored = JSON.parse(localStorage.getItem(basketKey)) || [];
+      setCart(stored);
+    };
+
+    loadCart();
+    window.addEventListener('storage', loadCart);
+
+    return () => {
+      window.removeEventListener('storage', loadCart);
+    };
+  }, [basketKey]);
 
   const removeFromCart = (id) => {
-    const removedItem = cart.find(item => item.id === id);
-    const updated = cart.filter(item => item.id !== id);
+    const removedItem = cart.find(item => Number(item.id) === Number(id));
+    const updated = cart.filter(item => Number(item.id) !== Number(id));
     setCart(updated);
-    localStorage.setItem('basket', JSON.stringify(updated));
+    localStorage.setItem(basketKey, JSON.stringify(updated));
 
     toast.success(
       <div className="toast-message">
@@ -32,7 +44,7 @@ const Basket = () => {
           onClick={() => {
             const restored = [...updated, removedItem];
             setCart(restored);
-            localStorage.setItem('basket', JSON.stringify(restored));
+            localStorage.setItem(basketKey, JSON.stringify(restored));
             toast.dismiss();
           }}
         >
@@ -65,9 +77,7 @@ const Basket = () => {
                     <h2>{item.name}</h2>
                     <p className="basket-price">${item.price.toLocaleString()}</p>
                     {item.size && (
-                      <p>
-                        <strong>Size:</strong> {item.size}
-                      </p>
+                      <p><strong>Size:</strong> {item.size}</p>
                     )}
                     {item.stock === 1 && (
                       <p className="low-stock">Hurry! Last piece available.</p>
@@ -92,8 +102,8 @@ const Basket = () => {
           )}
         </div>
         <Footer />
+        <ToastContainer position="bottom-right" autoClose={3000} closeButton={false} />
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} closeButton={false} />
     </RequireAuth>
   );
 };

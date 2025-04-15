@@ -19,7 +19,7 @@ function Navbar() {
       <Link to="/products?search=bag">Bags</Link>
       <Link to="/products?search=sneaker">Sneakers</Link>
       <Link to="/products?search=watch">Watches</Link>
-      <Link to="/products">All Products</Link> {/* Ez nem ad át category paramétert */}
+      <Link to="/products">All Products</Link>
       </div>
     </nav>
   );

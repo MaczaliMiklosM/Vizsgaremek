@@ -64,16 +64,16 @@ function Header() {
 
   const toggleMenu = () => {
     setMenuOpen(true);
-    setSearchOpen(false); // zárja be a keresőt is
+    setSearchOpen(false);
   };
 
   return (
     <header className="header" style={{ height: '100px' }}>
       <div className="header-top" style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
         {isMobile && (
-          <button className="menu-toggle" onClick={toggleMenu} style={{ background: 'none', border: 'none' }}>
+          <div className="menu-toggle" onClick={toggleMenu} style={{ background: 'none', border: 'none' }}>
             <MenuIcon fontSize="large" />
-          </button>
+          </div>
         )}
 
         {!isMobile || !searchOpen ? (
@@ -124,11 +124,11 @@ function Header() {
 
       {isMobile && (
         <div ref={menuRef} className={`sidebar-menu ${menuOpen ? "active" : ""}`}>
-          <button className="close-menu" onClick={() => setMenuOpen(false)}>
+          <div className="close-menu" onClick={() => setMenuOpen(false)}>
             <span className="logo" onClick={() => navigate("/")}>
               <img src="/Images/logo_images/luxshop_logo.png" alt="LuxShop" />
             </span>
-          </button>
+          </div>
           {isLoggedIn ? (
             <span onClick={handleLogout} className="nav-link">Sign Out</span>
           ) : (

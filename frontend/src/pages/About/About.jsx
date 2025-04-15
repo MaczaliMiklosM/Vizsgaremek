@@ -16,7 +16,7 @@ const About = () => {
         <section className="about-section">
           <h2><InfoIcon /> Who Are We?</h2>
           <p>
-            <strong>LuxCollect</strong> is a premium online marketplace dedicated to exclusive, limited-edition, and collectible luxury products.
+            <strong>LuxShop</strong> is a premium online marketplace dedicated to exclusive, limited-edition, and collectible luxury products.
             Our goal is to provide our customers with unique and high-value items while ensuring a secure and transparent trading experience.
           </p>
         </section>
@@ -39,7 +39,7 @@ const About = () => {
 
         <section className="about-section">
           <h2><PhoneIcon /> Contact</h2>
-          <p><strong>Email:</strong> support@luxcollect.com</p>
+          <p><strong>Email:</strong> support@luxshop.com</p>
           <p><strong>Phone:</strong> +36 1 234 5678</p>
           <p><strong>Address:</strong> 4400, Nyíregyháza Városmajor u. 4.</p>
         </section>

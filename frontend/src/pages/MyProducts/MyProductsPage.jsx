@@ -14,6 +14,8 @@ function MyProductsPage() {
   const [imageFile, setImageFile] = useState(null);
   const [myProducts, setMyProducts] = useState([]);
   const [error, setError] = useState("");
+  const [sizeOptions, setSizeOptions] = useState([]);
+
   const user = JSON.parse(localStorage.getItem("user"));
 
   const allowedBrands = ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Dior", "Louis Vuitton"];
@@ -37,6 +39,22 @@ function MyProductsPage() {
     fetchMyProducts();
   }, [user.id]);
 
+  useEffect(() => {
+    switch (formData.category) {
+      case "sneaker":
+        setSizeOptions(Array.from({ length: 21 }, (_, i) => `${35 + i}`));
+        break;
+      case "bag":
+        setSizeOptions(["Small", "Medium", "Large"]);
+        break;
+      case "watch":
+        setSizeOptions([]);
+        break;
+      default:
+        setSizeOptions([]);
+    }
+  }, [formData.category]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -55,6 +73,11 @@ function MyProductsPage() {
 
     if (!name || !description || !price || !brand || !color || !size || !category || !imageFile) {
       setError("Please fill out all required fields.");
+      return;
+    }
+
+    if (category === "sneaker" && isNaN(size)) {
+      setError("Size must be a number for sneakers.");
       return;
     }
 
@@ -138,7 +161,22 @@ function MyProductsPage() {
               <option value="watch">Watch</option>
             </select>
 
-            <input name="size" placeholder="Size" value={formData.size} onChange={handleChange} />
+            <label>Size</label>
+            {formData.category === "watch" ? (
+              <input
+                name="size"
+                placeholder="Size"
+                value={formData.size}
+                onChange={handleChange}
+              />
+            ) : (
+              <select name="size" value={formData.size} onChange={handleChange}>
+                <option value="">Select Size</option>
+                {sizeOptions.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            )}
 
             <label>Condition</label>
             <select name="product_condition" value={formData.product_condition} onChange={handleChange}>
@@ -166,10 +204,10 @@ function MyProductsPage() {
               myProducts.map((p) => (
                 <div key={p.id} className="product-card">
                   {p.status === "SOLD" && (
-                    <div className="sold-banner">💰 SOLD</div>
+                    <div className="sold-banner"> SOLD</div>
                   )}
                   {p.status === "UNAPPROVED" && (
-                    <div className="approval-banner">⏳ Waiting for Approval</div>
+                    <div className="approval-banner"> Waiting for Approval</div>
                   )}
                   <img src={`data:image/jpeg;base64,${p.imageData}`} alt={p.name} />
                   <h4>{p.name}</h4>
