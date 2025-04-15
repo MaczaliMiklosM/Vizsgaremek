@@ -14,6 +14,10 @@ function BidPage() {
   const [bidInput, setBidInput] = useState("");
   const [message, setMessage] = useState("");
   const [hasActiveBid, setHasActiveBid] = useState(false);
+  const [isOwnProduct, setIsOwnProduct] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -21,9 +25,8 @@ function BidPage() {
         const productRes = await axios.get(`/api/products/getProductById/${id}`);
         setProduct(productRes.data);
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setMessage("⚠️ No token found");
+        if (user && productRes.data.user.id === user.id) {
+          setIsOwnProduct(true);
           return;
         }
 
@@ -35,7 +38,6 @@ function BidPage() {
 
         setBids(bidsRes.data);
 
-        const user = JSON.parse(localStorage.getItem("user"));
         const alreadyBid = bidsRes.data.some(
           (bid) => bid.userId === user?.id && bid.status === "PENDING"
         );
@@ -43,11 +45,7 @@ function BidPage() {
 
       } catch (error) {
         console.error("❌ Error fetching product or bids:", error);
-        if (error.response?.status === 403) {
-          setMessage("Access denied. Token might be invalid.");
-        } else {
-          setMessage("Failed to load product or bids.");
-        }
+        setMessage("Failed to load product or bids.");
       }
     };
 
@@ -56,7 +54,7 @@ function BidPage() {
 
   const highestBid = bids.length > 0
     ? Math.max(...bids.map(b => b.amount))
-    : product?.startingPrice || 0;
+    : product?.price / 2 || 0;
 
   const handleBidSubmit = async () => {
     const newBid = parseFloat(bidInput);
@@ -65,7 +63,6 @@ function BidPage() {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       setMessage("You must be logged in to place a bid.");
       return;
@@ -78,14 +75,12 @@ function BidPage() {
     };
 
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post("/api/bids/place", payload, {
+      await axios.post("/api/bids/place", payload, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
-      // Refresh bids
       const bidsRes = await axios.get(`/api/bids/product/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -130,27 +125,33 @@ function BidPage() {
               alt={product.name}
               className="bid-image"
             />
-            <p><strong>Starting Price:</strong> ${product.startingPrice}</p>
+            <p><strong>Starting Price:</strong> ${product.price}</p>
+            <p><strong>Minimum Bid:</strong> ${product.price / 2}</p>
             <p><strong>Highest Bid:</strong> ${highestBid}</p>
 
-            <input
-              type="number"
-              value={bidInput}
-              onChange={(e) => setBidInput(e.target.value)}
-              placeholder={`Enter more than $${highestBid}`}
-              className="bid-input"
-              disabled={hasActiveBid}
-            />
-            <button
-              className="bid-button"
-              onClick={handleBidSubmit}
-              disabled={hasActiveBid}
-            >
-              Place Bid
-            </button>
-
-            {hasActiveBid && (
-              <p className="bid-message">You already have an active bid for this product. Wait for a response.</p>
+            {isOwnProduct ? (
+              <p className="bid-message">You cannot bid on your own product.</p>
+            ) : (
+              <>
+                <input
+                  type="number"
+                  value={bidInput}
+                  onChange={(e) => setBidInput(e.target.value)}
+                  placeholder={`Enter more than $${highestBid}`}
+                  className="bid-input"
+                  disabled={hasActiveBid}
+                />
+                <button
+                  className="bid-button"
+                  onClick={handleBidSubmit}
+                  disabled={hasActiveBid}
+                >
+                  Place Bid
+                </button>
+                {hasActiveBid && (
+                  <p className="bid-message">You already have an active bid for this product.</p>
+                )}
+              </>
             )}
 
             {message && <p className="bid-message">{message}</p>}
@@ -163,8 +164,8 @@ function BidPage() {
                 <ul>
                   {bids.map((b, i) => (
                     <li key={i}>
-                      💰 ${b.amount}{" "}
-                      <span className="time">({formatDate(b.time)})</span>
+                      💰 ${b.amount} ({b.status})
+                      <span className="time"> — {formatDate(b.time)}</span>
                     </li>
                   ))}
                 </ul>

@@ -42,7 +42,7 @@ function MyBidsPage() {
       await axios.post(`/api/bids/accept/${bidId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      await fetchBids(); // 🔄 frissítsd újra az adatokat
+      await fetchBids();
     } catch (err) {
       console.error("Accept failed", err);
     }
@@ -53,7 +53,7 @@ function MyBidsPage() {
       await axios.post(`/api/bids/reject/${bidId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      await fetchBids(); // 🔄 frissítsd újra az adatokat
+      await fetchBids();
     } catch (err) {
       console.error("Reject failed", err);
     }
@@ -96,7 +96,7 @@ function MyBidsPage() {
             filteredBids.map(bid => (
               <div className="bid-card-wrapper" key={bid.id}>
                 <Link to={`/product-details/${bid.productId}`} className="bid-product-card">
-                  <h3>Product #{bid.productId}</h3>
+                  <h3>{bid.productName}</h3>
                   <p>Go to product</p>
                 </Link>
                 <div className="bid-info-card">
@@ -118,8 +118,8 @@ function MyBidsPage() {
               receivedBids.map(bid => (
                 <div className="bid-card-wrapper" key={bid.id}>
                   <Link to={`/product-details/${bid.productId}`} className="bid-product-card">
-                    <h3>Product #{bid.productId}</h3>
-                    <p>Bidder: User #{bid.userId}</p>
+                    <h3>{bid.productName}</h3>
+                    <p>Bidder: {bid.userName}</p>
                   </Link>
                   <div className="bid-info-card">
                     <p><strong>Amount:</strong> ${bid.amount}</p>

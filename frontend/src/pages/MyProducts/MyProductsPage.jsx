@@ -163,38 +163,39 @@ function MyProductsPage() {
 
             <button type="submit">Upload Product</button>
           </form>
-
-          <h3>Your Uploaded Products</h3>
-          <div className="product-list">
-            {myProducts.length === 0 ? (
-              <p className="empty-text">No products uploaded yet.</p>
-            ) : (
-              myProducts.map((p) => (
-                <div key={p.id} className="product-card">
-                {p.status === "UNAPPROVED" && (
-                  <div className="approval-banner">⏳ Waiting for Approval</div>
-                )}
-                <img src={p.imageUrl} alt={p.name} />
-                <h4>{p.name}</h4>
-                <p>{p.description}</p>
-                <p><strong>Price:</strong> ${p.price}</p>
-                <p><strong>Brand:</strong> {p.brand}</p>
-                <p><strong>Color:</strong> {p.color}</p>
-                <p><strong>Size:</strong> {p.size}</p>
-                <p><strong>Category:</strong> {p.category}</p>
-                <p><strong>Condition:</strong> {p.productCondition}</p>
-                <p><strong>Gender:</strong> {p.targetGender}</p>
-              </div>
-              
-              ))
-            )}
-          </div>
-        </div>
-
-        <Footer />
+<h3>Your Uploaded Products</h3>
+<div className="product-list">
+  {myProducts.length === 0 ? (
+    <p className="empty-text">No products uploaded yet.</p>
+  ) : (
+    myProducts.map((p) => (
+      <div key={p.id} className="product-card">
+        {p.status === "SOLD" && (
+          <div className="sold-banner">💰 SOLD</div>
+        )}
+        {p.status === "UNAPPROVED" && (
+          <div className="approval-banner">⏳ Waiting for Approval</div>
+        )}
+        <img src={p.imageUrl} alt={p.name} />
+        <h4>{p.name}</h4>
+        <p>{p.description}</p>
+        <p><strong>Price:</strong> ${p.price}</p>
+        <p><strong>Brand:</strong> {p.brand}</p>
+        <p><strong>Color:</strong> {p.color}</p>
+        <p><strong>Size:</strong> {p.size}</p>
+        <p><strong>Category:</strong> {p.category}</p>
+        <p><strong>Condition:</strong> {p.productCondition}</p>
+        <p><strong>Gender:</strong> {p.targetGender}</p>
       </div>
-    </RequireAuth>
-  );
+    ))
+  )}
+</div>
+</div>
+
+<Footer />
+</div>
+</RequireAuth>
+);
 }
 
 export default MyProductsPage;

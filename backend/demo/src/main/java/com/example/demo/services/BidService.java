@@ -42,6 +42,11 @@ public class BidService {
             throw new Exception("Product already sold");
         }
 
+        double minimumBid = product.getPrice() / 2;
+        if (amount < minimumBid) {
+            throw new Exception("Bid must be at least half of the product price ($" + minimumBid + ")");
+        }
+
         if (amount >= product.getPrice()) {
             throw new Exception("Offer is equal or greater than price. You should buy it directly.");
         }
@@ -71,7 +76,10 @@ public class BidService {
                         bid.getTime(),
                         bid.getStatus().name(),
                         bid.getProduct().getId(),
-                        bid.getBidder().getId()))
+                        bid.getBidder().getId(),
+                        bid.getProduct().getName(),
+                        bid.getBidder().getFull_name()
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -83,38 +91,54 @@ public class BidService {
                         bid.getTime(),
                         bid.getStatus().name(),
                         bid.getProduct().getId(),
-                        bid.getBidder().getId()))
+                        bid.getBidder().getId(),
+                        bid.getProduct().getName(),
+                        bid.getBidder().getFull_name()
+                ))
                 .collect(Collectors.toList());
     }
 
     public void acceptBid(Integer bidId) {
-        Bid bid = bidRepository.findById(bidId).orElseThrow();
-        Product product = bid.getProduct();
+        Bid acceptedBid = bidRepository.findById(bidId)
+                .orElseThrow(() -> new RuntimeException("Bid not found"));
 
-        bid.setStatus(BidStatus.ACCEPTED);
+        Product product = acceptedBid.getProduct();
+
+        // ✅ Elfogadott ajánlat státusz beállítása
+        acceptedBid.setStatus(BidStatus.ACCEPTED);
         product.setStatus(Status.SOLD);
+        bidRepository.save(acceptedBid);
 
-        // ✅ Add to collection
+        // ✅ Hozzáadás a kollekcióhoz
         Collection collection = Collection.builder()
-                .user(bid.getBidder())
+                .user(acceptedBid.getBidder())
                 .product(product)
                 .build();
         collectionRepository.save(collection);
 
-        bidRepository.save(bid);
-        productRepository.save(product);
+        // ✅ Az összes többi ajánlat erre a termékre: REJECTED
+        List<Bid> otherBids = bidRepository.findByProductId(product.getId());
+        for (Bid other : otherBids) {
+            if (!other.getId().equals(bidId)) {
+                other.setStatus(BidStatus.REJECTED);
+            }
+        }
+        bidRepository.saveAll(otherBids);
 
-        // ✅ Notify bidder
+        // ✅ Értesítések
         notificationService.sendNotification(
-                bid.getBidder(),
-                "Your bid of $" + bid.getAmount() + " on '" + product.getName() + "' was accepted!"
+                acceptedBid.getBidder(),
+                "Your bid has been accepted for product: " + product.getName() + " ($" + acceptedBid.getAmount() + ")"
         );
 
-        // ✅ Notify uploader (optional)
-        notificationService.sendNotification(
-                product.getUser(),
-                "You accepted a bid of $" + bid.getAmount() + " for your product: " + product.getName()
-        );
+        for (Bid other : otherBids) {
+            if (!other.getId().equals(bidId)) {
+                notificationService.sendNotification(
+                        other.getBidder(),
+                        "Your bid has been rejected for product: " + product.getName()
+                );
+            }
+        }
     }
 
     public void rejectBid(Integer bidId) {

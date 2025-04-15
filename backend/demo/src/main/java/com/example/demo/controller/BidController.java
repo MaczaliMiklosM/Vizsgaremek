@@ -77,11 +77,20 @@ public class BidController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BidDTO>> getBidsByUserId(@PathVariable Integer userId) {
         List<BidDTO> bidDTOs = bidService.findByUserId(userId).stream()
-                .map(bid -> new BidDTO(bid.getId(), bid.getAmount(), bid.getTime(),
-                        bid.getStatus().name(), bid.getProduct().getId(), bid.getBidder().getId()))
+                .map(bid -> new BidDTO(
+                        bid.getId(),
+                        bid.getAmount(),
+                        bid.getTime(),
+                        bid.getStatus().name(),
+                        bid.getProduct().getId(),
+                        bid.getBidder().getId(),
+                        bid.getProduct().getName(),
+                        bid.getBidder().getFull_name()
+                ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(bidDTOs);
     }
+
 
 
     @GetMapping("/received/{uploaderId}")
@@ -89,6 +98,8 @@ public class BidController {
         List<BidDTO> bidDTOs = bidService.findReceivedBids(uploaderId);
         return ResponseEntity.ok(bidDTOs);
     }
+
+
 
 
 
