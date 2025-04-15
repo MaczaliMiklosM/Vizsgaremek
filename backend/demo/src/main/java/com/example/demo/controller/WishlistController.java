@@ -78,6 +78,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -103,7 +104,7 @@ public class WishlistController {
                     product.getId(),
                     product.getName(),
                     product.getPrice(),
-                    product.getImageUrl()
+                    product.getImageData() != null ? Base64.getEncoder().encodeToString(product.getImageData()) : null
             ));
         }
         return response;

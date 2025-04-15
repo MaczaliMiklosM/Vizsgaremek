@@ -11,5 +11,5 @@ public class CollectionRead {
     private Integer productId;
     private String productName;
     private Double productPrice;
-    private String productImageUrl;
+    private String productImageData; // Base64 encoded image
 }

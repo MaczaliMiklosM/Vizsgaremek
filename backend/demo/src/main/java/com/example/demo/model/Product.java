@@ -30,8 +30,10 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Lob
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+
 
     @Column(name = "brand")
     private String brand;

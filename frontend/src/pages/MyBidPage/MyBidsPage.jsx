@@ -96,6 +96,11 @@ function MyBidsPage() {
             filteredBids.map(bid => (
               <div className="bid-card-wrapper" key={bid.id}>
                 <Link to={`/product-details/${bid.productId}`} className="bid-product-card">
+                  <img
+                    src={`data:image/jpeg;base64,${bid.productImageData}`}
+                    alt={bid.productName}
+                    className="bid-thumbnail"
+                  />
                   <h3>{bid.productName}</h3>
                   <p>Go to product</p>
                 </Link>
@@ -118,6 +123,11 @@ function MyBidsPage() {
               receivedBids.map(bid => (
                 <div className="bid-card-wrapper" key={bid.id}>
                   <Link to={`/product-details/${bid.productId}`} className="bid-product-card">
+                    <img
+                      src={`data:image/jpeg;base64,${bid.productImageData}`}
+                      alt={bid.productName}
+                      className="bid-thumbnail"
+                    />
                     <h3>{bid.productName}</h3>
                     <p>Bidder: {bid.userName}</p>
                   </Link>

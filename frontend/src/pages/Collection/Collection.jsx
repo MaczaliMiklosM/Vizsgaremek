@@ -1,5 +1,3 @@
-// ✅ Frissített Collection.jsx – backendből tölti be a kollekciót
-
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
@@ -14,7 +12,7 @@ const Collection = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
-  
+
     fetch('/api/management/adminuser/get-profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -40,7 +38,6 @@ const Collection = () => {
         setLoading(false);
       });
   }, []);
-  
 
   const totalValue = collection.reduce((total, item) => total + item.productPrice, 0);
 
@@ -60,11 +57,10 @@ const Collection = () => {
                 collection.map((item) => (
                   <div key={item.id} className="collection-item">
                     <img
-  src={`/Images/product_images/${item.productImageUrl?.split(',')[0]}`}
-  alt={item.productName}
-  className="collection-image"
-/>
-
+                      src={`data:image/jpeg;base64,${item.productImageData}`}
+                      alt={item.productName}
+                      className="collection-image"
+                    />
                     <div className="collection-details">
                       <h2>{item.productName}</h2>
                       <p className="collection-price">${item.productPrice}</p>

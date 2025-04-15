@@ -31,9 +31,7 @@ function BidPage() {
         }
 
         const bidsRes = await axios.get(`/api/bids/product/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` }
         });
 
         setBids(bidsRes.data);
@@ -76,15 +74,11 @@ function BidPage() {
 
     try {
       await axios.post("/api/bids/place", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       const bidsRes = await axios.get(`/api/bids/product/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setBids(bidsRes.data);
 
@@ -121,7 +115,7 @@ function BidPage() {
           <div className="bid-card">
             <h2>{product.name}</h2>
             <img
-              src={`/Images/product_images/${product.imageUrl?.split(",")[0]}`}
+              src={`data:image/jpeg;base64,${product.imageData}`}
               alt={product.name}
               className="bid-image"
             />

@@ -21,51 +21,45 @@ function Main() {
       const today = new Date().toISOString().split("T")[0];
       const stored = localStorage.getItem("featuredProducts");
       const storedDate = localStorage.getItem("featuredProductsDate");
-  
+
       try {
-        // 🔍 1. Ellenőrizzük a cache-t, ha van
         if (stored && storedDate === today) {
           const cached = JSON.parse(stored);
-  
-          // 🔄 Lekérjük a legfrissebb adatokat ezekhez a termék ID-khez
+
           const productIds = cached.map(p => p.id);
           const res = await axios.get("/api/products/getProducts");
           const all = res.data;
-  
-          // Ellenőrizd, hogy cache-ben lévő termékek között van-e SOLD
+
           const updatedList = all.filter(p =>
             productIds.includes(p.id) && p.status?.toLowerCase() !== 'sold'
           );
-  
+
           if (updatedList.length === 12) {
             setRandomProducts(updatedList);
             return;
           } else {
-            // 🔁 Cache nem érvényes
             localStorage.removeItem("featuredProducts");
             localStorage.removeItem("featuredProductsDate");
           }
         }
-  
-        // ✅ Új lekérés, ha nincs cache, vagy nem volt megfelelő
+
         const res = await axios.get("/api/products/getProducts");
         const allProducts = res.data.filter(p => p.status?.toLowerCase() !== 'sold');
-  
+
         const shuffled = allProducts.sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, 12);
-  
+
         setRandomProducts(selected);
         localStorage.setItem("featuredProducts", JSON.stringify(selected));
         localStorage.setItem("featuredProductsDate", today);
-  
+
       } catch (err) {
         console.error("❌ Failed to fetch featured products:", err);
       }
     };
-  
+
     fetchProducts();
   }, []);
-  
 
   return (
     <div>
@@ -100,24 +94,20 @@ function Main() {
 
           <section className="popular-brands grid-2-rows">
             {randomProducts.length > 0 ? (
-              randomProducts.map(product => {
-                const firstImage = product.imageUrl?.split(",")[0]?.trim();
-                const imagePath = firstImage?.startsWith("http") || firstImage?.startsWith("/Images")
-                  ? firstImage
-                  : `/Images/product_images/${firstImage}`;
-
-                return (
-                  <Link key={product.id} to={`/product-details/${product.id}`} className="card-link">
-                    <div className="card">
-                      <img src={imagePath} alt={product.name} />
-                      <div className="details">
-                        <div className="brand">{product.brand}</div>
-                        <div className="price">{product.price} $</div>
-                      </div>
+              randomProducts.map(product => (
+                <Link key={product.id} to={`/product-details/${product.id}`} className="card-link">
+                  <div className="card">
+                    <img
+                      src={`data:image/jpeg;base64,${product.imageData}`}
+                      alt={product.name}
+                    />
+                    <div className="details">
+                      <div className="brand">{product.brand}</div>
+                      <div className="price">{product.price} $</div>
                     </div>
-                  </Link>
-                );
-              })
+                  </div>
+                </Link>
+              ))
             ) : (
               <p>Loading featured products...</p>
             )}

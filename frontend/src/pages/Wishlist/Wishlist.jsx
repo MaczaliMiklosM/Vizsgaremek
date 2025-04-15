@@ -36,7 +36,7 @@ const Favorites = () => {
           id: item.id,
           name: item.productName,
           price: item.productPrice + " $",
-          image: `/Images/product_images/${item.productImageUrl?.split(',')[0]}`,
+          imageData: item.productImageData,
           productId: item.productId,
         }));
 
@@ -110,10 +110,9 @@ const Favorites = () => {
                 <div key={product.id} className="favorite-item">
                   <Link to={`/product-details/${product.productId}`} className="favorite-item-link">
                     <img
-                      src={product.image}
+                      src={`data:image/jpeg;base64,${product.imageData}`}
                       alt={product.name}
                       className="favorite-image"
-                      onError={(e) => { e.target.onerror = null; e.target.src = '/Images/placeholder.jpg'; }}
                     />
                     <div className="favorite-details">
                       <h2>{product.name}</h2>

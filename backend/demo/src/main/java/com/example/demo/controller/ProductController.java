@@ -21,8 +21,8 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@RequestBody ProductSave productSave) {
+    @PostMapping(value = "/createProduct", consumes = "multipart/form-data")
+    public ResponseEntity<?> createProduct(@ModelAttribute ProductSave productSave) {
         try {
             Product product = productService.createProduct(productSave);
             return ResponseEntity.status(HttpStatus.CREATED).body(product);
@@ -30,6 +30,8 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product could not be created: " + e.getMessage());
         }
     }
+
+
 
 
     @GetMapping("/getProducts")

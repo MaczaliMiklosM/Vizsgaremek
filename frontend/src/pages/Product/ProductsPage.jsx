@@ -1,4 +1,3 @@
-// módosítások: category + gender eltávolítva, helyette productCondition filter bevezetve
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import axios from "axios";
@@ -124,7 +123,6 @@ function ProductsPage() {
     if (searchTerm.includes("man")) return "men products";
     return "products";
   };
-  
 
   return (
     <div>
@@ -154,26 +152,22 @@ function ProductsPage() {
           </div>
 
           <section className="products-grid">
-            {filteredProducts.map((product) => {
-              const firstImage = product.imageUrl?.split(',')[0];
-              const imagePath = `/Images/product_images/${firstImage}`;
-              return (
-                <Link
-                  to={`/product-details/${product.id}`}
-                  key={product.id}
-                  className="card-link"
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
-                  <div className="product-card">
-                    <img src={imagePath} alt={product.name} />
-                    <div className="details">
-                      <div className="name">{product.name}</div>
-                      <div className="price">{product.price} $</div>
-                    </div>
+            {filteredProducts.map((product) => (
+              <Link
+                to={`/product-details/${product.id}`}
+                key={product.id}
+                className="card-link"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <div className="product-card">
+                  <img src={`data:image/jpeg;base64,${product.imageData}`} alt={product.name} />
+                  <div className="details">
+                    <div className="name">{product.name}</div>
+                    <div className="price">{product.price} $</div>
                   </div>
-                </Link>
-              );
-            })}
+                </div>
+              </Link>
+            ))}
             {filteredProducts.length === 0 && <p>No products match your filters.</p>}
           </section>
         </main>

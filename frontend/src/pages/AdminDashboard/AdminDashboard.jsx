@@ -6,7 +6,6 @@ import axios from 'axios';
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
-  const [selectedImage, setSelectedImage] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
@@ -99,7 +98,6 @@ function AdminDashboard() {
         <div className="admin-header-center">
           <div className="admin-logo">
             <h1>LuxShop Administrator Panel</h1>
-            
           </div>
           <button className="sign-out-button" onClick={handleSignOut}>
             Sign Out
@@ -118,7 +116,6 @@ function AdminDashboard() {
               All Products
             </button>
           </div>
-
         </div>
       </header>
 
@@ -140,20 +137,9 @@ function AdminDashboard() {
         {filteredProducts.map(product => (
           <div key={product.id} className="product-row">
             <div className="product-image-column">
-              <div className="thumbnail-row">
-                {(product.imageUrl?.split(',') || []).map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={`/Images/product_images/${img}`}
-                    alt={`Thumbnail ${idx + 1}`}
-                    className={selectedImage[product.id] === img ? 'selected-thumbnail' : ''}
-                    onClick={() => setSelectedImage(prev => ({ ...prev, [product.id]: img }))}
-                  />
-                ))}
-              </div>
               <img
-                src={`/Images/product_images/${selectedImage[product.id] || product.imageUrl?.split(',')[0]}`}
-                alt="Main View"
+                src={`data:image/jpeg;base64,${product.imageData}`}
+                alt="Thumbnail"
                 className="main-image"
               />
             </div>

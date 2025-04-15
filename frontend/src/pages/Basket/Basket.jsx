@@ -56,7 +56,11 @@ const Basket = () => {
             <div className="basket-list">
               {cart.map((item, index) => (
                 <div key={`${item.id}-${index}`} className="basket-item">
-                  <img src={item.image} alt={item.name} className="basket-image" />
+                  <img
+                    src={`data:image/jpeg;base64,${item.imageData}`}
+                    alt={item.name}
+                    className="basket-image"
+                  />
                   <div className="basket-details">
                     <h2>{item.name}</h2>
                     <p className="basket-price">${item.price.toLocaleString()}</p>

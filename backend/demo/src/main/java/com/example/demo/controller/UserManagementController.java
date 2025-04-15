@@ -60,8 +60,5 @@ public class UserManagementController {
     }
 
 
-    @DeleteMapping("/admin/delete/{userId}")
-    public ResponseEntity<ReqRes> deleteUser(@PathVariable Integer userId) {
-        return ResponseEntity.ok(userManagementService.deleteUser(userId));
-    }
+
 }

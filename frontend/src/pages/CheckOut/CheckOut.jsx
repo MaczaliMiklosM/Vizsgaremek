@@ -1,5 +1,3 @@
-// ✅ Módosított Checkout.js - backend-alapú rendelés, collection frissítés frontend nélkül
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
@@ -88,7 +86,6 @@ const Checkout = () => {
 
       if (!res.ok) throw new Error('Order failed');
 
-      // 🔁 Töröljük a megvásárolt termékeket a wishlistből is
       for (const item of cart) {
         await fetch('/api/wishlist/removeWishlistItem', {
           method: 'DELETE',
@@ -152,7 +149,10 @@ const Checkout = () => {
               <div className="basket-items">
                 {cart.map((item) => (
                   <div key={item.id} className="basket-item">
-                    <img src={item.image} alt={item.name} />
+                    <img
+                      src={`data:image/jpeg;base64,${item.imageData}`}
+                      alt={item.name}
+                    />
                     <div>
                       <h4>{item.name}</h4>
                       <p>Price: ${item.price}</p>

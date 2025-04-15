@@ -1,7 +1,7 @@
-package com.example.demo.enums;
+    package com.example.demo.enums;
 
-public enum TargetGender {
-    MAN,
-    WOMAN,
-}
+    public enum TargetGender {
+        MAN,
+        WOMAN,
+    }
 

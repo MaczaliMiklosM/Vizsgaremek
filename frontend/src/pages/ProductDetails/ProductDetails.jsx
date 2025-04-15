@@ -15,7 +15,6 @@ function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  const [selectedImage, setSelectedImage] = useState('');
   const [showAccessDenied, setShowAccessDenied] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
   const [inBasket, setInBasket] = useState(false);
@@ -30,12 +29,8 @@ function ProductDetails() {
         const data = response.data;
         setProduct(data);
 
-        const baseImages = data.imageUrl?.split(',') || [];
-        setSelectedImage(`/Images/product_images/${baseImages[0]}`);
-
         if (isLoggedIn && user?.id) {
           const token = localStorage.getItem("token");
-
           const wishlistRes = await axios.get(`/api/wishlist/${user.id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
@@ -53,10 +48,6 @@ function ProductDetails() {
 
     fetchProduct();
   }, [id, isLoggedIn, user?.id]);
-
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
-  };
 
   const handleShare = () => {
     const link = `${window.location.origin}/#/product-details/${id}`;
@@ -82,7 +73,7 @@ function ProductDetails() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: `/Images/product_images/${product.imageUrl?.split(',')[0]}`,
+      imageData: product.imageData,
       quantity: 1,
       stock: 2,
       size: product.size || 'N/A'
@@ -136,9 +127,8 @@ function ProductDetails() {
       setShowAccessDenied(true);
       return;
     }
-    navigate(`/bid/${id}`);  // Itt navigálunk a licitálás oldalára
+    navigate(`/bid/${id}`);
   };
-  
 
   if (!product) return <div>Loading...</div>;
 
@@ -147,19 +137,13 @@ function ProductDetails() {
       <div className="container">
         <Header />
         <Navbar />
-        <div style={{
-          textAlign: "center",
-          padding: "100px 20px",
-          fontSize: "1.5rem"
-        }}>
+        <div style={{ textAlign: "center", padding: "100px 20px", fontSize: "1.5rem" }}>
           <p>🚫 <strong>The requested product is no longer available.</strong></p>
         </div>
         <Footer />
       </div>
     );
   }
-
-  const imageList = product.imageUrl?.split(',') || [];
 
   return (
     <div className="container">
@@ -175,17 +159,7 @@ function ProductDetails() {
         <div className="product-content">
           <div className="product-images">
             <div className="main-image">
-              <img src={selectedImage} alt="Product" />
-            </div>
-            <div className="image-thumbnails">
-              {imageList.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={`/Images/product_images/${img.trim()}`}
-                  alt={`Thumbnail ${idx + 1}`}
-                  onClick={() => handleImageClick(`/Images/product_images/${img.trim()}`)}
-                />
-              ))}
+              <img src={`data:image/jpeg;base64,${product.imageData}`} alt="Product" />
             </div>
           </div>
 
@@ -227,12 +201,7 @@ function ProductDetails() {
 
       {showAccessDenied && <AccessDeniedPopup onClose={() => setShowAccessDenied(false)} />}
       <Footer />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeButton={false}
-      />
+      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} closeButton={false} />
     </div>
   );
 }

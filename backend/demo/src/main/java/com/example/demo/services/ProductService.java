@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,24 +53,30 @@ public class ProductService {
         product.setName(productSave.getName());
         product.setDescription(productSave.getDescription());
         product.setPrice(productSave.getPrice());
-        product.setImageUrl(productSave.getImageUrl());
         product.setBrand(productSave.getBrand());
         product.setColor(productSave.getColor());
         product.setSize(productSave.getSize());
         product.setProductCondition(productSave.getProductCondition());
-        product.setUploadDate(productSave.getUploadDate());
+        product.setUploadDate(LocalDateTime.now());
         product.setCategory(productSave.getCategory());
         product.setTargetGender(productSave.getTargetGender());
-        product.setStatus(Status.UNAPPROVED); // ⏳ default állapot
+        product.setStatus(Status.UNAPPROVED);
 
         Optional<User> userOptional = userRepository.findById(productSave.getUploaderId());
         if (userOptional.isPresent()) {
             User uploader = userOptional.get();
             product.setUser(uploader);
 
+            try {
+                if (productSave.getImageData() != null && !productSave.getImageData().isEmpty()) {
+                    product.setImageData(productSave.getImageData().getBytes());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             Product savedProduct = productRepository.save(product);
 
-            // ✅ Értesítés küldése feltöltés után
             notificationService.sendNotification(
                     uploader,
                     "Upload successful! Your product \"" + savedProduct.getName() + "\" is now awaiting admin approval."
@@ -75,7 +84,6 @@ public class ProductService {
 
             return savedProduct;
         }
-
         return null;
     }
 
