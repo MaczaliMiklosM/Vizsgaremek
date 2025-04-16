@@ -8,6 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import AuthModal from '../Auth/AuthModal';
 import AccessDeniedPopup from '../Auth/AccessDeniedPopup';
+import axios from 'axios';
 import './Header.css';
 
 function Header() {
@@ -17,6 +18,9 @@ function Header() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showAccessDenied, setShowAccessDenied] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const inputRef = useRef(null);
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
@@ -54,10 +58,46 @@ function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get('/api/products/getProducts');
+        setAllProducts(res.data.products || res.data);
+      } catch (err) {
+        console.error("Failed to fetch products for search", err);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    if (searchOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchOpen]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value.trim() === "") {
+      setSuggestions([]);
+      return;
+    }
+
+    const filtered = allProducts.filter(product =>
+      product.name.toLowerCase().includes(value.toLowerCase()) &&
+      product.status !== 'SOLD'
+    ).slice(0, 5);
+
+    setSuggestions(filtered);
+  };
+
   const handleSearchSubmit = (e) => {
     if (e.key === 'Enter' && searchTerm.trim() !== '') {
       navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
       setSearchTerm('');
+      setSuggestions([]);
       if (isMobile) setSearchOpen(false);
     }
   };
@@ -85,19 +125,39 @@ function Header() {
         ) : null}
 
         {!isMobile || searchOpen ? (
-          <div className="search-container search-active" style={{ flexGrow: 1 }}>
+          <div className="search-container search-active" style={{ flexGrow: 1, position: 'relative' }}>
             <input
+              ref={inputRef}
               type="text"
               className="search-input"
               placeholder="Search..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
               onKeyDown={handleSearchSubmit}
             />
             {isMobile && (
               <button className="close-search" onClick={() => setSearchOpen(false)}>
                 <CloseIcon />
               </button>
+            )}
+
+            {searchTerm && (
+              <ul className="search-suggestions">
+                {suggestions.length === 0 ? (
+                  <li className="no-result">No results found.</li>
+                ) : (
+                  suggestions.map((product) => (
+                    <li key={product.id} onClick={() => {
+                      navigate(`/product-details/${product.id}`);
+                      setSearchTerm('');
+                      setSuggestions([]);
+                    }}>
+                      <img src={`data:image/jpeg;base64,${product.imageData}`} alt={product.name} />
+                      <span>{product.name}</span>
+                    </li>
+                  ))
+                )}
+              </ul>
             )}
           </div>
         ) : null}

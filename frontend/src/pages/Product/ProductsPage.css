@@ -121,6 +121,37 @@
   background-color: #1d4ed8;
 }
 
+
+.no-results {
+  font-size: 18px;
+  color: #6b7280;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; /* vagy amennyit szeretnél */
+  margin: 0 auto;
+  grid-column: 1 / -1; /* ha grid-ben vagy */
+}
+
+
+
+
+.reset-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.reset-btn:hover {
+  background-color: #1d4ed8;
+}
+
 /* Mobil és tableten reszponzív oszlopszám */
 @media (max-width: 1450px) {
   .products-grid {

@@ -10,7 +10,8 @@ import "./MyBidsPage.css";
 function MyBidsPage() {
   const [bids, setBids] = useState([]);
   const [receivedBids, setReceivedBids] = useState([]);
-  const [activeTab, setActiveTab] = useState("active");
+  const [activeTab, setActiveTab] = useState("active"); // own bids
+  const [receivedTab, setReceivedTab] = useState("active"); // received bids
   const [error, setError] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -61,9 +62,14 @@ function MyBidsPage() {
 
   const normalizeStatus = (status) => (status || "").toUpperCase();
 
-  const filteredBids = bids.filter(bid => {
+  const filteredOwnBids = bids.filter(bid => {
     const status = normalizeStatus(bid.status);
     return activeTab === "active" ? status === "PENDING" : status !== "PENDING";
+  });
+
+  const filteredReceivedBids = receivedBids.filter(bid => {
+    const status = normalizeStatus(bid.status);
+    return receivedTab === "active" ? status === "PENDING" : status !== "PENDING";
   });
 
   return (
@@ -90,20 +96,11 @@ function MyBidsPage() {
         {error && <p className="error">{error}</p>}
 
         <div className="bid-cards-wrapper">
-          {filteredBids.length === 0 ? (
+          {filteredOwnBids.length === 0 ? (
             <p className="no-bids">No {activeTab} bids found.</p>
           ) : (
-            filteredBids.map(bid => (
+            filteredOwnBids.map(bid => (
               <div className="bid-card-wrapper" key={bid.id}>
-                <Link to={`/product-details/${bid.productId}`} className="bid-product-card">
-                  <img
-                    src={`data:image/jpeg;base64,${bid.productImageData}`}
-                    alt={bid.productName}
-                    className="bid-thumbnail"
-                  />
-                  <h3>{bid.productName}</h3>
-                  <p>Go to product</p>
-                </Link>
                 <div className="bid-info-card">
                   <p><strong>Your Bid:</strong> ${bid.amount}</p>
                   <p><strong>Status:</strong> {bid.status}</p>
@@ -116,18 +113,29 @@ function MyBidsPage() {
 
         <div className="uploaded-products-section">
           <h2>Bids Received on Your Products</h2>
+
+          <div className="tabs">
+            <span
+              className={receivedTab === "active" ? "tab active" : "tab"}
+              onClick={() => setReceivedTab("active")}
+            >
+              Received - Active
+            </span>
+            <span
+              className={receivedTab === "history" ? "tab active" : "tab"}
+              onClick={() => setReceivedTab("history")}
+            >
+              Received - History
+            </span>
+          </div>
+
           <div className="uploaded-products-list">
-            {receivedBids.length === 0 ? (
-              <p>No bids received on your products yet.</p>
+            {filteredReceivedBids.length === 0 ? (
+              <p>No {receivedTab} bids received on your products yet.</p>
             ) : (
-              receivedBids.map(bid => (
+              filteredReceivedBids.map(bid => (
                 <div className="bid-card-wrapper" key={bid.id}>
                   <Link to={`/product-details/${bid.productId}`} className="bid-product-card">
-                    <img
-                      src={`data:image/jpeg;base64,${bid.productImageData}`}
-                      alt={bid.productName}
-                      className="bid-thumbnail"
-                    />
                     <h3>{bid.productName}</h3>
                     <p>Bidder: {bid.userName}</p>
                   </Link>
@@ -155,3 +163,4 @@ function MyBidsPage() {
 }
 
 export default MyBidsPage;
+  

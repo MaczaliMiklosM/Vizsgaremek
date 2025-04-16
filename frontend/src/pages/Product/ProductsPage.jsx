@@ -88,6 +88,8 @@ function ProductsPage() {
       productCondition: [],
       price: 10000
     });
+    setSearchTerm("");
+    window.history.replaceState({}, document.title, "/#products");
   };
 
   const normalizedProducts = normalizeProducts(allProducts);
@@ -102,11 +104,12 @@ function ProductsPage() {
 
       const search = searchTerm.trim().toLowerCase();
       const matchSearch =
-        !search ||
-        product.name.toLowerCase().includes(search) ||
-        product.category?.toLowerCase().includes(search) ||
-        (search === "man" && product.gender === "man") ||
-        (search === "woman" && product.gender === "woman");
+      !search ||
+      product.name.toLowerCase().includes(search) ||
+      product.category?.toLowerCase().includes(search) ||
+      (search === "man" && product.gender === "man") ||
+      (search === "woman" && product.gender === "woman");
+    
 
       return matchBrand && matchColor && matchCondition && matchPrice && matchSearch;
     });
@@ -149,23 +152,28 @@ function ProductsPage() {
           </div>
 
           <section className="products-grid">
-            {filteredProducts.map((product) => (
-              <Link
-                to={`/product-details/${product.id}`}
-                key={product.id}
-                className="card-link"
-                style={{ textDecoration: 'none', color: 'inherit' }}
-              >
-                <div className="product-card">
-                  <img src={`data:image/jpeg;base64,${product.imageData}`} alt={product.name} />
-                  <div className="details">
-                    <div className="name">{product.name}</div>
-                    <div className="price">{product.price} $</div>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <Link
+                  to={`/product-details/${product.id}`}
+                  key={product.id}
+                  className="card-link"
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  <div className="product-card">
+                    <img src={`data:image/jpeg;base64,${product.imageData}`} alt={product.name} />
+                    <div className="details">
+                      <div className="name">{product.name}</div>
+                      <div className="price">{product.price} $</div>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-            {filteredProducts.length === 0 && <p>No products match your filters.</p>}
+                </Link>
+              ))
+            ) : (
+              <div className="no-results">
+                <p>No products match your filters or search, please reset the filter.</p>
+              </div>
+            )}
           </section>
         </main>
       </div>

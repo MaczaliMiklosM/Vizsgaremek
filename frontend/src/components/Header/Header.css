@@ -140,7 +140,57 @@
         background: none !important;
         box-shadow: none !important;
     }
-    
+    .search-suggestions {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background-color: white;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+        z-index: 9999;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      
+      .search-suggestions li {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s ease;
+      }
+      
+      .search-suggestions li:hover {
+        background-color: #f3f4f6;
+      }
+      
+      .search-suggestions img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 12px;
+      }
+      
+      .search-suggestions span {
+        font-size: 15px;
+        color: #1f2937;
+      }
+      
+      .no-result {
+        padding: 12px;
+        color: #6b7280;
+        text-align: center;
+        font-style: italic;
+      }
+      
     @media (max-width: 1024px) {
         .profile-links {
             display: none; 
