@@ -136,6 +136,7 @@ function Header() {
           )}
           <span onClick={() => handleProtectedRoute("/profile")} className="nav-link">Profil</span>
           <span onClick={() => navigate("/about")} className="nav-link">About Us</span>
+          <span onClick={() => navigate("/products")} className="nav-link">Products</span>
           <span onClick={() => handleProtectedRoute("/wishlist")} className="nav-link">Wishlist</span>
           <span onClick={() => handleProtectedRoute("/basket")} className="nav-link">Basket</span>
           <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link">Notifications</span>

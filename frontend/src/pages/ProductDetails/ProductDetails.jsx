@@ -38,7 +38,6 @@ function ProductDetails() {
         if (isLoggedIn && user?.id) {
           const token = localStorage.getItem("token");
 
-          // Check wishlist
           const wishlistRes = await axios.get(`/api/wishlist/${user.id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
@@ -46,7 +45,6 @@ function ProductDetails() {
           setInWishlist(wishExists);
         }
 
-        // Check basket
         const basket = JSON.parse(localStorage.getItem(basketKey)) || [];
         const basketExists = basket.some(p => Number(p.id) === Number(data.id));
         setInBasket(basketExists);
@@ -147,7 +145,7 @@ function ProductDetails() {
         <Header />
         <Navbar />
         <div style={{ textAlign: "center", padding: "100px 20px", fontSize: "1.5rem" }}>
-          <p>🚫 <strong>The requested product is no longer available.</strong></p>
+          <p>🚫<strong>The requested product is no longer available.</strong></p>
         </div>
         <Footer />
       </div>
@@ -167,39 +165,42 @@ function ProductDetails() {
 
         <div className="product-content">
           <div className="product-images">
-            <div className="main-image">
-              <img
-                src={`data:image/jpeg;base64,${activeImage}`}
-                alt="Product"
-              />
-            </div>
-            <div className="thumbnail-row">
-              {product.imageData && (
-                <img
-                  src={`data:image/jpeg;base64,${product.imageData}`}
-                  alt="Thumbnail 1"
-                  className={`thumbnail ${activeImage === product.imageData ? 'active' : ''}`}
-                  onClick={() => setActiveImage(product.imageData)}
-                />
-              )}
-              {product.imageData2 && (
-                <img
-                  src={`data:image/jpeg;base64,${product.imageData2}`}
-                  alt="Thumbnail 2"
-                  className={`thumbnail ${activeImage === product.imageData2 ? 'active' : ''}`}
-                  onClick={() => setActiveImage(product.imageData2)}
-                />
-              )}
-              {product.imageData3 && (
-                <img
-                  src={`data:image/jpeg;base64,${product.imageData3}`}
-                  alt="Thumbnail 3"
-                  className={`thumbnail ${activeImage === product.imageData3 ? 'active' : ''}`}
-                  onClick={() => setActiveImage(product.imageData3)}
-                />
-              )}
-            </div>
-          </div>
+  <div className="main-image-wrapper">
+    <img
+      src={`data:image/jpeg;base64,${activeImage}`}
+      alt="Product"
+      className="main-image"
+    />
+
+    <div className="thumbnail-row">
+      {product.imageData && (
+        <img
+          src={`data:image/jpeg;base64,${product.imageData}`}
+          alt="Thumb 1"
+          className={`thumbnail ${activeImage === product.imageData ? 'active' : ''}`}
+          onClick={() => setActiveImage(product.imageData)}
+        />
+      )}
+      {product.imageData2 && (
+        <img
+          src={`data:image/jpeg;base64,${product.imageData2}`}
+          alt="Thumb 2"
+          className={`thumbnail ${activeImage === product.imageData2 ? 'active' : ''}`}
+          onClick={() => setActiveImage(product.imageData2)}
+        />
+      )}
+      {product.imageData3 && (
+        <img
+          src={`data:image/jpeg;base64,${product.imageData3}`}
+          alt="Thumb 3"
+          className={`thumbnail ${activeImage === product.imageData3 ? 'active' : ''}`}
+          onClick={() => setActiveImage(product.imageData3)}
+        />
+      )}
+    </div>
+  </div>
+</div>
+
 
           <div className="product-info">
             <div className="product-price">

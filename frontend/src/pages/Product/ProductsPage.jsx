@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import axios from "axios";
 import Header from '../../components/Header/Header';
@@ -93,22 +93,24 @@ function ProductsPage() {
   const normalizedProducts = normalizeProducts(allProducts);
   const visibleProducts = normalizedProducts.filter(p => p.status?.toLowerCase() !== 'sold');
 
-  const filteredProducts = visibleProducts.filter((product) => {
-    const matchBrand = filters.brands.length === 0 || filters.brands.includes(product.brand);
-    const matchColor = filters.colors.length === 0 || filters.colors.includes(product.color);
-    const matchCondition = filters.productCondition.length === 0 || filters.productCondition.includes(product.productCondition);
-    const matchPrice = product.price <= filters.price;
+  const filteredProducts = useMemo(() => {
+    return visibleProducts.filter((product) => {
+      const matchBrand = filters.brands.length === 0 || filters.brands.includes(product.brand);
+      const matchColor = filters.colors.length === 0 || filters.colors.includes(product.color);
+      const matchCondition = filters.productCondition.length === 0 || filters.productCondition.includes(product.productCondition);
+      const matchPrice = product.price <= filters.price;
 
-    const search = searchTerm.trim().toLowerCase();
-    const matchSearch =
-      !search ||
-      product.name.toLowerCase().includes(search) ||
-      product.category?.toLowerCase().includes(search) ||
-      (search === "man" && product.gender === "man") ||
-      (search === "woman" && product.gender === "woman");
+      const search = searchTerm.trim().toLowerCase();
+      const matchSearch =
+        !search ||
+        product.name.toLowerCase().includes(search) ||
+        product.category?.toLowerCase().includes(search) ||
+        (search === "man" && product.gender === "man") ||
+        (search === "woman" && product.gender === "woman");
 
-    return matchBrand && matchColor && matchCondition && matchPrice && matchSearch;
-  });
+      return matchBrand && matchColor && matchCondition && matchPrice && matchSearch;
+    });
+  }, [visibleProducts, filters, searchTerm]);
 
   const getCategoryLabel = () => {
     if (searchTerm === "bag") return "bags";

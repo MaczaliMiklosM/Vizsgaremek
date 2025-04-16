@@ -94,7 +94,7 @@ function MyProductsPage() {
       case "sneaker":
         return "Recommended: EU size 35 - 45";
       case "bag":
-        return "Recommended: Small / Medium / Large";
+        return "Recommended: 15cm - 50cm";
       case "watch":
         return "Recommended: 30mm - 50mm";
       default:
@@ -117,10 +117,11 @@ function MyProductsPage() {
         if (isNaN(mm) || mm < 30 || mm > 50) return "Watch size should be between 30mm and 50mm.";
         break;
       case "bag":
-        if (!["small", "medium", "large"].includes(size.toLowerCase())) {
-          return "Bag size must be: Small, Medium, or Large.";
-        }
+        const cm = parseInt(size, 10);
+        if (isNaN(cm) || cm < 15 || cm > 50) return "Watch size should be between 15cm and 50cm.";
         break;
+
+
     }
 
     return "";
@@ -245,7 +246,7 @@ function MyProductsPage() {
             <select name="target_gender" value={formData.target_gender} onChange={handleChange}>
               <option value="MAN">Man</option>
               <option value="WOMAN">Woman</option>
-              <option value="UNISEX">Unisex</option>
+
             </select>
 
             <label>Upload 3 Images (first will be thumbnail)</label>
