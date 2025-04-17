@@ -78,6 +78,8 @@
   margin-bottom: 24px;
 }
 
+/* ----------------------- PRODUCT LIST ------------------------ */
+
 .product-row {
   background-color: #ffffff;
   border-radius: 16px;
@@ -191,6 +193,52 @@
 
 .delete-btn:hover {
   background-color: #dc2626;
+}
+
+/* ----------------------- ORDER LIST ------------------------ */
+
+.order-row {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.2s ease;
+}
+
+.order-row:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+}
+
+.order-row h4 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+.order-row p {
+  margin: 4px 0;
+  font-size: 15px;
+  color: #374151;
+}
+
+.order-row label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.order-row select {
+  margin-top: 4px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  background-color: #f9fafb;
+  color: #1f2937;
+  width: 100%;
+  max-width: 250px;
 }
 
 /* 📱 Mobile View */

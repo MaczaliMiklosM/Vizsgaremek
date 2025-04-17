@@ -3,10 +3,17 @@ package com.example.demo.controller;
 import com.example.demo.dto.order.AddToCartRequestDTO;
 import com.example.demo.dto.order.OrderRequestDTO;
 import com.example.demo.dto.order.OrderResponseDTO;
+import com.example.demo.repository.NotificationRepository;
+import com.example.demo.services.NotificationService;
 import com.example.demo.services.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.enums.OrderStatus;
+import com.example.demo.model.OrderHeader;
+import com.example.demo.repository.OrderHeaderRepository;
+import org.springframework.security.access.prepost.PreAuthorize; // ez is kell
 
 import io.swagger.annotations.ApiOperation;
 
@@ -16,7 +23,7 @@ import java.util.List;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
-
+    private final NotificationService notificationService;
     private final OrderService orderService;
 
     @ApiOperation(value = "Create a new order",
@@ -55,4 +62,34 @@ public class OrderController {
     public ResponseEntity<List<OrderResponseDTO>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
+
+    @Autowired
+    private OrderHeaderRepository orderHeaderRepository;
+
+    @PutMapping("/admin/updateStatus/{orderId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<String> updateOrderStatus(
+            @PathVariable Integer orderId,
+            @RequestParam("status") String status) {
+        OrderHeader order = orderHeaderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        try {
+            OrderStatus newStatus = OrderStatus.valueOf(status.toUpperCase());
+            order.setStatus(newStatus);
+            orderHeaderRepository.save(order);
+
+            // ✅ Értesítés küldése
+            notificationService.sendNotification(
+                    order.getUser(),
+                    "Your order #" + order.getOrderId() + " status was updated to: " + newStatus.name()
+            );
+
+            return ResponseEntity.ok("Order status updated to " + newStatus);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid status value: " + status);
+        }
+    }
+
+
 }

@@ -57,7 +57,7 @@ const Notifications = () => {
         <h1>Notifications</h1>
 
         {loading ? (
-          <p>Loading...</p>
+          <p>Loading notifications...</p>
         ) : error ? (
           <p className="error-message">{error}</p>
         ) : notifications.length > 0 ? (
@@ -72,7 +72,10 @@ const Notifications = () => {
             ))}
           </div>
         ) : (
-          <p className="no-notifications">You have no notifications.</p>
+          <div className="no-notifications">
+            <img src="/Images/empty.png" alt="No notifications" style={{ width: 160, marginBottom: 12 }} />
+            <p>You have no notifications yet.</p>
+          </div>
         )}
       </div>
       <Footer />
