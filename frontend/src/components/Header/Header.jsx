@@ -20,6 +20,7 @@ function Header() {
   const [showAccessDenied, setShowAccessDenied] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const inputRef = useRef(null);
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -75,6 +76,26 @@ function Header() {
       inputRef.current.focus();
     }
   }, [searchOpen]);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const res = await axios.get('/api/notifications/unread-count', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUnreadCount(res.data);
+      } catch (err) {
+        console.error("❌ Failed to fetch unread notification count:", err);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchUnreadCount();
+    }
+  }, [isLoggedIn]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -173,7 +194,14 @@ function Header() {
             <span onClick={() => navigate("/about")} className="nav-link">About Us</span>
             <span onClick={() => handleProtectedRoute("/wishlist")} className="nav-link"><FavoriteBorderIcon /></span>
             <span onClick={() => handleProtectedRoute("/basket")} className="nav-link"><ShoppingBasketIcon /></span>
-            <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link"><NotificationsIcon /></span>
+
+            {/* 🔔 NOTIFICATION ICON + BADGE */}
+            <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link notification-icon-wrapper">
+              <NotificationsIcon />
+              {unreadCount > 0 && (
+                <span className="notification-badge">{unreadCount}</span>
+              )}
+            </span>
           </div>
         )}
 

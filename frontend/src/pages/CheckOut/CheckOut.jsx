@@ -130,7 +130,7 @@ const Checkout = () => {
 
       setTimeout(() => {
         navigate('/');
-      }, 2500);
+      }, 1500);
 
     } catch (err) {
       console.error('Order error:', err);
@@ -233,7 +233,6 @@ const Checkout = () => {
           {renderStep()}
         </div>
 
-        {/* fallback message if toast doesn't show */}
         {showSuccessMessage && (
           <div className="floating-message success">
             🎉 Order placed successfully! Redirecting...

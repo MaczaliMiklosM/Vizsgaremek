@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.BidStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,8 @@ public class Bid {
 
     private Double amount;
 
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime time;
 
     @Enumerated(EnumType.STRING)

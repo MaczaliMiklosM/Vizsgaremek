@@ -3,6 +3,7 @@ package com.example.demo.services;
 import com.example.demo.model.Notification;
 import com.example.demo.model.User;
 import com.example.demo.repository.NotificationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class NotificationService {
 
     @Autowired
-    private NotificationRepository notificationRepository;
+        private NotificationRepository notificationRepository;
 
     // Értesítés küldése
     public void sendNotification(User user, String message) {
@@ -36,4 +37,20 @@ public class NotificationService {
     public List<Notification> getUserNotifications(Integer userId) {
         return notificationRepository.findByUserIdOrderByTimestampDesc(userId);
     }
+
+    public long countUnreadNotifications(Integer userId) {
+        return notificationRepository.countByUserIdAndIsReadFalse(userId);
+    }
+
+    @Transactional
+    public void markAllAsRead(Integer userId) {
+        List<Notification> notifications = notificationRepository.findByUserIdOrderByTimestampDesc(userId);
+        for (Notification notification : notifications) {
+            if (!notification.isRead()) {
+                notification.setRead(true);
+            }
+        }
+        notificationRepository.saveAll(notifications);
+    }
+
 }

@@ -88,8 +88,6 @@ function ProductDetails() {
       name: product.name,
       price: product.price,
       imageData: product.imageData,
-      quantity: 1,
-      stock: 2,
       size: product.size || 'N/A'
     });
 

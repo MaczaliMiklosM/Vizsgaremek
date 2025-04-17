@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
@@ -25,6 +24,20 @@ public class NotificationController {
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElseThrow();
         return notificationService.getUserNotifications(user.getId());
+    }
+
+    @GetMapping("/unread-count")
+    public long getUnreadCount(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        return notificationService.countUnreadNotifications(user.getId());
+    }
+
+    @PutMapping("/mark-read")
+    public void markNotificationsAsRead(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        notificationService.markAllAsRead(user.getId());
     }
 
 }

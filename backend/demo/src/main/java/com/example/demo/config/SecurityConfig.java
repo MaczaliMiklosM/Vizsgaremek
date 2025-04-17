@@ -59,11 +59,16 @@ public class SecurityConfig {
                         .requestMatchers("/management/admin/update/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/products/getProductById/**").permitAll()
                         .requestMatchers("/bids/place").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/bids/accept/").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/bids/reject/").hasAnyAuthority("USER", "ADMIN")
+
                         .requestMatchers("/bids/user/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/bids/received/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/products/by-user/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/products/create").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/management/check-email/**").permitAll()
+                        .requestMatchers("/notifications/my").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/notifications/mark-read").hasAnyAuthority("USER", "ADMIN")
 
 
                                 //.requestMatchers("/bids/place").permitAll()

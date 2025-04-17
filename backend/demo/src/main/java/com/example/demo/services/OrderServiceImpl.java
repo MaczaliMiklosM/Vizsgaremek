@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +47,14 @@ public class OrderServiceImpl implements OrderService {
         // 🧹 TÖRLÉS minden korábbi CART státuszú rendelésből (biztos ami biztos)
         List<OrderHeader> carts = orderHeaderRepository.findAllByUserAndStatus(user, OrderStatus.CART);
         for (OrderHeader cart : carts) {
-            orderBodyRepository.deleteAll(cart.getItems());
-            orderHeaderRepository.delete(cart);
+            // Szűrjük ki a SOLD státuszú termékeket
+            List<OrderBody> validItems = cart.getItems().stream()
+                    .filter(body -> body.getProduct().getStatus() != Status.SOLD)
+                    .collect(Collectors.toList());
+
+            cart.setItems(validItems);  // frissítjük a kosárban lévő termékeket
+            orderBodyRepository.deleteAll(cart.getItems()); // töröljük az érvénytelen termékeket
+            orderHeaderRepository.save(cart);  // frissítjük a kosarat
         }
 
         // 📦 Új rendelés
@@ -62,6 +69,11 @@ public class OrderServiceImpl implements OrderService {
         for (OrderItemDTO itemDTO : request.getItems()) {
             Product product = productRepository.findById(itemDTO.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            // Termék státusza nem lehet SOLD
+            if (product.getStatus() == Status.SOLD) {
+                throw new RuntimeException("The product " + product.getName() + " is already sold and cannot be purchased.");
+            }
 
             totalAmount += itemDTO.getUnitPrice();
 
@@ -84,7 +96,6 @@ public class OrderServiceImpl implements OrderService {
             product.setStatus(Status.SOLD);
             productRepository.save(product);
 
-            // ✅ Notify others
             // ✅ Notify others
             List<Wishlist> allWishlists = wishlistRepository.findAll();
             for (Wishlist w : allWishlists) {
@@ -120,6 +131,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+
     @Override
     public void addToCart(Integer userId, Integer productId) {
         User user = userRepository.findById(userId)
@@ -127,6 +139,11 @@ public class OrderServiceImpl implements OrderService {
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Ellenőrzés, hogy a termék már el van adva
+        if (product.getStatus() == Status.SOLD) {
+            throw new RuntimeException("This product is already sold and cannot be added to the cart.");
+        }
 
         // check if user already has a cart
         OrderHeader order = orderHeaderRepository.findByUserAndStatus(user, OrderStatus.CART)
@@ -162,24 +179,24 @@ public class OrderServiceImpl implements OrderService {
                 .mapToInt(OrderBody::getUnitPrice)
                 .sum();
 
-
         order.setTotalAmount(updatedTotal);
         orderHeaderRepository.save(order);
     }
+
 
 
     @Override
     public OrderResponseDTO getOrderById(Integer orderId) {
         OrderHeader order = orderHeaderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-
         List<OrderItemDTO> itemDTOs = new ArrayList<>();
         for (OrderBody body : order.getItems()) {
             itemDTOs.add(new OrderItemDTO(
                     body.getProduct().getId(),
                     body.getUnitPrice(),
                     1,
-                    body.getProduct().getName() // ✅ productName
+                    body.getProduct().getName(),  // productName
+                    body.getProduct().getStatus().name()  // productStatus, ha a Status enum tartalmazza
             ));
 
         }

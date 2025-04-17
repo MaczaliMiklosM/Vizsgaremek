@@ -13,5 +13,6 @@ public class OrderItemDTO {
     // Az alábbi mezőt adjuk hozzá
     private Integer quantity = 1;  // A quantity mindig 1
     private String productName;
+    private String productStatus;
 }
 

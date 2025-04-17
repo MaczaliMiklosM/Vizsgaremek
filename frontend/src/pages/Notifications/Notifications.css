@@ -51,6 +51,16 @@
   font-style: italic;
 }
 
+.unread-notification {
+  border-left: 5px solid #22c55e; /* zöld szegély */
+  background: #ecfdf5;            /* halványzöld háttér */
+}
+
+.notification-item.unread-notification p {
+  font-weight: 600;
+  color: #065f46;
+}
+
 @media (max-width: 768px) {
   .notifications-container {
     width: 90%;

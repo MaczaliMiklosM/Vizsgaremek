@@ -128,31 +128,7 @@ function BidPage() {
     }
   };
 
-  const handleProceedToOrder = async () => {
-    if (!acceptedBid || !userProfile) return;
-
-    try {
-      await axios.post("/api/orders/createOrder", {
-        userId: user.id,
-        shippingAddress: shippingAddress,
-        items: [{
-          productId: product.id,
-          quantity: 1,
-          unitPrice: acceptedBid.amount
-        }]
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      toast.success("Order created successfully!");
-      navigate("/collection");
-    } catch (err) {
-      console.error("Failed to create order from accepted bid", err);
-      setMessage("Failed to create order.");
-      toast.error("Failed to create order.");
-    }
-  };
-
+ 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleString();
@@ -206,9 +182,7 @@ function BidPage() {
                   onChange={(e) => setShippingAddress(e.target.value)}
                   className="bid-input"
                 />
-                <button onClick={handleProceedToOrder} className="bid-button">
-                  Confirm and Place Order
-                </button>
+            
               </>
             ) : (
               <>

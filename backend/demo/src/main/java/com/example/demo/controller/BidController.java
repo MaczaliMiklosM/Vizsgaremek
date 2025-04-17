@@ -60,14 +60,15 @@ public class BidController {
         return ResponseEntity.ok(bidDTOs);
     }
 
-   // @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+
     @PostMapping("/accept/{bidId}")
     public ResponseEntity<?> acceptBid(@PathVariable Integer bidId) {
         bidService.acceptBid(bidId);
         return ResponseEntity.ok("Bid accepted and product marked as SOLD.");
     }
 
-    //@PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @PostMapping("/reject/{bidId}")
     public ResponseEntity<?> rejectBid(@PathVariable Integer bidId) {
         bidService.rejectBid(bidId);

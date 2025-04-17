@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -60,6 +61,7 @@ public class Product {
     private User user;
 
     @Column(name = "upload_date")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime uploadDate;
 
     @Enumerated(EnumType.STRING)

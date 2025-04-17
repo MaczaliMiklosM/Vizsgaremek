@@ -63,7 +63,10 @@ const Notifications = () => {
         ) : notifications.length > 0 ? (
           <div className="notifications-list">
             {notifications.map((notification) => (
-              <div key={notification.id} className="notification-item">
+              <div
+                key={notification.id}
+                className={`notification-item ${notification.isRead === false ? 'unread-notification' : ''}`}
+              >
                 <p>{notification.message}</p>
                 <span className="notification-time">
                   {new Date(notification.timestamp).toLocaleString('hu-HU')}
@@ -73,7 +76,7 @@ const Notifications = () => {
           </div>
         ) : (
           <div className="no-notifications">
-            <img src="/Images/empty.png" alt="No notifications" style={{ width: 160, marginBottom: 12 }} />
+            
             <p>You have no notifications yet.</p>
           </div>
         )}

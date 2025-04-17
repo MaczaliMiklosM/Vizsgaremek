@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,19 +102,19 @@ public class BidService {
         Product product = acceptedBid.getProduct();
         User buyer = acceptedBid.getBidder();
 
-        // ✅ 1. Set accepted bid status + mark product as SOLD
+        // ✅ Elfogadott ajánlat státusz beállítása
         acceptedBid.setStatus(BidStatus.ACCEPTED);
         product.setStatus(Status.SOLD);
         bidRepository.save(acceptedBid);
 
-        // ✅ 2. Add product to collection
+        // ✅ Hozzáadás a kollekcióhoz
         Collection collection = Collection.builder()
-                .user(buyer)
+                .user(acceptedBid.getBidder())
                 .product(product)
                 .build();
         collectionRepository.save(collection);
 
-        // ✅ 3. Reject all other bids
+        // ✅ Az összes többi ajánlat erre a termékre: REJECTED
         List<Bid> otherBids = bidRepository.findByProductId(product.getId());
         for (Bid other : otherBids) {
             if (!other.getId().equals(bidId)) {
@@ -122,34 +123,40 @@ public class BidService {
         }
         bidRepository.saveAll(otherBids);
 
+
         // ✅ 4. Create an order with PROCESSING status
         String address = buyer.getAddress(); // assumed saved in DB
         if (address != null && !address.trim().isEmpty()) {
+            // Create OrderHeader
             OrderHeader order = OrderHeader.builder()
                     .user(buyer)
                     .shippingAddress(address)
                     .status(OrderStatus.PROCESSING)
                     .totalAmount(acceptedBid.getAmount().intValue())
+                    .items(new ArrayList<>() )  // Initialize the items list to avoid null pointer exception
                     .build();
-            order = orderHeaderRepository.save(order);
+            order = orderHeaderRepository.save(order);  // Save the orderHeader first
 
+            // Create OrderBody
             OrderBody body = OrderBody.builder()
                     .order(order)
                     .product(product)
                     .unitPrice(acceptedBid.getAmount().intValue())
                     .quantity(1)
                     .build();
-            orderBodyRepository.save(body);
+            orderBodyRepository.save(body); // Save the orderBody
 
-            order.setItems(List.of(body));
-            orderHeaderRepository.save(order);
+            // Add OrderBody to the OrderHeader items
+            order.getItems().add(body);  // add the body to the order's items list
+
+            orderHeaderRepository.save(order);  // Save updated orderHeader
         }
 
-        // ✅ 5. Notifications
+
+        // ✅ Értesítések
         notificationService.sendNotification(
-                buyer,
-                "Your bid has been accepted for product: " + product.getName() +
-                        " ($" + acceptedBid.getAmount() + "). Order created automatically!"
+                acceptedBid.getBidder(),
+                "Your bid has been accepted for product: " + product.getName() + " ($" + acceptedBid.getAmount() + ")"
         );
 
         for (Bid other : otherBids) {

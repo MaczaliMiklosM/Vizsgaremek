@@ -145,11 +145,7 @@
   margin-top: 20px;
 }
 
-.low-stock {
-  color: red;
-  font-weight: bold;
-  margin-top: 5px;
-}
+
 .remove-collection-btn {
   background: #d9534f;
   color: white;
