@@ -1,100 +1,140 @@
+/* Main profile container */
 .profile-container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 50px auto;
-  background: #f9fafb;
+  background: #ffffff;
   padding: 40px 32px;
   border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  transition: all 0.3s ease;
 }
 
+/* Title for profile */
 .profile-container h1 {
   text-align: center;
-  font-size: 32px;
+  font-size: 36px;
+  font-weight: 600;
   margin-bottom: 40px;
   color: #1f2937;
 }
 
+/* Grid layout for profile sections */
+
 .profile-sections {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px;
+  margin-top: 20px;
 }
 
+/* Individual profile section */
 .profile-section {
-  background: #ffffff;
-  padding: 24px;
+  background: #f9fafb;
+  padding: 28px;
   border-radius: 16px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 240px;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .profile-section:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Heading style */
+.profile-section2
 .profile-section h2 {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
   color: #1f2937;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   text-align: center;
 }
 
+/* Icon size */
 .profile-section svg {
   font-size: 28px;
   color: #2563eb;
 }
 
+/* Text inside each section */
+.profile-section2
 .profile-section p {
   font-size: 15px;
   margin-bottom: 6px;
   color: #374151;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
+/* Button style */
 .checkout-btn {
   margin-top: auto;
   background-color: #2563eb;
   color: white !important;
   border: none;
   border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 15px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: 600;
   text-align: center;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .checkout-btn:hover {
   background-color: #1e40af;
+  transform: translateY(-2px);
 }
 
+/* Edit form styles */
 .edit-form input {
   width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  font-size: 14px;
+  padding: 12px 15px;
+  margin-bottom: 16px;
+  font-size: 16px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #f9fafb;
+  transition: border-color 0.3s ease;
 }
 
+/* Focus on inputs */
 .edit-form input:focus {
   border-color: #2563eb;
   background: #ffffff;
   outline: none;
 }
 
+/* Personal Info Section */
+.profile-section2 {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 240px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 30px;
+}
+.profile-section2 button {
+  margin-top: 20px;
+}
+/* Responsive adjustments for mobile screens */
 @media (max-width: 768px) {
   .profile-container {
     padding: 24px;
@@ -102,5 +142,18 @@
 
   .checkout-btn {
     width: 100%;
+  }
+
+  .profile-section {
+    padding: 24px;
+    min-height: auto;
+  }
+
+  .profile-section h2 {
+    font-size: 16px;
+  }
+
+  .profile-container h1 {
+    font-size: 28px;
   }
 }

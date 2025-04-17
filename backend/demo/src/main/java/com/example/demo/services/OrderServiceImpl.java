@@ -33,15 +33,14 @@ public class OrderServiceImpl implements OrderService {
     private final NotificationService notificationService;
     private final CollectionService collectionService;
 
-    @Override
     @Transactional
+    @Override
     public OrderResponseDTO createOrder(OrderRequestDTO request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<OrderBody> orderItems = new ArrayList<>();
         int totalAmount = 0;
-
         StringBuilder productNames = new StringBuilder();
 
         // 🧹 TÖRLÉS minden korábbi CART státuszú rendelésből (biztos ami biztos)
@@ -96,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
             product.setStatus(Status.SOLD);
             productRepository.save(product);
 
-            // ✅ Notify others
+            // ✅ Notify others about the product sale
             List<Wishlist> allWishlists = wishlistRepository.findAll();
             for (Wishlist w : allWishlists) {
                 if (w.getProduct().getId().equals(product.getId()) && w.getUser().getId() != user.getId()) {
@@ -110,15 +109,30 @@ public class OrderServiceImpl implements OrderService {
             wishlistRepository.deleteByProductId(product.getId());
         }
 
+        // Rendelés összegzése és mentés
         order.setTotalAmount(totalAmount);
         order.setItems(orderBodyRepository.saveAll(orderItems));
         orderHeaderRepository.save(order);
 
+        // Értesítés a vásárlónak
         notificationService.sendNotification(
                 user,
                 "Successful purchase! Order ID: " + order.getOrderId() +
                         " | Products: " + productNames.toString().replaceAll(", $", "")
         );
+
+        // Értesítés a termék feltöltőjének, hogy a terméke el lett adva
+        for (OrderItemDTO itemDTO : request.getItems()) {
+            Product product = productRepository.findById(itemDTO.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            // Termék feltöltőjének értesítése
+            User uploader = product.getUser();
+            notificationService.sendNotification(
+                    uploader,
+                    "Congratulations! Your product \"" + product.getName() + "\" has been sold."
+            );
+        }
 
         return new OrderResponseDTO(
                 order.getOrderId(),

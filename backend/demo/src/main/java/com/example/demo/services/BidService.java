@@ -101,6 +101,7 @@ public class BidService {
 
         Product product = acceptedBid.getProduct();
         User buyer = acceptedBid.getBidder();
+        User seller = product.getUser();  // A termék feltöltője
 
         // ✅ Elfogadott ajánlat státusz beállítása
         acceptedBid.setStatus(BidStatus.ACCEPTED);
@@ -122,7 +123,6 @@ public class BidService {
             }
         }
         bidRepository.saveAll(otherBids);
-
 
         // ✅ 4. Create an order with PROCESSING status
         String address = buyer.getAddress(); // assumed saved in DB
@@ -152,13 +152,13 @@ public class BidService {
             orderHeaderRepository.save(order);  // Save updated orderHeader
         }
 
-
-        // ✅ Értesítések
+        // ✅ Értesítések a licitáló számára
         notificationService.sendNotification(
                 acceptedBid.getBidder(),
                 "Your bid has been accepted for product: " + product.getName() + " ($" + acceptedBid.getAmount() + ")"
         );
 
+        // ✅ Értesítés a többi licitálónak, hogy elutasították az ajánlatukat
         for (Bid other : otherBids) {
             if (!other.getId().equals(bidId)) {
                 notificationService.sendNotification(
@@ -167,7 +167,14 @@ public class BidService {
                 );
             }
         }
+
+        // ✅ Értesítés a termék feltöltőjének, hogy eladták a terméket
+        notificationService.sendNotification(
+                seller,
+                "Your product \"" + product.getName() + "\" has been sold to " + buyer.getFull_name() + " via bid."
+        );
     }
+
 
 
 

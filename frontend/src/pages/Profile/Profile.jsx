@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import './Profile.css';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import {
   ShoppingBasket as ShoppingBasketIcon,
   Person2 as Person2Icon,
@@ -32,13 +33,14 @@ const Profile = () => {
       .then(response => {
         setUser(response.data.user);
         setFormData(response.data.user);
+        toast.success("Profile data loaded successfully!", { closeButton: false });
       })
       .catch(error => {
         console.error('Failed to fetch user profile:', error);
         if (error.response?.status === 403) {
-          toast.error("Access denied.");
+          toast.error("Access denied.", { closeButton: false });
         } else {
-          toast.error("Failed to load profile.");
+          toast.error("Failed to load profile.", { closeButton: false });
         }
       });
   }, []);
@@ -57,11 +59,11 @@ const Profile = () => {
       .then(response => {
         setUser(response.data);
         setEditMode(false);
-        toast.success('Profile updated successfully!');
+        toast.success('Profile updated successfully!', { closeButton: false });
       })
       .catch(error => {
         console.error('Failed to update profile:', error);
-        toast.error('Failed to update profile.');
+        toast.error('Failed to update profile.', { closeButton: false });
       });
   };
 
@@ -79,7 +81,7 @@ const Profile = () => {
               <Link to="/wishlist" className="checkout-btn">Your WishList</Link>
             </div>
             <div className="profile-section">
-              <h2><ShoppingBasketIcon /> Your Orders</h2>
+              <h2><LocalShippingIcon /> Your Orders</h2>
               <Link to="/my-orders" className="checkout-btn">View Orders</Link>
             </div>
             <div className="profile-section">
@@ -95,34 +97,39 @@ const Profile = () => {
               <Link to="/mybids" className="checkout-btn">Your Bids</Link>
             </div>
             <div className="profile-section">
-              <h2><Person2Icon /> Personal Information</h2>
-              {user ? (
-                <>
-                  {editMode ? (
-                    <div className="edit-form">
-                      <input name="full_name" value={formData.full_name} onChange={handleChange} placeholder="Full Name" />
-                      <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
-                      <input name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="Phone" />
-                      <input name="country" value={formData.country} onChange={handleChange} placeholder="Country" />
-                      <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" />
-                      <button className="checkout-btn" onClick={handleSave}>Save</button>
-                      <button className="checkout-btn" onClick={() => setEditMode(false)}>Cancel</button>
-                    </div>
-                  ) : (
-                    <>
-                      <p><strong>Name:</strong> {user.full_name}</p>
-                      <p><strong>Email:</strong> {user.email}</p>
-                      <p><strong>Phone:</strong> {user.phone_number}</p>
-                      <p><strong>Country:</strong> {user.country}</p>
-                      <p><strong>Address:</strong> {user.address}</p>
-                      <button className="checkout-btn" onClick={() => setEditMode(true)}>Edit</button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <p>Loading user data...</p>
-              )}
+              <h2><ShoppingBasketIcon /> Your Basket</h2>
+              <Link to="/basket" className="checkout-btn">Your Basket</Link>
             </div>
+          </div>
+
+          <div className="profile-section2">
+            <h2><Person2Icon /> Personal Information</h2>
+            {user ? (
+              <>
+                {editMode ? (
+                  <div className="edit-form">
+                    <input name="full_name" value={formData.full_name} onChange={handleChange} placeholder="Full Name" />
+                    <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
+                    <input name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="Phone" />
+                    <input name="country" value={formData.country} onChange={handleChange} placeholder="Country" />
+                    <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" />
+                    <button className="checkout-btn" onClick={handleSave}>Save</button>
+                    <button className="checkout-btn" onClick={() => setEditMode(false)}>Cancel</button>
+                  </div>
+                ) : (
+                  <>
+                    <p><strong>Name:</strong> {user.full_name}</p>
+                    <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Phone:</strong> {user.phone_number}</p>
+                    <p><strong>Country:</strong> {user.country}</p>
+                    <p><strong>Address:</strong> {user.address}</p>
+                    <button className="checkout-btn" onClick={() => setEditMode(true)}>Edit</button>
+                  </>
+                )}
+              </>
+            ) : (
+              <p>Loading user data...</p>
+            )}
           </div>
         </div>
         <Footer />

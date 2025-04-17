@@ -1,21 +1,23 @@
 package com.example.demo.dto.bid;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
 public class BidDTO {
-
     private Integer id;
     private Double amount;
-    private LocalDateTime time;
-    private String status; // Bid status: "PENDING", "ACCEPTED", "REJECTED"
-    private Integer productId; // Product ID (nem a teljes termék)
-    private Integer userId; // User ID (nem a teljes felhasználó)
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime time; // A dátumot megfelelő formátumban küldjük
+
+    private String status;
+    private Integer productId;
+    private Integer userId;
     private String productName;
     private String userName;
 
-    // Konstruktor
     public BidDTO(Integer id, Double amount, LocalDateTime time, String status, Integer productId, Integer userId, String productName, String userName) {
         this.id = id;
         this.amount = amount;
@@ -27,7 +29,6 @@ public class BidDTO {
         this.userName = userName;
     }
 
-    // Overloaded constructor for backward compatibility
     public BidDTO(Integer id, Double amount, LocalDateTime time, String status, Integer productId, Integer userId) {
         this(id, amount, time, status, productId, userId, null, null);
     }
