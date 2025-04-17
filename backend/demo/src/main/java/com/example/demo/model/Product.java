@@ -34,6 +34,13 @@ public class Product {
     @Column(name = "image_data", columnDefinition = "LONGBLOB")
     private byte[] imageData;
 
+    @Lob
+    @Column(name = "image_data2", columnDefinition = "LONGBLOB")
+    private byte[] imageData2;
+
+    @Lob
+    @Column(name = "image_data3", columnDefinition = "LONGBLOB")
+    private byte[] imageData3;
 
     @Column(name = "brand")
     private String brand;

@@ -8,7 +8,7 @@ import './Notifications.css';
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);  // Hibakezelés
+  const [error, setError] = useState(null);
 
   const fetchNotifications = async () => {
     try {
@@ -33,8 +33,20 @@ const Notifications = () => {
     }
   };
 
+  const markAsRead = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put('/api/notifications/mark-read', {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch (err) {
+      console.error('❌ Nem sikerült megjelölni olvasottként:', err);
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
+    markAsRead();
   }, []);
 
   return (
@@ -47,10 +59,10 @@ const Notifications = () => {
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
-          <p className="error-message">{error}</p>  // Hibakezelés UI-n
+          <p className="error-message">{error}</p>
         ) : notifications.length > 0 ? (
           <div className="notifications-list">
-            {notifications.map(notification => (
+            {notifications.map((notification) => (
               <div key={notification.id} className="notification-item">
                 <p>{notification.message}</p>
                 <span className="notification-time">

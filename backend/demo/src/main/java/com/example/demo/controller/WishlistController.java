@@ -104,7 +104,9 @@ public class WishlistController {
                     product.getId(),
                     product.getName(),
                     product.getPrice(),
-                    product.getImageData() != null ? Base64.getEncoder().encodeToString(product.getImageData()) : null
+                    product.getImageData() != null ? Base64.getEncoder().encodeToString(product.getImageData()) : null,
+                    product.getImageData2() != null ? Base64.getEncoder().encodeToString(product.getImageData2()) : null,
+                    product.getImageData3() != null ? Base64.getEncoder().encodeToString(product.getImageData3()) : null
             ));
         }
         return response;

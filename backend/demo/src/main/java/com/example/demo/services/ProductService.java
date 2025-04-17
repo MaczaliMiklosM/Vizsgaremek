@@ -71,6 +71,12 @@ public class ProductService {
                 if (productSave.getImageData() != null && !productSave.getImageData().isEmpty()) {
                     product.setImageData(productSave.getImageData().getBytes());
                 }
+                if (productSave.getImageData2() != null && !productSave.getImageData2().isEmpty()) {
+                    product.setImageData2(productSave.getImageData2().getBytes());
+                }
+                if (productSave.getImageData3() != null && !productSave.getImageData3().isEmpty()) {
+                    product.setImageData3(productSave.getImageData3().getBytes());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

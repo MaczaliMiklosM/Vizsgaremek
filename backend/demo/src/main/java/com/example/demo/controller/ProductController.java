@@ -22,12 +22,12 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping(value = "/createProduct", consumes = "multipart/form-data")
-    public ResponseEntity<?> createProduct(@ModelAttribute ProductSave productSave) {
-        try {
-            Product product = productService.createProduct(productSave);
-            return ResponseEntity.status(HttpStatus.CREATED).body(product);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product could not be created: " + e.getMessage());
+    public ResponseEntity<String> createProduct(@ModelAttribute ProductSave productSave) {
+        Product product = productService.createProduct(productSave);
+        if (product != null) {
+            return new ResponseEntity<>("Product successfully saved", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Something happened", HttpStatus.CONFLICT);
         }
     }
 

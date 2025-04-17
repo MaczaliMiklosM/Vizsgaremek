@@ -102,6 +102,7 @@ function MyBidsPage() {
             filteredOwnBids.map(bid => (
               <div className="bid-card-wrapper" key={bid.id}>
                 <div className="bid-info-card">
+                  <p><strong>Product:</strong> {bid.productName}</p>
                   <p><strong>Your Bid:</strong> ${bid.amount}</p>
                   <p><strong>Status:</strong> {bid.status}</p>
                   <p><strong>Time:</strong> {new Date(bid.time).toLocaleString()}</p>
