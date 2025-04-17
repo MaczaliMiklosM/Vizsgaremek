@@ -1,3 +1,4 @@
+// ProductDetails.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -24,6 +25,8 @@ function ProductDetails() {
   const user = JSON.parse(localStorage.getItem("user"));
   const basketKey = `basket_${user?.id}`;
 
+  const isUploader = user?.id && product?.uploaderId === user.id;
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -37,7 +40,6 @@ function ProductDetails() {
 
         if (isLoggedIn && user?.id) {
           const token = localStorage.getItem("token");
-
           const wishlistRes = await axios.get(`/api/wishlist/${user.id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
@@ -68,6 +70,11 @@ function ProductDetails() {
       return;
     }
 
+    if (isUploader) {
+      toast.error("You can't buy your own product!");
+      return;
+    }
+
     const basket = JSON.parse(localStorage.getItem(basketKey)) || [];
     const exists = basket.find(p => Number(p.id) === Number(product.id));
 
@@ -94,6 +101,11 @@ function ProductDetails() {
   const addToWishlist = async () => {
     if (!isLoggedIn) {
       setShowAccessDenied(true);
+      return;
+    }
+
+    if (isUploader) {
+      toast.error("You can't add your own product to wishlist!");
       return;
     }
 
@@ -134,6 +146,12 @@ function ProductDetails() {
       setShowAccessDenied(true);
       return;
     }
+
+    if (isUploader) {
+      toast.error("You can't bid on your own product!");
+      return;
+    }
+
     navigate(`/bid/${id}`);
   };
 
@@ -165,42 +183,40 @@ function ProductDetails() {
 
         <div className="product-content">
           <div className="product-images">
-  <div className="main-image-wrapper">
-    <img
-      src={`data:image/jpeg;base64,${activeImage}`}
-      alt="Product"
-      className="main-image"
-    />
-
-    <div className="thumbnail-row">
-      {product.imageData && (
-        <img
-          src={`data:image/jpeg;base64,${product.imageData}`}
-          alt="Thumb 1"
-          className={`thumbnail ${activeImage === product.imageData ? 'active' : ''}`}
-          onClick={() => setActiveImage(product.imageData)}
-        />
-      )}
-      {product.imageData2 && (
-        <img
-          src={`data:image/jpeg;base64,${product.imageData2}`}
-          alt="Thumb 2"
-          className={`thumbnail ${activeImage === product.imageData2 ? 'active' : ''}`}
-          onClick={() => setActiveImage(product.imageData2)}
-        />
-      )}
-      {product.imageData3 && (
-        <img
-          src={`data:image/jpeg;base64,${product.imageData3}`}
-          alt="Thumb 3"
-          className={`thumbnail ${activeImage === product.imageData3 ? 'active' : ''}`}
-          onClick={() => setActiveImage(product.imageData3)}
-        />
-      )}
-    </div>
-  </div>
-</div>
-
+            <div className="main-image-wrapper">
+              <img
+                src={`data:image/jpeg;base64,${activeImage}`}
+                alt="Product"
+                className="main-image"
+              />
+              <div className="thumbnail-row">
+                {product.imageData && (
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageData}`}
+                    alt="Thumb 1"
+                    className={`thumbnail ${activeImage === product.imageData ? 'active' : ''}`}
+                    onClick={() => setActiveImage(product.imageData)}
+                  />
+                )}
+                {product.imageData2 && (
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageData2}`}
+                    alt="Thumb 2"
+                    className={`thumbnail ${activeImage === product.imageData2 ? 'active' : ''}`}
+                    onClick={() => setActiveImage(product.imageData2)}
+                  />
+                )}
+                {product.imageData3 && (
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageData3}`}
+                    alt="Thumb 3"
+                    className={`thumbnail ${activeImage === product.imageData3 ? 'active' : ''}`}
+                    onClick={() => setActiveImage(product.imageData3)}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
 
           <div className="product-info">
             <div className="product-price">

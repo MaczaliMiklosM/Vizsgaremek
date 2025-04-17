@@ -201,6 +201,12 @@ function MyProductsPage() {
 
         <div className="upload-page">
           <h2>Upload a New Product</h2>
+
+          <div className="form-warning">
+            Please fill out everything carefully. <br />
+            Once the product is uploaded, <strong>you won’t be able to edit it later.</strong>
+          </div>
+
           {error && <div className="form-error">{error}</div>}
 
           <form className="upload-form" onSubmit={handleSubmit}>
@@ -258,32 +264,33 @@ function MyProductsPage() {
           </form>
 
           <h3>Your Uploaded Products</h3>
-          <div className="product-list">
-            {myProducts.length === 0 ? (
-              <p className="empty-text">No products uploaded yet.</p>
-            ) : (
-              myProducts.map((p) => (
-                <div key={p.id} className="product-card">
-                  {p.status === "SOLD" && (
-                    <div className="sold-banner"> SOLD</div>
-                  )}
-                  {p.status === "UNAPPROVED" && (
-                    <div className="approval-banner"> Waiting for Approval</div>
-                  )}
-                  <img src={`data:image/jpeg;base64,${p.imageData}`} alt={p.name} />
-                  <h4>{p.name}</h4>
-                  <p>{p.description}</p>
-                  <p><strong>Price:</strong> ${p.price}</p>
-                  <p><strong>Brand:</strong> {p.brand}</p>
-                  <p><strong>Color:</strong> {p.color}</p>
-                  <p><strong>Size:</strong> {p.size}</p>
-                  <p><strong>Category:</strong> {p.category}</p>
-                  <p><strong>Condition:</strong> {p.productCondition}</p>
-                  <p><strong>Gender:</strong> {p.targetGender}</p>
-                </div>
-              ))
-            )}
-          </div>
+<div className="product-list">
+  {myProducts.length === 0 ? (
+    <p className="empty-text">No products uploaded yet.</p>
+  ) : (
+    myProducts.map((p) => (
+      <div key={p.id} className="product-card">
+        {p.status === "SOLD" && (
+          <div className="sold-banner">SOLD</div>
+        )}
+        {p.status === "UNAPPROVED" && (
+          <div className="approval-banner">Waiting for Approval</div>
+        )}
+        <img src={`data:image/jpeg;base64,${p.imageData}`} alt={p.name} />
+        <h4>{p.name}</h4>
+        <p className="product-desc">{p.description}</p>
+        <p><strong>Price:</strong> ${p.price}</p>
+        <p><strong>Brand:</strong> {p.brand}</p>
+        <p><strong>Color:</strong> {p.color}</p>
+        <p><strong>Size:</strong> {p.size}</p>
+        <p><strong>Category:</strong> {p.category}</p>
+        <p><strong>Condition:</strong> {p.productCondition}</p>
+        <p><strong>Gender:</strong> {p.targetGender}</p>
+      </div>
+    ))
+  )}
+</div>
+
         </div>
 
         <Footer />

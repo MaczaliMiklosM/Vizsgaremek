@@ -75,7 +75,10 @@ const Profile = () => {
               <ul className="cart-items"></ul>
               <Link to="/wishlist" className="checkout-btn">Your WishList</Link>
             </div>
-
+            <div className="profile-section">
+              <h2><ShoppingBasketIcon /> Your Orders</h2>
+                  <Link to="/my-orders" className="checkout-btn">View Orders</Link>
+              </div>
             <div className="profile-section">
               <h2><BookmarkBorderIcon /> Your Collection</h2>
               <Link to="/collection" className="checkout-btn">Your Collection</Link>

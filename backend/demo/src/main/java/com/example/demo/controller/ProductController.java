@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.product.ProductRead;
 import com.example.demo.enums.Status;
 import com.example.demo.model.Product;
 import com.example.demo.dto.product.ProductSave;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,10 +42,30 @@ public class ProductController {
     }
 
     @GetMapping("/getProductById/{id}")
-    public Product getProductById(@PathVariable Integer id) {
-        return productService.getProduct(id);
-    }
+    public ResponseEntity<ProductRead> getProductById(@PathVariable Integer id) {
+        Product product = productService.getProduct(id);
+        if (product == null) return ResponseEntity.notFound().build();
 
+        ProductRead dto = new ProductRead(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getBrand(),
+                product.getColor(),
+                product.getSize(),
+                product.getProductCondition(),
+                product.getCategory(),
+                product.getTargetGender(),
+                product.getStatus(),
+                product.getImageData() != null ? Base64.getEncoder().encodeToString(product.getImageData()) : null,
+                product.getImageData2() != null ? Base64.getEncoder().encodeToString(product.getImageData2()) : null,
+                product.getImageData3() != null ? Base64.getEncoder().encodeToString(product.getImageData3()) : null,
+                product.getUser() != null ? product.getUser().getId() : null // ✅ uploaderId
+        );
+
+        return ResponseEntity.ok(dto);
+    }
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @DeleteMapping("/deleteProduct/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Integer id){

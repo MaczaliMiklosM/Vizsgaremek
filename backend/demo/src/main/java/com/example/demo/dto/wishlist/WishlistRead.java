@@ -16,4 +16,6 @@ public class WishlistRead {
     private String productImage;
     private String productImage2;
     private String productImage3;
+    private String productStatus;
+
 }

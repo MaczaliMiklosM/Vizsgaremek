@@ -18,6 +18,7 @@ import TermsPage from './pages/Terms/TermsPage';
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 import RequireAdmin from './components/Auth/RequireAdmin';
 import MyBidsPage from './pages/MyBidPage/MyBidsPage';
+import MyOrdersPage from './pages/MyOrders/MyOrdersPage';
 
 function App() {
   return (
@@ -39,6 +40,8 @@ function App() {
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:category" element={<ProductsPage />} />
         <Route path="/myproducts" element={<MyProductsPage />} />
+        <Route path="/my-orders" element={<MyOrdersPage />} />
+
         <Route
               path="/admin"
               element={

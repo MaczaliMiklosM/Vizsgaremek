@@ -10,4 +10,5 @@ public interface OrderService {
     OrderResponseDTO getOrderById(Integer orderId);
     List<OrderResponseDTO> getOrdersByUserId(Integer userId);
     List<OrderResponseDTO> getAllOrders();
+    void addToCart(Integer userId, Integer productId);
 }

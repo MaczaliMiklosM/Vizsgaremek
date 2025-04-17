@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.order.AddToCartRequestDTO;
 import com.example.demo.dto.order.OrderRequestDTO;
 import com.example.demo.dto.order.OrderResponseDTO;
 import com.example.demo.services.OrderService;
@@ -31,6 +32,15 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable Integer id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
+
+    @ApiOperation(value = "Add product to user's cart",
+            notes = "This endpoint stores a product in a CART order for the given user.")
+    @PostMapping("/addToCart")
+    public ResponseEntity<Void> addToCart(@RequestBody AddToCartRequestDTO request) {
+        orderService.addToCart(request.getUserId(), request.getProductId());
+        return ResponseEntity.ok().build();
+    }
+
 
     @ApiOperation(value = "Get all orders of a user",
             notes = "This endpoint returns a list of orders based on the user's ID. You need to provide the user ID to retrieve their orders.")

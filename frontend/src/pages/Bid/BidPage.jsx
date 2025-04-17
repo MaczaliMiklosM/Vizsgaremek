@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
@@ -9,6 +9,7 @@ import "./BidPage.css";
 
 function BidPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [bids, setBids] = useState([]);
   const [bidInput, setBidInput] = useState("");
@@ -16,43 +17,56 @@ function BidPage() {
   const [hasActiveBid, setHasActiveBid] = useState(false);
   const [isOwnProduct, setIsOwnProduct] = useState(false);
   const [activeImage, setActiveImage] = useState(null);
+  const [acceptedBid, setAcceptedBid] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [shippingAddress, setShippingAddress] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchProductData = async () => {
+    const fetchData = async () => {
       try {
         const productRes = await axios.get(`/api/products/getProductById/${id}`);
-        setProduct(productRes.data);
+        const productData = productRes.data;
+        setProduct(productData);
+        setActiveImage(productData.imageData);
 
-        if (productRes.data.imageData) {
-          setActiveImage(productRes.data.imageData);
-        }
-
-        if (user && productRes.data.user.id === user.id) {
+        if (user && productData.user?.id === user.id) {
           setIsOwnProduct(true);
-          return;
         }
 
-        const bidsRes = await axios.get(`/api/bids/product/${id}`, {
+        if (productData.id) {
+          const bidsRes = await axios.get(`/api/bids/product/${productData.id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setBids(bidsRes.data);
+
+          const activeBid = bidsRes.data.find(
+            bid => bid.userId === user?.id && bid.status === "PENDING"
+          );
+          setHasActiveBid(!!activeBid);
+
+          const myAcceptedBid = bidsRes.data.find(
+            bid => bid.userId === user?.id && bid.status === "ACCEPTED"
+          );
+          if (myAcceptedBid) {
+            setAcceptedBid(myAcceptedBid);
+          }
+        }
+
+        const profileRes = await axios.get("/api/management/adminuser/get-profile", {
           headers: { Authorization: `Bearer ${token}` }
         });
+        setUserProfile(profileRes.data.user);
+        setShippingAddress(profileRes.data.user.address);
 
-        setBids(bidsRes.data);
-
-        const alreadyBid = bidsRes.data.some(
-          (bid) => bid.userId === user?.id && bid.status === "PENDING"
-        );
-        setHasActiveBid(alreadyBid);
-
-      } catch (error) {
-        console.error(" Error fetching product or bids:", error);
-        setMessage("Failed to load product or bids.");
+      } catch (err) {
+        console.error("❌ Failed to load bid or product:", err);
+        setMessage("Failed to load data.");
       }
     };
-
-    fetchProductData();
+    fetchData();
   }, [id]);
 
   const highestBid = bids.length > 0
@@ -60,6 +74,11 @@ function BidPage() {
     : product?.price / 2 || 0;
 
   const handleBidSubmit = async () => {
+    if (!product || !product.id) {
+      setMessage("Product is still loading. Please wait...");
+      return;
+    }
+
     const newBid = parseFloat(bidInput);
     if (isNaN(newBid) || newBid <= highestBid) {
       setMessage(`Bid must be higher than $${highestBid}`);
@@ -82,7 +101,7 @@ function BidPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      const bidsRes = await axios.get(`/api/bids/product/${id}`, {
+      const bidsRes = await axios.get(`/api/bids/product/${product.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setBids(bidsRes.data);
@@ -98,6 +117,30 @@ function BidPage() {
     } catch (error) {
       console.error("❌ Error placing bid:", error);
       setMessage("Failed to place bid.");
+    }
+  };
+
+  const handleProceedToOrder = async () => {
+    if (!acceptedBid || !userProfile) return;
+
+    try {
+      const response = await axios.post("/api/orders/createOrder", {
+        userId: user.id,
+        shippingAddress: shippingAddress,
+        items: [{
+          productId: product.id,
+          quantity: 1,
+          unitPrice: acceptedBid.amount
+        }]
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      alert("Order created successfully!");
+      navigate("/collection");
+    } catch (err) {
+      console.error("Failed to create order from accepted bid", err);
+      setMessage("Failed to create order.");
     }
   };
 
@@ -127,30 +170,15 @@ function BidPage() {
             />
 
             <div className="bid-thumbnails">
-              {product.imageData && (
-                <img
-                  src={`data:image/jpeg;base64,${product.imageData}`}
-                  className={`bid-thumb ${activeImage === product.imageData ? 'active' : ''}`}
-                  alt="thumb1"
-                  onClick={() => setActiveImage(product.imageData)}
+              {[product.imageData, product.imageData2, product.imageData3].map((img, idx) => (
+                img && <img
+                  key={idx}
+                  src={`data:image/jpeg;base64,${img}`}
+                  className={`bid-thumb ${activeImage === img ? 'active' : ''}`}
+                  alt={`thumb${idx + 1}`}
+                  onClick={() => setActiveImage(img)}
                 />
-              )}
-              {product.imageData2 && (
-                <img
-                  src={`data:image/jpeg;base64,${product.imageData2}`}
-                  className={`bid-thumb ${activeImage === product.imageData2 ? 'active' : ''}`}
-                  alt="thumb2"
-                  onClick={() => setActiveImage(product.imageData2)}
-                />
-              )}
-              {product.imageData3 && (
-                <img
-                  src={`data:image/jpeg;base64,${product.imageData3}`}
-                  className={`bid-thumb ${activeImage === product.imageData3 ? 'active' : ''}`}
-                  alt="thumb3"
-                  onClick={() => setActiveImage(product.imageData3)}
-                />
-              )}
+              ))}
             </div>
 
             <p><strong>Starting Price:</strong> ${product.price}</p>
@@ -159,8 +187,36 @@ function BidPage() {
 
             {isOwnProduct ? (
               <p className="bid-message">You cannot bid on your own product.</p>
+            ) : acceptedBid ? (
+              <>
+                <p className="bid-message green">Your bid was accepted!</p>
+                <p><strong>Shipping Address:</strong></p>
+                <input
+                  type="text"
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  className="bid-input"
+                />
+                <button onClick={handleProceedToOrder} className="bid-button">
+                  Confirm and Place Order
+                </button>
+              </>
             ) : (
               <>
+                {!isOwnProduct && !acceptedBid && userProfile && (
+                  <div className="shipping-warning">
+                    <h4>Your Shipping Info</h4>
+                    <input
+                      type="text"
+                      value={shippingAddress}
+                      onChange={(e) => setShippingAddress(e.target.value)}
+                      className="bid-input"
+                    />
+                    <p className="info-note">
+                      Note: If your bid is accepted, the order will be placed automatically using the shipping address above. You can update it now if needed.
+                    </p>
+                  </div>
+                )}
                 <input
                   type="number"
                   value={bidInput}

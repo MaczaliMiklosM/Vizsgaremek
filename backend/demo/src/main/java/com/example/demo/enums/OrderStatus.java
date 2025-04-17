@@ -2,10 +2,7 @@ package com.example.demo.enums;
 
 
 public enum OrderStatus {
-    PLACED,
-    SHIPPED,
-    DELIVERED,
-    CANCELLED,
+    PROCESSING,
     CART  // Ezt hozzáadtuk a kosár státuszhoz
 }
 
