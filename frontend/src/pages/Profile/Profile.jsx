@@ -5,6 +5,7 @@ import Footer from '../../components/Footer/Footer';
 import RequireAuth from '../../components/Auth/RequireAuth';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import './Profile.css';
 import {
   ShoppingBasket as ShoppingBasketIcon,
@@ -28,16 +29,18 @@ const Profile = () => {
     axios.get('/api/management/adminuser/get-profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
-    .then(response => {
-      setUser(response.data.user);
-      setFormData(response.data.user);
-    })
-    .catch(error => {
-      console.error(' Failed to fetch user profile:', error);
-      if (error.response?.status === 403) {
-        alert("Access denied.");
-      }
-    });
+      .then(response => {
+        setUser(response.data.user);
+        setFormData(response.data.user);
+      })
+      .catch(error => {
+        console.error('Failed to fetch user profile:', error);
+        if (error.response?.status === 403) {
+          toast.error("Access denied.");
+        } else {
+          toast.error("Failed to load profile.");
+        }
+      });
   }, []);
 
   const handleChange = (e) => {
@@ -51,15 +54,15 @@ const Profile = () => {
     axios.put(`/api/management/admin/update/${user.id}`, formData, {
       headers: { Authorization: `Bearer ${token}` }
     })
-    .then(response => {
-      setUser(response.data);
-      setEditMode(false);
-      alert('Profile updated successfully');
-    })
-    .catch(error => {
-      console.error(' Failed to update profile:', error);
-      alert('Failed to update profile.');
-    });
+      .then(response => {
+        setUser(response.data);
+        setEditMode(false);
+        toast.success('Profile updated successfully!');
+      })
+      .catch(error => {
+        console.error('Failed to update profile:', error);
+        toast.error('Failed to update profile.');
+      });
   };
 
   return (
@@ -77,23 +80,20 @@ const Profile = () => {
             </div>
             <div className="profile-section">
               <h2><ShoppingBasketIcon /> Your Orders</h2>
-                  <Link to="/my-orders" className="checkout-btn">View Orders</Link>
-              </div>
+              <Link to="/my-orders" className="checkout-btn">View Orders</Link>
+            </div>
             <div className="profile-section">
               <h2><BookmarkBorderIcon /> Your Collection</h2>
               <Link to="/collection" className="checkout-btn">Your Collection</Link>
             </div>
-
             <div className="profile-section">
               <h2><ChecklistIcon /> Your Own Products</h2>
               <Link to="/myproducts" className="checkout-btn">Your Products</Link>
             </div>
-
             <div className="profile-section">
               <h2><ChecklistIcon /> Your Bids</h2>
               <Link to="/mybids" className="checkout-btn">Your Bids</Link>
             </div>
-
             <div className="profile-section">
               <h2><Person2Icon /> Personal Information</h2>
               {user ? (

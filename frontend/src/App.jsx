@@ -20,10 +20,17 @@ import RequireAdmin from './components/Auth/RequireAdmin';
 import MyBidsPage from './pages/MyBidPage/MyBidsPage';
 import MyOrdersPage from './pages/MyOrders/MyOrdersPage';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   return (
     <HashRouter>
       <ScrollToTop />
+      
+      {/* ✅ Globális ToastContainer — működik minden oldalon */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
@@ -43,13 +50,13 @@ function App() {
         <Route path="/my-orders" element={<MyOrdersPage />} />
 
         <Route
-              path="/admin"
-              element={
-                <RequireAdmin>
-                   <AdminDashboard />
-               </RequireAdmin>
-            }
-         />
+          path="/admin"
+          element={
+            <RequireAdmin>
+              <AdminDashboard />
+            </RequireAdmin>
+          }
+        />
         <Route
           path="*"
           element={

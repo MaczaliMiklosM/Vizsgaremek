@@ -33,9 +33,9 @@ public class UserManagementService {
     public ReqRes register(RegisterRequest registrationRequest) {
         ReqRes resp = new ReqRes();
         try {
-            if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
+            if (emailExists(registrationRequest.getEmail())) {
                 resp.setStatusCode(400);
-                resp.setMessage("Email address is already in use.");
+                resp.setMessage("Email already exists");
                 return resp;
             }
 
@@ -48,6 +48,7 @@ public class UserManagementService {
             user.setPhone_number(registrationRequest.getPhoneNumber());
             user.setPassword_hash(passwordEncoder.encode(registrationRequest.getPassword()));
             User userResult = userRepository.save(user);
+
             if (userResult.getId() > 0) {
                 resp.setUser(userResult);
                 resp.setMessage("User Saved Successfully");
@@ -58,8 +59,10 @@ public class UserManagementService {
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }
+
         return resp;
     }
+
 
     public ReqRes login(LoginRequest loginRequest) {
         ReqRes response = new ReqRes();
@@ -205,4 +208,9 @@ public class UserManagementService {
         }
         return reqRes;
     }
+
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
 }

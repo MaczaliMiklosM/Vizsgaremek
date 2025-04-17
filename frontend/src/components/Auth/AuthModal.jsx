@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import countries from '/src/data/countries.json';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './AuthModal.css';
 
 const AuthModal = ({ onClose }) => {
@@ -19,14 +21,12 @@ const AuthModal = ({ onClose }) => {
     confirmPassword: '',
   });
 
+  const [passwordStrength, setPasswordStrength] = useState('');
+
   useEffect(() => {
     document.body.classList.add('modal-open');
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
+    return () => document.body.classList.remove('modal-open');
   }, []);
-
-  const [passwordStrength, setPasswordStrength] = useState('');
 
   const handleChange = ({ target: { name, value } }) => {
     if (name === 'country') {
@@ -51,83 +51,82 @@ const AuthModal = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const {
-      fullName, email, phoneNumber, address, country, dialCode, password, confirmPassword,
+      fullName, email, phoneNumber, address, country, dialCode, password, confirmPassword
     } = formData;
-
+  
     if (isSignUp) {
       if (Object.values({ fullName, email, phoneNumber, address, country, dialCode, password, confirmPassword }).some(val => !val)) {
-        return alert('Please fill out all fields.');
+        return toast.error('Please fill out all fields.');
       }
-      if (password !== confirmPassword) return alert('Passwords do not match!');
+      if (password !== confirmPassword) return toast.error('Passwords do not match!');
       if (password.length < 10 || !/[!@#$%^&*(),.?":{}|<>]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {
-        return alert('Password must be at least 10 characters long, include a special character, a number and an uppercase letter.');
+        return toast.error('Password must be at least 10 characters, contain special char, number and uppercase.');
       }
-
-      const payload = {
-        name: fullName,
-        email,
-        password,
-        phoneNumber: dialCode + phoneNumber,
-        address,
-        country
-      };
-
+  
       try {
+        // ✅ FIXED: helyes email ellenőrzés
+        const check = await axios.get(`/api/management/check-email?email=${email}`);
+        if (check.data === true) return toast.error("This email is already registered.");
+  
+        const payload = {
+          name: fullName,
+          email,
+          password,
+          phoneNumber: dialCode + phoneNumber,
+          address,
+          country
+        };
+  
         await axios.post('/api/management/auth/register', payload, {
           headers: { 'Content-Type': 'application/json' },
         });
-        alert('Registration successful! You can now sign in.');
+  
+        toast.success('Registration successful! You can now sign in.');
         setIsSignUp(false);
       } catch (error) {
-        console.error(" Registration error:", error);
-        alert('Registration failed: ' + (error.response?.data?.message || error.message));
+        console.error("Registration error:", error);
+        toast.error('Registration failed: ' + (error.response?.data?.message || error.message));
       }
     } else {
       try {
-        const response = await axios.post('/api/management/auth/login', { email, password }, {
-          headers: { 'Content-Type': 'application/json' },
-        });
-
+        const response = await axios.post('/api/management/auth/login', { email, password });
         const { token, statusCode } = response.data;
-
-        if (!token || statusCode !== 200) {
-          return alert('Invalid email or password!');
-        }
-
+    
+        if (!token || statusCode !== 200) return toast.error('Invalid email or password!');
+    
         localStorage.setItem('token', token);
-
+    
         const profileResponse = await axios.get('/api/management/adminuser/get-profile', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
+    
         const user = profileResponse.data.user;
         const role = user?.role || user?.authorities?.[0]?.authority || 'USER';
-
+    
         localStorage.setItem('user', JSON.stringify({
           email,
           role,
           id: user?.id
         }));
-
-        onClose();
-
-        if (role === 'ADMIN') {
-          window.location.hash = '#/admin';
-        } else {
-          window.location.hash = '#/';
-        }
+    
+        toast.success("Login successful!");
+    
+        setTimeout(() => {
+          onClose();
+          window.location.hash = role === 'ADMIN' ? '#/admin' : '#/';
+        }, 1200); // kis várakozás a toastnak
       } catch (error) {
-        console.error(" Login error:", error);
-        alert('Login failed: ' + (error.response?.data?.message || error.message));
+        console.error("Login error:", error);
+        toast.error('Login failed: ' + (error.response?.data?.message || error.message));
       }
     }
+    
   };
+  
 
-  const renderInputPair = (leftField, rightField) => (
+  const renderInputPair = (left, right) => (
     <div className="input-pair">
-      {[leftField, rightField].map((field) => (
+      {[left, right].map((field) => (
         field === 'phoneNumber' ? (
           <div className="input-box" key={field}>
             <div className="phone-wrapper">
@@ -147,11 +146,7 @@ const AuthModal = ({ onClose }) => {
           <div className="input-box" key={field}>
             <input
               type={field === 'email' ? 'email' : 'text'}
-              placeholder={
-                field === 'fullName' ? 'Full Name' :
-                field === 'address' ? 'Street, House number, ZIP, City' :
-                field.charAt(0).toUpperCase() + field.slice(1)
-              }
+              placeholder={field === 'fullName' ? 'Full Name' : field === 'address' ? 'Address' : field}
               name={field}
               value={formData[field]}
               onChange={handleChange}
@@ -185,8 +180,8 @@ const AuthModal = ({ onClose }) => {
                   className="input-field"
                 >
                   <option value="" disabled>Select Country</option>
-                  {countries.map((country, i) => (
-                    <option key={i} value={country.name}>{country.name}</option>
+                  {countries.map((c, i) => (
+                    <option key={i} value={c.name}>{c.name}</option>
                   ))}
                 </select>
               </div>
@@ -242,6 +237,14 @@ const AuthModal = ({ onClose }) => {
             <input type="submit" value={isSignUp ? 'Sign Up' : 'Sign In'} className="submit-button" />
           </div>
         </form>
+
+                  <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar
+            closeButton={false}   
+          />
+                  
       </div>
     </div>
   );

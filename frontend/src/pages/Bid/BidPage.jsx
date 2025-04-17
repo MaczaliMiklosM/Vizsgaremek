@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import RequireAuth from "../../components/Auth/RequireAuth";
 import axios from "axios";
+import { toast } from "react-toastify";
 import "./BidPage.css";
 
 function BidPage() {
@@ -64,6 +65,7 @@ function BidPage() {
       } catch (err) {
         console.error("❌ Failed to load bid or product:", err);
         setMessage("Failed to load data.");
+        toast.error("Failed to load data.");
       }
     };
     fetchData();
@@ -76,17 +78,21 @@ function BidPage() {
   const handleBidSubmit = async () => {
     if (!product || !product.id) {
       setMessage("Product is still loading. Please wait...");
+      toast.warn("Product is still loading.");
       return;
     }
 
     const newBid = parseFloat(bidInput);
     if (isNaN(newBid) || newBid <= highestBid) {
-      setMessage(`Bid must be higher than $${highestBid}`);
+      const warnMsg = `Bid must be higher than $${highestBid}`;
+      setMessage(warnMsg);
+      toast.warning(warnMsg);
       return;
     }
 
     if (!user) {
       setMessage("You must be logged in to place a bid.");
+      toast.error("Please log in to place a bid.");
       return;
     }
 
@@ -112,11 +118,13 @@ function BidPage() {
       setHasActiveBid(alreadyBid);
 
       setMessage(`Your bid of $${newBid} has been placed!`);
+      toast.success(`Bid of $${newBid} placed successfully!`);
       setBidInput("");
 
     } catch (error) {
       console.error("❌ Error placing bid:", error);
       setMessage("Failed to place bid.");
+      toast.error("Failed to place bid.");
     }
   };
 
@@ -124,7 +132,7 @@ function BidPage() {
     if (!acceptedBid || !userProfile) return;
 
     try {
-      const response = await axios.post("/api/orders/createOrder", {
+      await axios.post("/api/orders/createOrder", {
         userId: user.id,
         shippingAddress: shippingAddress,
         items: [{
@@ -136,11 +144,12 @@ function BidPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      alert("Order created successfully!");
+      toast.success("Order created successfully!");
       navigate("/collection");
     } catch (err) {
       console.error("Failed to create order from accepted bid", err);
       setMessage("Failed to create order.");
+      toast.error("Failed to create order.");
     }
   };
 

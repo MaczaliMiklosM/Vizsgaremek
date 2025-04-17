@@ -43,13 +43,15 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v1/auth/**", "/api/auth/**", "/api/public/**",
-                                "/v2/api-docs", "/v3/api-docs/**", "/swagger-resources/**",
-                                "/swagger-ui/**", "/webjars/**", "/swagger-ui.html",
-                                "/products/getProducts", "/products/getProductById/**"
+                                .requestMatchers(
+                                        "/api/v1/auth/**", "/api/auth/**", "/api/public/**",
+                                        "/v2/api-docs", "/v3/api-docs/**", "/swagger-resources/**",
+                                        "/swagger-ui/**", "/webjars/**", "/swagger-ui.html",
+                                        "/products/getProducts", "/products/getProductById/**",
+                                        "/management/check-email", "/management/check-email/**" // 👈 EZ KELL!
+                                ).permitAll()
 
-                        ).permitAll()
+
                         .requestMatchers("/notifications/**").authenticated()
                         .requestMatchers("/orders/**").hasAnyAuthority("USER", "ADMIN") // ⬅️ ADD THIS
                         .requestMatchers(WHITE_LIST_URL).permitAll()
@@ -61,9 +63,10 @@ public class SecurityConfig {
                         .requestMatchers("/bids/received/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/products/by-user/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/products/create").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/management/check-email/**").permitAll()
 
 
-                        //.requestMatchers("/bids/place").permitAll()
+                                //.requestMatchers("/bids/place").permitAll()
                         .requestMatchers("/bids/product/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/admin/**", "/products/deleteProduct/**", "/products/approveProduct/**").hasAuthority("ADMIN")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")

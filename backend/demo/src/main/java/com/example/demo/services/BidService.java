@@ -2,15 +2,10 @@ package com.example.demo.services;
 
 import com.example.demo.dto.bid.BidDTO;
 import com.example.demo.enums.BidStatus;
+import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.Status;
-import com.example.demo.model.Bid;
-import com.example.demo.model.Collection;
-import com.example.demo.model.Product;
-import com.example.demo.model.User;
-import com.example.demo.repository.BidRepository;
-import com.example.demo.repository.CollectionRepository;
-import com.example.demo.repository.ProductRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +16,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BidService {
-
+    private final OrderHeaderRepository orderHeaderRepository;
+    private final OrderBodyRepository orderBodyRepository;
     private final BidRepository bidRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
@@ -103,20 +99,21 @@ public class BidService {
                 .orElseThrow(() -> new RuntimeException("Bid not found"));
 
         Product product = acceptedBid.getProduct();
+        User buyer = acceptedBid.getBidder();
 
-        // ✅ Elfogadott ajánlat státusz beállítása
+        // ✅ 1. Set accepted bid status + mark product as SOLD
         acceptedBid.setStatus(BidStatus.ACCEPTED);
         product.setStatus(Status.SOLD);
         bidRepository.save(acceptedBid);
 
-        // ✅ Hozzáadás a kollekcióhoz
+        // ✅ 2. Add product to collection
         Collection collection = Collection.builder()
-                .user(acceptedBid.getBidder())
+                .user(buyer)
                 .product(product)
                 .build();
         collectionRepository.save(collection);
 
-        // ✅ Az összes többi ajánlat erre a termékre: REJECTED
+        // ✅ 3. Reject all other bids
         List<Bid> otherBids = bidRepository.findByProductId(product.getId());
         for (Bid other : otherBids) {
             if (!other.getId().equals(bidId)) {
@@ -125,10 +122,34 @@ public class BidService {
         }
         bidRepository.saveAll(otherBids);
 
-        // ✅ Értesítések
+        // ✅ 4. Create an order with PROCESSING status
+        String address = buyer.getAddress(); // assumed saved in DB
+        if (address != null && !address.trim().isEmpty()) {
+            OrderHeader order = OrderHeader.builder()
+                    .user(buyer)
+                    .shippingAddress(address)
+                    .status(OrderStatus.PROCESSING)
+                    .totalAmount(acceptedBid.getAmount().intValue())
+                    .build();
+            order = orderHeaderRepository.save(order);
+
+            OrderBody body = OrderBody.builder()
+                    .order(order)
+                    .product(product)
+                    .unitPrice(acceptedBid.getAmount().intValue())
+                    .quantity(1)
+                    .build();
+            orderBodyRepository.save(body);
+
+            order.setItems(List.of(body));
+            orderHeaderRepository.save(order);
+        }
+
+        // ✅ 5. Notifications
         notificationService.sendNotification(
-                acceptedBid.getBidder(),
-                "Your bid has been accepted for product: " + product.getName() + " ($" + acceptedBid.getAmount() + ")"
+                buyer,
+                "Your bid has been accepted for product: " + product.getName() +
+                        " ($" + acceptedBid.getAmount() + "). Order created automatically!"
         );
 
         for (Bid other : otherBids) {
@@ -140,6 +161,8 @@ public class BidService {
             }
         }
     }
+
+
 
     public void rejectBid(Integer bidId) {
         Bid bid = bidRepository.findById(bidId).orElseThrow();

@@ -59,6 +59,14 @@ public class UserManagementController {
         return ResponseEntity.ok(userManagementService.updateUser(userId, request).getUser());
     }
 
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmailExists(@RequestParam String email) {
+        boolean exists = userManagementService.emailExists(email);
+        return ResponseEntity.ok(exists);
+    }
+
+
+
 
 
 }

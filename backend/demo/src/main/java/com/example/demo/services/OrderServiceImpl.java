@@ -178,8 +178,10 @@ public class OrderServiceImpl implements OrderService {
             itemDTOs.add(new OrderItemDTO(
                     body.getProduct().getId(),
                     body.getUnitPrice(),
-                    1
+                    1,
+                    body.getProduct().getName() // ✅ productName
             ));
+
         }
 
         return new OrderResponseDTO(

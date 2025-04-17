@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './AdminDashboard.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
@@ -28,6 +29,7 @@ function AdminDashboard() {
         setActiveImages(defaultImages);
       } catch (err) {
         console.error("❌ Failed to fetch products", err);
+        toast.error("Failed to fetch products.");
       }
     };
 
@@ -49,16 +51,15 @@ function AdminDashboard() {
         },
       });
       setProducts(prev => prev.map(p => p.id === id ? { ...p, status: 'APPROVED' } : p));
-      alert("Product approved!");
+      toast.success("Product approved!");
     } catch (err) {
       console.error("❌ Failed to approve product", err);
-      alert("Failed to approve product.");
+      toast.error("Failed to approve product.");
     }
   };
 
   const unapproveProduct = async (id) => {
-    const confirmed = window.confirm("Are you sure you want to reject and delete this product?");
-    if (!confirmed) return;
+    if (!window.confirm("Are you sure you want to reject and delete this product?")) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -68,16 +69,15 @@ function AdminDashboard() {
         },
       });
       setProducts(prev => prev.filter(product => product.id !== id));
-      alert("Product rejected and deleted.");
+      toast.success("Product rejected and deleted.");
     } catch (error) {
       console.error("❌ Failed to reject and delete product", error);
-      alert("Failed to reject product.");
+      toast.error("Failed to reject product.");
     }
   };
 
   const deleteProduct = async (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this product?");
-    if (!confirmed) return;
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -86,10 +86,10 @@ function AdminDashboard() {
       });
 
       setProducts(prev => prev.filter(product => product.id !== id));
-      alert("Product successfully deleted!");
+      toast.success("Product successfully deleted!");
     } catch (error) {
       console.error("❌ Failed to delete product", error);
-      alert("Failed to delete product.");
+      toast.error("Failed to delete product.");
     }
   };
 

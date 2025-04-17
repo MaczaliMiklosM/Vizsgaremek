@@ -4,6 +4,8 @@ import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import RequireAuth from '../../components/Auth/RequireAuth';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './CheckOut.css';
 
 const steps = ['Shipping', 'Summary'];
@@ -12,6 +14,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [error, setError] = useState('');
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [formData, setFormData] = useState({
     name: '', email: '', address: '', country: '', phone: '', paymentMethod: 'cash'
   });
@@ -34,7 +37,10 @@ const Checkout = () => {
     })
       .then(res => res.json())
       .then(data => setUser(data.user))
-      .catch(err => console.error("❌ Failed to fetch profile:", err));
+      .catch(err => {
+        console.error("❌ Failed to fetch profile:", err);
+        toast.error("Failed to load user profile.");
+      });
   }, []);
 
   useEffect(() => {
@@ -120,11 +126,16 @@ const Checkout = () => {
       }
 
       localStorage.removeItem(basketKey);
-      alert('Order placed! Redirecting to your Collection...');
-      navigate('/collection');
+      setShowSuccessMessage(true);
+
+      setTimeout(() => {
+        navigate('/');
+      }, 2500);
+
     } catch (err) {
       console.error('Order error:', err);
       setError('Order failed. Please try again.');
+      toast.error("Order could not be completed. Try again.");
     }
   };
 
@@ -221,6 +232,15 @@ const Checkout = () => {
           </div>
           {renderStep()}
         </div>
+
+        {/* fallback message if toast doesn't show */}
+        {showSuccessMessage && (
+          <div className="floating-message success">
+            🎉 Order placed successfully! Redirecting...
+          </div>
+        )}
+
+        <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar />
         <Footer />
       </div>
     </RequireAuth>

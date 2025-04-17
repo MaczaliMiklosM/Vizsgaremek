@@ -9,7 +9,6 @@ import './MyOrdersPage.css';
 const MyOrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState('');
-
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
@@ -50,11 +49,14 @@ const MyOrdersPage = () => {
                   <p><strong>Status:</strong> {order.status}</p>
                   <p><strong>Total Amount:</strong> ${order.totalAmount}</p>
                   <div className="order-items">
-                    <h4>Items:</h4>
-                    <ul>
+                    <h4>Product:</h4>
+                    <ul className="order-item-list">
                       {order.items.map((item, idx) => (
-                        <li key={idx}>
-                          • Product ID: {item.productId}, Price: ${item.unitPrice}
+                        <li key={idx} className="order-item">
+                          <div className="item-name">
+                            <strong>{item.productName || `Product #${item.productId}`}</strong>
+                          </div>
+                         
                         </li>
                       ))}
                     </ul>

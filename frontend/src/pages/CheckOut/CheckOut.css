@@ -145,6 +145,25 @@ button:hover {
   max-width: 100px;  /* Ensuring images are smaller */
   margin: 10px 0;
 }
+.floating-message.success {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #28a745;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  font-size: 16px;
+  animation: fadeOut 2s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  0%   { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
 
 @media (max-width: 768px) {
   .checkout-container {
