@@ -6,6 +6,7 @@ import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.Status;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class BidService {
     private final UserRepository userRepository;
     private final CollectionRepository collectionRepository;
     private final NotificationService notificationService;
+    private final WishlistRepository wishlistRepository;
 
     public Bid placeBid(Integer productId, Integer userId, Double amount) throws Exception {
         Product product = productRepository.findById(productId)
@@ -95,27 +97,28 @@ public class BidService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void acceptBid(Integer bidId) {
         Bid acceptedBid = bidRepository.findById(bidId)
                 .orElseThrow(() -> new RuntimeException("Bid not found"));
 
         Product product = acceptedBid.getProduct();
         User buyer = acceptedBid.getBidder();
-        User seller = product.getUser();  // A termék feltöltője
+        User seller = product.getUser();  // Feltöltő
 
-        // ✅ Elfogadott ajánlat státusz beállítása
+        // Állapot frissítése
         acceptedBid.setStatus(BidStatus.ACCEPTED);
         product.setStatus(Status.SOLD);
         bidRepository.save(acceptedBid);
 
-        // ✅ Hozzáadás a kollekcióhoz
+        // Kollekcióba mentés
         Collection collection = Collection.builder()
-                .user(acceptedBid.getBidder())
+                .user(buyer)
                 .product(product)
                 .build();
         collectionRepository.save(collection);
 
-        // ✅ Az összes többi ajánlat erre a termékre: REJECTED
+        // Többi ajánlat elutasítása
         List<Bid> otherBids = bidRepository.findByProductId(product.getId());
         for (Bid other : otherBids) {
             if (!other.getId().equals(bidId)) {
@@ -124,41 +127,49 @@ public class BidService {
         }
         bidRepository.saveAll(otherBids);
 
-        // ✅ 4. Create an order with PROCESSING status
-        String address = buyer.getAddress(); // assumed saved in DB
+        // 🧼 Wishlist takarítás és értesítés (kivéve aki megvette)
+        List<Wishlist> wishlists = wishlistRepository.findByProductId(product.getId());
+        for (Wishlist w : wishlists) {
+            if (w.getUser().getId() != buyer.getId()) {
+                notificationService.sendNotification(
+                        w.getUser(),
+                        "The item on your wishlist has been sold. Name: " + product.getName()
+                );
+            }
+
+        }
+        wishlistRepository.deleteByProductId(product.getId());
+
+
+        // Order létrehozás
+        String address = buyer.getAddress();
         if (address != null && !address.trim().isEmpty()) {
-            // Create OrderHeader
             OrderHeader order = OrderHeader.builder()
                     .user(buyer)
                     .shippingAddress(address)
                     .status(OrderStatus.PROCESSING)
                     .totalAmount(acceptedBid.getAmount().intValue())
-                    .items(new ArrayList<>() )  // Initialize the items list to avoid null pointer exception
+                    .items(new ArrayList<>())
                     .build();
-            order = orderHeaderRepository.save(order);  // Save the orderHeader first
+            order = orderHeaderRepository.save(order);
 
-            // Create OrderBody
             OrderBody body = OrderBody.builder()
                     .order(order)
                     .product(product)
                     .unitPrice(acceptedBid.getAmount().intValue())
                     .quantity(1)
                     .build();
-            orderBodyRepository.save(body); // Save the orderBody
-
-            // Add OrderBody to the OrderHeader items
-            order.getItems().add(body);  // add the body to the order's items list
-
-            orderHeaderRepository.save(order);  // Save updated orderHeader
+            orderBodyRepository.save(body);
+            order.getItems().add(body);
+            orderHeaderRepository.save(order);
         }
 
-        // ✅ Értesítések a licitáló számára
+        // Értesítések
         notificationService.sendNotification(
-                acceptedBid.getBidder(),
+                buyer,
                 "Your bid has been accepted for product: " + product.getName() + " ($" + acceptedBid.getAmount() + ")"
         );
 
-        // ✅ Értesítés a többi licitálónak, hogy elutasították az ajánlatukat
         for (Bid other : otherBids) {
             if (!other.getId().equals(bidId)) {
                 notificationService.sendNotification(
@@ -168,12 +179,12 @@ public class BidService {
             }
         }
 
-        // ✅ Értesítés a termék feltöltőjének, hogy eladták a terméket
         notificationService.sendNotification(
                 seller,
                 "Congratulations! Your product \"" + product.getName() + "\" has been sold to " + buyer.getFull_name() + " via bid."
         );
     }
+
 
 
 
