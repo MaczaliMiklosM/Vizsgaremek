@@ -49,7 +49,7 @@ const MyOrdersPage = () => {
                   <p><strong>Status:</strong> {order.status}</p>
                   <p><strong>Total Amount:</strong> ${order.totalAmount}</p>
                   <div className="order-items">
-                    <h4>Product:</h4>
+                    <h4>Products:</h4>
                     <ul className="order-item-list">
                       {order.items.map((item, idx) => (
                         <li key={idx} className="order-item">

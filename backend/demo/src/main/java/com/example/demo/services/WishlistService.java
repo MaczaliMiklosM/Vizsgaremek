@@ -51,14 +51,19 @@ public class WishlistService {
     public ResponseEntity<String> removeFromWishlist(WishlistDelete wishlistDelete) {
         Optional<User> user = userRepository.findById(wishlistDelete.getUserId());
         Optional<Product> product = productRepository.findById(wishlistDelete.getProductId());
-        Optional<Wishlist> wishlist = wishlistRepository.findByUserIdAndProductId(user.get().getId(), product.get().getId());
 
-        if (wishlist.isPresent()) {
-            wishlistRepository.delete(wishlist.get());
-            return new ResponseEntity<>("Wishlist item deleted", HttpStatus.OK);
+        if (user.isPresent() && product.isPresent()) {
+            Optional<Wishlist> wishlist = wishlistRepository.findByUserIdAndProductId(
+                    user.get().getId(), product.get().getId());
+
+            wishlist.ifPresent(wishlistRepository::delete);
+
+            return new ResponseEntity<>("Item removed or already not present", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Something happened", HttpStatus.CONFLICT);
+
+        return new ResponseEntity<>("Invalid user or product", HttpStatus.BAD_REQUEST);
     }
+
 }
 
 

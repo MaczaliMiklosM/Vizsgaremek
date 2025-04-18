@@ -69,9 +69,10 @@ public class SecurityConfig {
                         .requestMatchers("/management/check-email/**").permitAll()
                         .requestMatchers("/notifications/my").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/notifications/mark-read").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/collection/**").authenticated()
 
 
-                                //.requestMatchers("/bids/place").permitAll()
+
                         .requestMatchers("/bids/product/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/admin/**", "/products/deleteProduct/**", "/products/approveProduct/**").hasAuthority("ADMIN")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")

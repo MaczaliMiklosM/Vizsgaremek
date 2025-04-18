@@ -4,8 +4,10 @@ import com.example.demo.dto.product.ProductSave;
 import com.example.demo.enums.Status;
 import com.example.demo.model.Product;
 import com.example.demo.model.User;
+import com.example.demo.model.Wishlist;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,8 @@ public class ProductService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    WishlistRepository wishlistRepository;
     public List<Product> getProducts() {
         return productRepository.findAll();
     }
@@ -45,9 +49,7 @@ public class ProductService {
             Product product = productOptional.get();
             User uploader = product.getUser();
 
-            productRepository.deleteById(id);
-
-            // 🔔 Notify uploader about deletion
+            // 🔔 Értesítés a feltöltőnek
             if (uploader != null) {
                 notificationService.sendNotification(
                         uploader,
@@ -55,11 +57,28 @@ public class ProductService {
                 );
             }
 
+            List<Wishlist> wishlists = wishlistRepository.findByProductId(product.getId());
+            for (Wishlist w : wishlists) {
+                User u = w.getUser();
+                if (u.getId() != uploader.getId()) {
+                    notificationService.sendNotification(
+                            u,
+                            "A product on your wishlist has been removed: \"" + product.getName() + "\""
+                    );
+                }
+            }
+
+
+            wishlistRepository.deleteAll(wishlists);
+
+            productRepository.deleteById(id);
+
             return new ResponseEntity<>("Product deleted", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Product not found", HttpStatus.CONFLICT);
         }
     }
+
 
 
     public Product createProduct(ProductSave productSave) {

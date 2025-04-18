@@ -79,7 +79,7 @@ const Checkout = () => {
     const userData = JSON.parse(localStorage.getItem("user"));
     const basketKey = `basket_${userData.id}`;
     if (!token || !userData) return;
-
+  
     const requestBody = {
       userId: userData.id,
       shippingAddress: formData.address,
@@ -88,7 +88,7 @@ const Checkout = () => {
         unitPrice: Math.round(item.price)
       }))
     };
-
+  
     try {
       const res = await fetch('/api/orders/createOrder', {
         method: 'POST',
@@ -98,9 +98,9 @@ const Checkout = () => {
         },
         body: JSON.stringify(requestBody)
       });
-
+  
       if (!res.ok) throw new Error('Order failed');
-
+  
       for (const item of cart) {
         await fetch('/api/wishlist/removeWishlistItem', {
           method: 'DELETE',
@@ -110,33 +110,24 @@ const Checkout = () => {
           },
           body: JSON.stringify({ userId: userData.id, productId: item.id })
         });
-
-        await fetch('/api/collections/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            userId: userData.id,
-            productId: item.id
-          })
-        });
+  
+        // 🔕 Kiszedve: collection-be mentés
       }
-
+  
       localStorage.removeItem(basketKey);
       setShowSuccessMessage(true);
-
+  
       setTimeout(() => {
         navigate('/');
       }, 1500);
-
+  
     } catch (err) {
       console.error('Order error:', err);
       setError('Order failed. Please try again.');
       toast.error("Order could not be completed. Try again.");
     }
   };
+  
 
   const renderStep = () => {
     switch (step) {
