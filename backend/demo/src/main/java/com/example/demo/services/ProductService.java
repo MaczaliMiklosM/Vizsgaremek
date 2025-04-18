@@ -40,13 +40,27 @@ public class ProductService {
 
     public ResponseEntity<String> deleteProduct(Integer id) {
         Optional<Product> productOptional = productRepository.findById(id);
+
         if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            User uploader = product.getUser();
+
             productRepository.deleteById(id);
+
+            // 🔔 Notify uploader about deletion
+            if (uploader != null) {
+                notificationService.sendNotification(
+                        uploader,
+                        "Your product \"" + product.getName() + "\" has been deleted by an admin."
+                );
+            }
+
             return new ResponseEntity<>("Product deleted", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Something happened", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Product not found", HttpStatus.CONFLICT);
         }
     }
+
 
     public Product createProduct(ProductSave productSave) {
         Product product = new Product();

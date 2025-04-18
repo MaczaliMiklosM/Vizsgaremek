@@ -163,7 +163,7 @@ public class BidService {
             if (!other.getId().equals(bidId)) {
                 notificationService.sendNotification(
                         other.getBidder(),
-                        "Your bid has been rejected for product: " + product.getName()
+                        "Someone else has won the bid for this product: " + product.getName()
                 );
             }
         }
@@ -171,7 +171,7 @@ public class BidService {
         // ✅ Értesítés a termék feltöltőjének, hogy eladták a terméket
         notificationService.sendNotification(
                 seller,
-                "Your product \"" + product.getName() + "\" has been sold to " + buyer.getFull_name() + " via bid."
+                "Congratulations! Your product \"" + product.getName() + "\" has been sold to " + buyer.getFull_name() + " via bid."
         );
     }
 

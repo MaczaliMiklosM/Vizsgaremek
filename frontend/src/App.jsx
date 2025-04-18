@@ -28,9 +28,7 @@ function App() {
     <HashRouter>
       <ScrollToTop />
       
-      {/* ✅ Globális ToastContainer — működik minden oldalon */}
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-
+     
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />

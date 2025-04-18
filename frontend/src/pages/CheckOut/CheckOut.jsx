@@ -85,7 +85,6 @@ const Checkout = () => {
       shippingAddress: formData.address,
       items: cart.map(item => ({
         productId: item.id,
-        quantity: item.quantity || 1,
         unitPrice: Math.round(item.price)
       }))
     };
@@ -189,7 +188,6 @@ const Checkout = () => {
                     <div>
                       <h4>{item.name}</h4>
                       <p>Price: ${item.price}</p>
-                      <p>Quantity: {item.quantity}</p>
                     </div>
                   </div>
                 ))}
@@ -197,7 +195,7 @@ const Checkout = () => {
             )}
             <div className="summary">
               <h3>Order Summary</h3>
-              <p><strong>Total:</strong> ${cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}</p>
+              <p><strong>Total:</strong> ${cart.reduce((total, item) => total + (item.price), 0).toFixed(2)}</p>
             </div>
             <div className="button-group">
               <button onClick={handleBack}>Back</button>
