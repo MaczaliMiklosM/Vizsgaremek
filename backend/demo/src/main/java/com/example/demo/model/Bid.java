@@ -17,7 +17,6 @@ public class Bid {
 
     private Double amount;
 
-
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime time;
 

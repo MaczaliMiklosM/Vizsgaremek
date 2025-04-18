@@ -172,7 +172,8 @@
     text-align: center;
   }
 
-  .product-images, .product-info {
+  .product-images,
+  .product-info {
     width: 100%;
   }
 

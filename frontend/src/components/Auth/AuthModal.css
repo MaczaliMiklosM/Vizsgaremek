@@ -8,12 +8,12 @@
   align-items: center;
   z-index: 9999;
   animation: fadeIn 0.3s ease-out;
-  overflow: hidden;
+
 }
 
 body.modal-open {
   height: 100vh;
-  overflow: hidden;
+
 }
 
 .auth-modal {
@@ -39,6 +39,7 @@ body.modal-open {
   cursor: pointer;
   transition: color 0.2s;
 }
+
 .auth-modal .close-button:hover {
   color: white;
 }
@@ -49,6 +50,7 @@ body.modal-open {
   border-bottom: 1px solid #444;
   margin-bottom: 2rem;
 }
+
 .auth-tabs button {
   flex: 1;
   background: none;
@@ -61,11 +63,13 @@ body.modal-open {
   border-bottom: 2px solid transparent;
   transition: all 0.2s ease;
 }
+
 .auth-tabs button.active {
   color: white !important;
   border-color: #fff;
   background: none !important;
 }
+
 .auth-tabs button:not(.active):hover {
   background-color: transparent;
   color: #ccc;
@@ -76,6 +80,7 @@ body.modal-open {
   gap: 1rem;
   width: 100%;
 }
+
 .input-pair .input-box {
   flex: 1;
 }
@@ -110,12 +115,13 @@ select.input-field {
   color: white;
   background-color: #2a2a2a;
 }
+
 select.input-field option {
   color: black;
   background-color: #ffffff;
 }
 
-/* PHONE WRAPPER FIXED */
+
 .phone-wrapper {
   display: flex;
   align-items: center;
@@ -166,7 +172,7 @@ select.input-field option {
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* DROP DOWN */
+
 .select-field {
   background-color: #2a2a2a;
   color: #f8fafc;
@@ -179,15 +185,18 @@ select.input-field option {
   -webkit-appearance: none;
   -moz-appearance: none;
 }
+
 .select-field:focus {
   outline: none;
   border-color: #fff;
   background: rgba(255, 255, 255, 0.15);
 }
+
 .select-field option {
   background-color: #1f1f1f;
   color: #f8fafc;
 }
+
 select option:checked,
 select option:hover,
 select option:focus {
@@ -201,12 +210,15 @@ select option:focus {
   font-weight: bold;
   color: white;
 }
+
 .password-strength.weak {
   color: #ef4444;
 }
+
 .password-strength.medium {
   color: #facc15;
 }
+
 .password-strength.strong {
   color: #22c55e;
 }
@@ -223,9 +235,11 @@ select option:focus {
   cursor: pointer;
   transition: background-color 0.2s;
 }
+
 .submit-button:hover {
   background-color: #ccc;
 }
+
 .input-field,
 .phone-input {
   height: 46px;
@@ -236,15 +250,18 @@ select option:focus {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
+
 @keyframes slideUp {
   from {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -255,6 +272,7 @@ select option:focus {
   .auth-modal {
     padding: 2rem;
   }
+
   .input-pair {
     flex-direction: column;
   }

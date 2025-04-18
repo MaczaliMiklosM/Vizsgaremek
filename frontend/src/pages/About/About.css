@@ -38,10 +38,11 @@
   color: #555;
   line-height: 1.6;
 }
+
 .about-section h2 {
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   gap: 8px;
   font-weight: bold;
   font-size: 22px;
@@ -49,7 +50,7 @@
   margin-bottom: 10px;
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
-  text-align: center; 
+  text-align: center;
 }
 
 .about-section h2 svg {
@@ -64,16 +65,17 @@
   }
 }
 
-  @media (max-width: 480px) {
-      .about-container {
-          width: 95%;
-          padding: 15px;
-      }
-      .about-section h2 {
-          font-size: 20px;
-      }
-      .about-section p {
-          font-size: 14px;
-      }
+@media (max-width: 480px) {
+  .about-container {
+    width: 95%;
+    padding: 15px;
   }
-  
+
+  .about-section h2 {
+    font-size: 20px;
+  }
+
+  .about-section p {
+    font-size: 14px;
+  }
+}

@@ -2,8 +2,10 @@ import React from 'react';
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
-import { Info as InfoIcon, OtherHouses as OtherHousesIcon, 
-         Phone as PhoneIcon, TrackChanges as TrackChangesIcon } from '@mui/icons-material';
+import {
+  Info as InfoIcon, OtherHouses as OtherHousesIcon,
+  Phone as PhoneIcon, TrackChanges as TrackChangesIcon
+} from '@mui/icons-material';
 import './About.css';
 
 const About = () => {

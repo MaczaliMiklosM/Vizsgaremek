@@ -25,9 +25,13 @@ const AuthModal = ({ onClose }) => {
 
   useEffect(() => {
     document.body.classList.add('modal-open');
-    return () => document.body.classList.remove('modal-open');
+    document.body.classList.add('auth-blur');
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.classList.remove('auth-blur');
+    };
   }, []);
-
+  
   const handleChange = ({ target: { name, value } }) => {
     if (name === 'country') {
       const selected = countries.find(c => c.name === value);
@@ -53,7 +57,7 @@ const AuthModal = ({ onClose }) => {
     const {
       fullName, email, phoneNumber, address, country, dialCode, password, confirmPassword
     } = formData;
-  
+
     if (isSignUp) {
       if (Object.values({ fullName, email, phoneNumber, address, country, dialCode, password, confirmPassword }).some(val => !val)) {
         return toast.error('Please fill out all fields.');
@@ -62,12 +66,11 @@ const AuthModal = ({ onClose }) => {
       if (password.length < 10 || !/[!@#$%^&*(),.?":{}|<>]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {
         return toast.error('Password must be at least 10 characters, contain special char, number and uppercase.');
       }
-  
+
       try {
-        // ✅ FIXED: helyes email ellenőrzés
         const check = await axios.get(`/api/management/check-email?email=${email}`);
         if (check.data === true) return toast.error("This email is already registered.");
-  
+
         const payload = {
           name: fullName,
           email,
@@ -76,11 +79,11 @@ const AuthModal = ({ onClose }) => {
           address,
           country
         };
-  
+
         await axios.post('/api/management/auth/register', payload, {
           headers: { 'Content-Type': 'application/json' },
         });
-  
+
         toast.success('Registration successful! You can now sign in.');
         setIsSignUp(false);
       } catch (error) {
@@ -91,38 +94,38 @@ const AuthModal = ({ onClose }) => {
       try {
         const response = await axios.post('/api/management/auth/login', { email, password });
         const { token, statusCode } = response.data;
-    
+
         if (!token || statusCode !== 200) return toast.error('Invalid email or password!');
-    
+
         localStorage.setItem('token', token);
-    
+
         const profileResponse = await axios.get('/api/management/adminuser/get-profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
-    
+
         const user = profileResponse.data.user;
         const role = user?.role || user?.authorities?.[0]?.authority || 'USER';
-    
+
         localStorage.setItem('user', JSON.stringify({
           email,
           role,
           id: user?.id
         }));
-    
+
         toast.success("Login successful!");
-    
+
         setTimeout(() => {
           onClose();
           window.location.hash = role === 'ADMIN' ? '#/admin' : '#/';
-        }, 1200); // kis várakozás a toastnak
+        }, 1200);
       } catch (error) {
         console.error("Login error:", error);
         toast.error('Login failed: ' + (error.response?.data?.message || error.message));
       }
     }
-    
+
   };
-  
+
 
   const renderInputPair = (left, right) => (
     <div className="input-pair">
@@ -238,13 +241,13 @@ const AuthModal = ({ onClose }) => {
           </div>
         </form>
 
-                  <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar
-            closeButton={false}   
-          />
-                  
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar
+          closeButton={false}
+        />
+
       </div>
     </div>
   );

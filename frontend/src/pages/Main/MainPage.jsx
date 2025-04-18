@@ -52,7 +52,7 @@ function Main() {
         localStorage.setItem("featuredProducts", JSON.stringify(selected));
         localStorage.setItem("featuredProductsDate", today);
       } catch (err) {
-        console.error("❌ Failed to fetch featured products:", err);
+        console.error("Failed to fetch featured products:", err);
       }
     };
 

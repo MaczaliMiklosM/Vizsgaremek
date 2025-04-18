@@ -5,7 +5,8 @@
   background-color: #f9fafb;
 }
 
-h2, h3 {
+h2,
+h3 {
   text-align: center;
   margin-bottom: 20px;
   color: #111827;
@@ -110,7 +111,6 @@ h2, h3 {
   color: #111827;
 }
 
-/* Bidding Section */
 .bid-section {
   margin-top: 60px;
   padding: 30px 20px;
@@ -144,7 +144,7 @@ h2, h3 {
   background: #fff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   margin-bottom: 12px;
   max-width: 600px;
   margin-left: auto;
@@ -171,6 +171,7 @@ h2, h3 {
 .bid-history-list li {
   margin-bottom: 6px;
 }
+
 .approval-banner {
   background-color: #f59e0b;
   color: white;
@@ -190,6 +191,7 @@ h2, h3 {
   border-radius: 8px;
   margin-bottom: 8px;
 }
+
 .product-card h4 {
   margin: 10px 0 6px;
   font-size: 18px;
@@ -202,6 +204,7 @@ h2, h3 {
   color: #6b7280;
   margin-bottom: 8px;
 }
+
 .form-warning {
   background-color: #fff7e6;
   color: #92400e;
@@ -259,6 +262,7 @@ h2, h3 {
   font-size: 14px;
   color: #374151;
 }
+
 .tabs {
   text-align: center;
   margin-bottom: 20px;
@@ -286,7 +290,6 @@ h2, h3 {
 }
 
 
-/* Mobilnézetre is szépen tördelje */
 @media (max-width: 800px) {
   .product-row {
     flex-direction: column;

@@ -19,7 +19,7 @@
   padding: 10px 15px;
   border-radius: 6px;
   transition: background 0.3s ease;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -30,7 +30,7 @@
 
 @media (max-width: 768px) {
   .nav-links {
-    gap: 10px; 
+    gap: 10px;
   }
 
   .nav-links a {
@@ -41,7 +41,7 @@
 
 @media (max-width: 560px) {
   .nav-links {
-    gap: 8px; 
+    gap: 8px;
   }
 
   .nav-links a {
@@ -52,7 +52,7 @@
 
 @media (max-width: 420px) {
   .nav-links {
-    gap: 8px; 
+    gap: 8px;
   }
 
   .nav-links a {
@@ -63,7 +63,7 @@
 
 @media (max-width: 360px) {
   .nav-links {
-    gap: 8px; 
+    gap: 8px;
   }
 
   .nav-links a {
@@ -71,4 +71,3 @@
     padding: 6px 0px;
   }
 }
-

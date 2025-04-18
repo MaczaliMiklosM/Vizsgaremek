@@ -38,14 +38,14 @@ const Favorites = () => {
           console.log("🛠️ Processed wishlist item:", {
             id: item.id,
             name: item.productName,
-            image: item.productImage?.substring(0, 30) + '...' // Rövidített
+            image: item.productImage?.substring(0, 30) + '...'
           });
 
           return {
             id: item.id,
             name: item.productName,
             price: item.productPrice + " $",
-            imageData: item.productImage, // ✅ Ez jön a backendről
+            imageData: item.productImage,
             productId: item.productId,
           };
         });

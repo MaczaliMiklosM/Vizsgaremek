@@ -78,7 +78,6 @@
   margin-bottom: 24px;
 }
 
-/* ----------------------- PRODUCT LIST ------------------------ */
 
 .product-row {
   background-color: #ffffff;
@@ -195,7 +194,6 @@
   background-color: #dc2626;
 }
 
-/* ----------------------- ORDER LIST ------------------------ */
 
 .order-row {
   background-color: #ffffff;
@@ -241,7 +239,6 @@
   max-width: 250px;
 }
 
-/* 📱 Mobile View */
 @media (max-width: 768px) {
   .admin-header {
     padding: 20px;

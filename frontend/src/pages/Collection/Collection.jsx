@@ -28,12 +28,12 @@ const Collection = () => {
         return res.json();
       })
       .then(data => {
-        console.log("✅ Collection data:", data);
+        console.log("Collection data:", data);
         setCollection(data);
         setLoading(false);
       })
       .catch(err => {
-        console.error('❌ Failed to fetch collection:', err);
+        console.error('Failed to fetch collection:', err);
         setLoading(false);
       });
   }, []);

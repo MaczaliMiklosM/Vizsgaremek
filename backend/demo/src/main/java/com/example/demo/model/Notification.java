@@ -23,9 +23,9 @@ public class Notification {
 
     @Column(name = "created_at", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime timestamp = LocalDateTime.now();  // Timestamp alapértelmezett értéke beállítva
+    private LocalDateTime timestamp = LocalDateTime.now();
 
     @Column(name = "is_read", nullable = false)
-    private boolean isRead = false; // alapértelmezett: false
+    private boolean isRead = false;
 
 }

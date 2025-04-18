@@ -13,9 +13,9 @@ public class ProductSave {
     private String name;
     private String description;
     private Double price;
-    private MultipartFile imageData; // VÁLTOZÁS: byte[] ➜ MultipartFile
-    private MultipartFile imageData2; // VÁLTOZÁS: byte[] ➜ MultipartFile
-    private MultipartFile imageData3; // VÁLTOZÁS: byte[] ➜ MultipartFile
+    private MultipartFile imageData;
+    private MultipartFile imageData2;
+    private MultipartFile imageData3;
     private String brand;
     private String color;
     private String size;

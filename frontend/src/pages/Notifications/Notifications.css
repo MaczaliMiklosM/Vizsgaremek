@@ -52,8 +52,8 @@
 }
 
 .unread-notification {
-  border-left: 5px solid #22c55e; /* zöld szegély */
-  background: #ecfdf5;            /* halványzöld háttér */
+  border-left: 5px solid #22c55e; 
+  background: #ecfdf5;            
 }
 
 .notification-item.unread-notification p {

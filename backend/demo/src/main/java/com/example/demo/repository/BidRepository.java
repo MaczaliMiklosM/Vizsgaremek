@@ -10,6 +10,6 @@ public interface BidRepository extends JpaRepository<Bid, Integer> {
     List<Bid> findByProductId(Integer productId);
     List<Bid> findByProduct_User_Id(Integer userId);
 
-    List<Bid> findByBidderId(Integer userId); // Saját ajánlataid
+    List<Bid> findByBidderId(Integer userId);
     boolean existsByProductIdAndBidderIdAndStatus(Integer productId, Integer bidderId, BidStatus status);
 }

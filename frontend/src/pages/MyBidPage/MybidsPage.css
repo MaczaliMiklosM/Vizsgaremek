@@ -101,6 +101,7 @@
   padding-bottom: 6px;
   text-transform: uppercase;
 }
+
 .bid-thumbnail {
   width: 100%;
   max-width: 140px;
@@ -111,7 +112,6 @@
   margin-bottom: 10px;
 }
 
-/* 🟦 Mobil reszponzív nézet */
 @media (max-width: 768px) {
   .bid-card-wrapper {
     flex-direction: column;

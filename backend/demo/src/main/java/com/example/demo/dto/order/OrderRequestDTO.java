@@ -12,6 +12,6 @@ import java.util.List;
 public class OrderRequestDTO {
     private Integer userId;
     private String shippingAddress;
-    private List<OrderItemDTO> items;  // A quantity és paymentMethod eltávolítva
+    private List<OrderItemDTO> items;
 }
 

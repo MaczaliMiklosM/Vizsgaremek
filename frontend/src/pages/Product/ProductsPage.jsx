@@ -4,8 +4,13 @@ import axios from "axios";
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
-import FilterSidebar from '../../components/Sidebar/FilteredSideBar';
 import './ProductsPage.css';
+
+const filterOptions = {
+  productCondition: ["New", "Used"],
+  brands: ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Christian Dior", "Louis Vuitton"],
+  colors: ["White", "Black", "Blue", "Red", "Pink", "Green", "Purple", "Yellow", "Grey", "Brown", "Orange", "Multicolor"]
+};
 
 function normalizeProducts(products) {
   return products.map(p => ({
@@ -21,18 +26,17 @@ function normalizeProducts(products) {
 function ProductsPage() {
   const { category } = useParams();
   const location = useLocation();
-
   const [allProducts, setAllProducts] = useState([]);
-  const [filters, setFilters] = useState({
-    brands: [],
-    colors: [],
-    productCondition: [],
-    price: 10000,
-  });
-
+  const [filters, setFilters] = useState({ brands: [], colors: [], productCondition: [], price: 10000 });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [expanded, setExpanded] = useState({ productCondition: false, brands: false, colors: false, price: false });
+  const [showAccessPopup, setShowAccessPopup] = useState(false);
+
+  const toggleSection = (section) => {
+    setExpanded(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -60,19 +64,13 @@ function ProductsPage() {
     const brand = params.get("brand");
     const search = params.get("search")?.toLowerCase() || "";
     setSearchTerm(search);
-
-    setFilters(prev => ({
-      ...prev,
-      brands: brand ? [brand.toLowerCase().replace(/\s/g, '')] : [],
-    }));
+    setFilters(prev => ({ ...prev, brands: brand ? [brand.toLowerCase().replace(/\s/g, '')] : [] }));
   }, [category, location.search]);
 
   const handleCheckboxChange = (type, value) => {
-    setFilters((prev) => {
+    setFilters(prev => {
       const current = prev[type];
-      const updated = current.includes(value)
-        ? current.filter((v) => v !== value)
-        : [...current, value];
+      const updated = current.includes(value) ? current.filter(v => v !== value) : [...current, value];
       return { ...prev, [type]: updated };
     });
   };
@@ -82,12 +80,7 @@ function ProductsPage() {
   };
 
   const resetFilters = () => {
-    setFilters({
-      brands: [],
-      colors: [],
-      productCondition: [],
-      price: 10000
-    });
+    setFilters({ brands: [], colors: [], productCondition: [], price: 10000 });
     setSearchTerm("");
     window.history.replaceState({}, document.title, "/#products");
   };
@@ -96,21 +89,13 @@ function ProductsPage() {
   const visibleProducts = normalizedProducts.filter(p => p.status?.toLowerCase() !== 'sold');
 
   const filteredProducts = useMemo(() => {
-    return visibleProducts.filter((product) => {
+    return visibleProducts.filter(product => {
       const matchBrand = filters.brands.length === 0 || filters.brands.includes(product.brand);
       const matchColor = filters.colors.length === 0 || filters.colors.includes(product.color);
       const matchCondition = filters.productCondition.length === 0 || filters.productCondition.includes(product.productCondition);
       const matchPrice = product.price <= filters.price;
-
       const search = searchTerm.trim().toLowerCase();
-      const matchSearch =
-      !search ||
-      product.name.toLowerCase().includes(search) ||
-      product.category?.toLowerCase().includes(search) ||
-      (search === "man" && product.gender === "man") ||
-      (search === "woman" && product.gender === "woman");
-    
-
+      const matchSearch = !search || product.name.toLowerCase().includes(search) || product.category?.toLowerCase().includes(search) || (search === "man" && product.gender === "man") || (search === "woman" && product.gender === "woman");
       return matchBrand && matchColor && matchCondition && matchPrice && matchSearch;
     });
   }, [visibleProducts, filters, searchTerm]);
@@ -125,7 +110,7 @@ function ProductsPage() {
   };
 
   return (
-    <div>
+    <div className={showAccessPopup ? "blurred-wrapper" : ""}>
       <Header />
       <Navbar />
 
@@ -136,14 +121,51 @@ function ProductsPage() {
       )}
 
       <div className="products-container">
-        <FilterSidebar
-          filters={filters}
-          onCheckboxChange={handleCheckboxChange}
-          onPriceChange={handlePriceChange}
-          isMobile={isMobile}
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-        />
+        <aside className={`sidebar ${isMobile ? (isFilterOpen ? "open" : "") : ""}`}>
+          {isMobile && <button className="sidebar-close" onClick={() => setIsFilterOpen(false)}>×</button>}
+          <h2>Filter</h2>
+
+          {Object.entries(filterOptions).map(([key, options]) => (
+            <div className="filter-group" key={key}>
+              <h4 onClick={() => toggleSection(key)}>{key === "productCondition" ? "Condition" : key.charAt(0).toUpperCase() + key.slice(1)}</h4>
+              <div className={`filter-content ${!expanded[key] ? "collapsed" : ""}`}>
+                {options.map(option => {
+                  const normalizedValue = option.toLowerCase().replace(/\s/g, '');
+                  return (
+                    <label key={option}>
+                      {option}
+                      <input
+                        type="checkbox"
+                        checked={Array.isArray(filters[key]) && filters[key].includes(normalizedValue)}
+                        onChange={() => handleCheckboxChange(key, normalizedValue)}
+                      />
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          <div className="filter-group">
+            <h4 onClick={() => toggleSection("price")}>Price: ${filters.price}</h4>
+            <div className={`filter-content ${!expanded.price ? "collapsed" : ""}`}>
+              <input
+                type="range"
+                min="0"
+                max="20000"
+                step="100"
+                value={filters.price}
+                onChange={(e) => handlePriceChange(parseInt(e.target.value))}
+              />
+            </div>
+          </div>
+
+          {isMobile && (
+            <button className="apply-filters-button" onClick={() => setIsFilterOpen(false)}>
+              See Products
+            </button>
+          )}
+        </aside>
 
         <main className="products-main">
           <div className="filter-actions">
@@ -177,6 +199,19 @@ function ProductsPage() {
           </section>
         </main>
       </div>
+
+      {showAccessPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h2>Access Denied</h2>
+            <p>You must be signed in to view this page.</p>
+            <div className="popup-buttons">
+              <button className="btn-primary" onClick={() => window.location.href = '/login'}>Sign In</button>
+              <button className="btn-secondary" onClick={() => setShowAccessPopup(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

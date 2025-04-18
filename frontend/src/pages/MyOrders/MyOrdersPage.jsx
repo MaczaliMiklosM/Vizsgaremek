@@ -56,7 +56,7 @@ const MyOrdersPage = () => {
                           <div className="item-name">
                             <strong>{item.productName || `Product #${item.productId}`}</strong>
                           </div>
-                         
+
                         </li>
                       ))}
                     </ul>

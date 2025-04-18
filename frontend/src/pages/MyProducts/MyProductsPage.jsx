@@ -176,8 +176,8 @@ function MyProductsPage() {
     return activeTab === "LIVE"
       ? status === "APPROVED"
       : activeTab === "PENDING"
-      ? status === "UNAPPROVED"
-      : status === "SOLD";
+        ? status === "UNAPPROVED"
+        : status === "SOLD";
   });
 
   return (

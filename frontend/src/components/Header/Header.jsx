@@ -196,7 +196,7 @@ function Header() {
             <span onClick={() => handleProtectedRoute("/wishlist")} className="nav-link"><FavoriteBorderIcon /></span>
             <span onClick={() => handleProtectedRoute("/basket")} className="nav-link"><ShoppingBasketIcon /></span>
 
-            {/* 🔔 NOTIFICATION ICON + BADGE */}
+
             <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link notification-icon-wrapper">
               <NotificationsIcon />
               {unreadCount > 0 && (

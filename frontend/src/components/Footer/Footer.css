@@ -76,13 +76,12 @@
   padding-bottom: 5px;
 }
 
-.footer-section p, 
+.footer-section p,
 .footer-section a {
   color: white;
   text-decoration: none;
 }
 
-/* ✅ Footer navigációs linkekhez */
 .footer-section ul {
   list-style: none;
   padding-left: 0;
@@ -112,12 +111,12 @@
   padding: 10px;
 }
 
-/* Responsiveness */
 @media (max-width: 768px) {
   .footer-wrapper {
     flex-direction: column;
     text-align: center;
   }
+
   .footer-sections {
     flex-direction: column;
   }

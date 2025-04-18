@@ -1,10 +1,10 @@
-// ProductDetails.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import axios from 'axios';
 import './ProductDetails.css';
+import RequireAuth from '../../components/Auth/RequireAuth';
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
@@ -169,6 +169,7 @@ function ProductDetails() {
   }
 
   return (
+    <RequireAuth>
     <div className="container">
       <Header />
       <Navbar />
@@ -256,6 +257,7 @@ function ProductDetails() {
       <Footer />
       <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} closeButton={false} />
     </div>
+    </RequireAuth>
   );
 }
 

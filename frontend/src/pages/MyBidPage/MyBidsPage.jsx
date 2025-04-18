@@ -10,8 +10,8 @@ import "./MyBidsPage.css";
 function MyBidsPage() {
   const [bids, setBids] = useState([]);
   const [receivedBids, setReceivedBids] = useState([]);
-  const [activeTab, setActiveTab] = useState("active"); // own bids
-  const [receivedTab, setReceivedTab] = useState("active"); // received bids
+  const [activeTab, setActiveTab] = useState("active");
+  const [receivedTab, setReceivedTab] = useState("active");
   const [error, setError] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -164,4 +164,3 @@ function MyBidsPage() {
 }
 
 export default MyBidsPage;
-  

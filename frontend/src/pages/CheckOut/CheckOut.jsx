@@ -111,7 +111,7 @@ const Checkout = () => {
           body: JSON.stringify({ userId: userData.id, productId: item.id })
         });
   
-        // 🔕 Kiszedve: collection-be mentés
+       
       }
   
       localStorage.removeItem(basketKey);

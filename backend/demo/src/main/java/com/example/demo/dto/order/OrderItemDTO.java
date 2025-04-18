@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 public class OrderItemDTO {
     private Integer productId;
     private Integer unitPrice;
-    // Az alábbi mezőt adjuk hozzá
-    private Integer quantity = 1;  // A quantity mindig 1
+    private Integer quantity = 1;
     private String productName;
     private String productStatus;
 }

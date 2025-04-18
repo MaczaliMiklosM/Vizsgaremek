@@ -10,7 +10,7 @@ public class BidDTO {
     private Double amount;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime time; // A dátumot megfelelő formátumban küldjük
+    private LocalDateTime time;
 
     private String status;
     private Integer productId;

@@ -92,7 +92,6 @@
   font-style: italic;
 }
 
-/* 🔁 Mobilnézet: oszlopos elrendezés */
 @media (max-width: 768px) {
   .favorite-item {
     flex-direction: column;

@@ -14,12 +14,12 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className={`nav-links ${isMobile ? "compact" : ""}`}>
-      <Link to="/products?search=woman">Women</Link>
-      <Link to="/products?search=man">Men</Link>
-      <Link to="/products?search=bag">Bags</Link>
-      <Link to="/products?search=sneaker">Sneakers</Link>
-      <Link to="/products?search=watch">Watches</Link>
-      <Link to="/products">All Products</Link>
+        <Link to="/products?search=woman">Women</Link>
+        <Link to="/products?search=man">Men</Link>
+        <Link to="/products?search=bag">Bags</Link>
+        <Link to="/products?search=sneaker">Sneakers</Link>
+        <Link to="/products?search=watch">Watches</Link>
+        <Link to="/products">All Products</Link>
       </div>
     </nav>
   );

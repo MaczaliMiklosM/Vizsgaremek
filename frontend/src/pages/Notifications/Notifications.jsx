@@ -40,7 +40,7 @@ const Notifications = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
     } catch (err) {
-      console.error('❌ Nem sikerült megjelölni olvasottként:', err);
+      console.error('Nem sikerült megjelölni olvasottként:', err);
     }
   };
 
@@ -69,20 +69,20 @@ const Notifications = () => {
               >
                 <p>{notification.message}</p>
                 {new Date(notification.timestamp).toLocaleString('hu-HU', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                  })}
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                })}
 
               </div>
             ))}
           </div>
         ) : (
           <div className="no-notifications">
-            
+
             <p>You have no notifications yet.</p>
           </div>
         )}

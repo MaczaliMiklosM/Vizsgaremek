@@ -5,7 +5,6 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import RequireAuth from "../../components/Auth/RequireAuth";
 import axios from "axios";
-import { toast } from "react-toastify";
 import "./BidPage.css";
 
 function BidPage() {
@@ -63,9 +62,8 @@ function BidPage() {
         setShippingAddress(profileRes.data.user.address);
 
       } catch (err) {
-        console.error("❌ Failed to load bid or product:", err);
+        console.error("Failed to load bid or product:", err);
         setMessage("Failed to load data.");
-        toast.error("Failed to load data.");
       }
     };
     fetchData();
@@ -78,7 +76,6 @@ function BidPage() {
   const handleBidSubmit = async () => {
     if (!product || !product.id) {
       setMessage("Product is still loading. Please wait...");
-      toast.warn("Product is still loading.");
       return;
     }
 
@@ -86,13 +83,11 @@ function BidPage() {
     if (isNaN(newBid) || newBid <= highestBid) {
       const warnMsg = `Bid must be higher than $${highestBid}`;
       setMessage(warnMsg);
-      toast.warning(warnMsg);
       return;
     }
 
     if (!user) {
       setMessage("You must be logged in to place a bid.");
-      toast.error("Please log in to place a bid.");
       return;
     }
 
@@ -118,17 +113,15 @@ function BidPage() {
       setHasActiveBid(alreadyBid);
 
       setMessage(`Your bid of $${newBid} has been placed!`);
-      toast.success(`Bid of $${newBid} placed successfully!`);
       setBidInput("");
 
     } catch (error) {
-      console.error("❌ Error placing bid:", error);
+      console.error("Error placing bid:", error);
       setMessage("Failed to place bid.");
-      toast.error("Failed to place bid.");
     }
   };
 
- 
+
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleString();
@@ -182,7 +175,7 @@ function BidPage() {
                   onChange={(e) => setShippingAddress(e.target.value)}
                   className="bid-input"
                 />
-            
+
               </>
             ) : (
               <>
