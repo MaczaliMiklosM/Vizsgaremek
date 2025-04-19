@@ -48,12 +48,12 @@ public class SecurityConfig {
                                         "/v2/api-docs", "/v3/api-docs/**", "/swagger-resources/**",
                                         "/swagger-ui/**", "/webjars/**", "/swagger-ui.html",
                                         "/products/getProducts", "/products/getProductById/**",
-                                        "/management/check-email", "/management/check-email/**" // 👈 EZ KELL!
+                                        "/management/check-email", "/management/check-email/**"
                                 ).permitAll()
 
 
                         .requestMatchers("/notifications/**").authenticated()
-                        .requestMatchers("/orders/**").hasAnyAuthority("USER", "ADMIN") // ⬅️ ADD THIS
+                        .requestMatchers("/orders/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .requestMatchers("/wishlist/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/management/admin/update/**").hasAnyAuthority("USER", "ADMIN")
@@ -70,9 +70,6 @@ public class SecurityConfig {
                         .requestMatchers("/notifications/my").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/notifications/mark-read").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/collection/**").authenticated()
-
-
-
                         .requestMatchers("/bids/product/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/admin/**", "/products/deleteProduct/**", "/products/approveProduct/**").hasAuthority("ADMIN")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")

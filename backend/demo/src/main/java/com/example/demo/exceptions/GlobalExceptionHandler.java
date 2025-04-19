@@ -31,4 +31,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(exception.getConstraintViolations().iterator().next().getMessage());
 
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleGenericRuntimeException(RuntimeException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
 }

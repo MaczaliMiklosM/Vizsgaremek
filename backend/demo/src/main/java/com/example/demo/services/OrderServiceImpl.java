@@ -14,8 +14,6 @@ import com.example.demo.repository.WishlistRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +31,13 @@ public class OrderServiceImpl implements OrderService {
     private final NotificationService notificationService;
     private final CollectionService collectionService;
 
+    /**
+     * Létrehoz egy új rendelést a megadott termékekkel és felhasználóval.
+     *
+     * @param request a rendelési adatok DTO formában
+     * @return a létrehozott rendelés válasz DTO-ja
+     */
+
     @Transactional
     @Override
     public OrderResponseDTO createOrder(OrderRequestDTO request) {
@@ -43,20 +48,17 @@ public class OrderServiceImpl implements OrderService {
         int totalAmount = 0;
         StringBuilder productNames = new StringBuilder();
 
-        // 🧹 TÖRLÉS minden korábbi CART státuszú rendelésből (biztos ami biztos)
         List<OrderHeader> carts = orderHeaderRepository.findAllByUserAndStatus(user, OrderStatus.CART);
         for (OrderHeader cart : carts) {
-            // Szűrjük ki a SOLD státuszú termékeket
             List<OrderBody> validItems = cart.getItems().stream()
                     .filter(body -> body.getProduct().getStatus() != Status.SOLD)
                     .collect(Collectors.toList());
 
-            cart.setItems(validItems);  // frissítjük a kosárban lévő termékeket
-            orderBodyRepository.deleteAll(cart.getItems()); // töröljük az érvénytelen termékeket
-            orderHeaderRepository.save(cart);  // frissítjük a kosarat
+            cart.setItems(validItems);
+            orderBodyRepository.deleteAll(cart.getItems());
+            orderHeaderRepository.save(cart);
         }
 
-        // 📦 Új rendelés
         OrderHeader order = OrderHeader.builder()
                 .user(user)
                 .shippingAddress(request.getShippingAddress())
@@ -69,7 +71,6 @@ public class OrderServiceImpl implements OrderService {
             Product product = productRepository.findById(itemDTO.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
-            // Termék státusza nem lehet SOLD
             if (product.getStatus() == Status.SOLD) {
                 throw new RuntimeException("The product " + product.getName() + " is already sold and cannot be purchased.");
             }
@@ -85,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
 
             productNames.append(product.getName()).append(", ");
 
-            // ✅ Add to collection + mark SOLD
+
             Collection collectionItem = Collection.builder()
                     .user(user)
                     .product(product)
@@ -95,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
             product.setStatus(Status.SOLD);
             productRepository.save(product);
 
-            // ✅ Notify others about the product sale
+
             List<Wishlist> allWishlists = wishlistRepository.findAll();
             for (Wishlist w : allWishlists) {
                 if (w.getProduct().getId().equals(product.getId()) && w.getUser().getId() != user.getId()) {
@@ -109,24 +110,20 @@ public class OrderServiceImpl implements OrderService {
             wishlistRepository.deleteByProductId(product.getId());
         }
 
-        // Rendelés összegzése és mentés
         order.setTotalAmount(totalAmount);
         order.setItems(orderBodyRepository.saveAll(orderItems));
         orderHeaderRepository.save(order);
 
-        // Értesítés a vásárlónak
         notificationService.sendNotification(
                 user,
                 "Successful purchase! Order ID: " + order.getOrderId() +
                         " | Products: " + productNames.toString().replaceAll(", $", "")
         );
 
-        // Értesítés a termék feltöltőjének, hogy a terméke el lett adva
         for (OrderItemDTO itemDTO : request.getItems()) {
             Product product = productRepository.findById(itemDTO.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
-            // Termék feltöltőjének értesítése
             User uploader = product.getUser();
             notificationService.sendNotification(
                     uploader,
@@ -144,7 +141,12 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
-
+    /**
+     * Hozzáad egy terméket a felhasználó CART státuszú rendeléséhez.
+     *
+     * @param userId felhasználó azonosítója
+     * @param productId termék azonosítója
+     */
 
     @Override
     public void addToCart(Integer userId, Integer productId) {
@@ -154,12 +156,10 @@ public class OrderServiceImpl implements OrderService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Ellenőrzés, hogy a termék már el van adva
         if (product.getStatus() == Status.SOLD) {
             throw new RuntimeException("This product is already sold and cannot be added to the cart.");
         }
 
-        // check if user already has a cart
         OrderHeader order = orderHeaderRepository.findByUserAndStatus(user, OrderStatus.CART)
                 .orElse(null);
 
@@ -172,7 +172,6 @@ public class OrderServiceImpl implements OrderService {
             order = orderHeaderRepository.save(order);
         }
 
-        // avoid duplicates
         Optional<OrderBody> existing = orderBodyRepository.findByOrder_User_IdAndProductId(userId, productId);
         if (existing.isPresent()) return;
 
@@ -185,8 +184,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderBodyRepository.save(body);
 
-        // ✅ update totalAmount for cart
-        Integer orderId = order.getOrderId(); // ez már "final" lesz a lambda számára
+        Integer orderId = order.getOrderId();
 
         int updatedTotal = orderBodyRepository.findAll().stream()
                 .filter(ob -> ob.getOrder().getOrderId().equals(orderId))
@@ -197,7 +195,12 @@ public class OrderServiceImpl implements OrderService {
         orderHeaderRepository.save(order);
     }
 
-
+    /**
+     * Lekérdezi egy rendelés részleteit azonosító alapján.
+     *
+     * @param orderId a rendelés azonosítója
+     * @return a rendelés részletei DTO formában
+     */
 
     @Override
     public OrderResponseDTO getOrderById(Integer orderId) {
@@ -225,6 +228,14 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
+
+    /**
+     * Visszaadja az adott felhasználó összes rendelését.
+     *
+     * @param userId a felhasználó azonosítója
+     * @return a rendelés DTO-k listája
+     */
+
     @Override
     public List<OrderResponseDTO> getOrdersByUserId(Integer userId) {
         List<OrderHeader> orders = orderHeaderRepository.findAll();
@@ -237,6 +248,12 @@ public class OrderServiceImpl implements OrderService {
         }
         return result;
     }
+
+    /**
+     * Minden rendelés lekérdezése (admin funkció).
+     *
+     * @return minden rendelés DTO formában
+     */
 
     @Override
     public List<OrderResponseDTO> getAllOrders() {

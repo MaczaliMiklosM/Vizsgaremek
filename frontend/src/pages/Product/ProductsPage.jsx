@@ -53,7 +53,7 @@ function ProductsPage() {
         });
         setAllProducts(response.data.products || response.data);
       } catch (error) {
-        console.error("❌ Failed to fetch products:", error);
+        console.error("Failed to fetch products:", error);
       }
     };
     fetchProducts();

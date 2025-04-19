@@ -27,6 +27,14 @@ public class BidService {
     private final NotificationService notificationService;
     private final WishlistRepository wishlistRepository;
 
+    /**
+     * Licit létrehozása egy adott termékre és felhasználóhoz.
+     * @param productId a termék azonosítója
+     * @param userId a licitáló felhasználó azonosítója
+     * @param amount a licit összege
+     * @return a létrehozott Bid objektum
+     * @throws Exception ha nem valid a termék, user, vagy ajánlat
+     */
     public Bid placeBid(Integer productId, Integer userId, Double amount) throws Exception {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new Exception("Product not found"));
@@ -57,7 +65,7 @@ public class BidService {
         bid.setTime(LocalDateTime.now());
         bid.setStatus(BidStatus.PENDING);
 
-        // ✅ Notify the uploader
+        // Értesítés a feltöltőnek
         User uploader = product.getUser();
         notificationService.sendNotification(
                 uploader,
@@ -67,6 +75,11 @@ public class BidService {
         return bidRepository.save(bid);
     }
 
+    /**
+     * Összes ajánlat lekérése egy adott termékre.
+     * @param productId a termék azonosítója
+     * @return ajánlat DTO-k listája
+     */
     public List<BidDTO> findByProductId(Integer productId) {
         return bidRepository.findByProductId(productId).stream()
                 .map(bid -> new BidDTO(
@@ -82,6 +95,11 @@ public class BidService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Feltöltő által kapott ajánlatok lekérése.
+     * @param uploaderId a feltöltő felhasználó azonosítója
+     * @return DTO lista az érkezett ajánlatokról
+     */
     public List<BidDTO> findReceivedBids(Integer uploaderId) {
         return bidRepository.findByProduct_User_Id(uploaderId).stream()
                 .map(bid -> new BidDTO(
@@ -97,6 +115,10 @@ public class BidService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Ajánlat elfogadása, termék eladása, order létrehozása.
+     * @param bidId az elfogadandó ajánlat azonosítója
+     */
     @Transactional
     public void acceptBid(Integer bidId) {
         Bid acceptedBid = bidRepository.findById(bidId)
@@ -106,19 +128,16 @@ public class BidService {
         User buyer = acceptedBid.getBidder();
         User seller = product.getUser();  // Feltöltő
 
-        // Állapot frissítése
         acceptedBid.setStatus(BidStatus.ACCEPTED);
         product.setStatus(Status.SOLD);
         bidRepository.save(acceptedBid);
 
-        // Kollekcióba mentés
         Collection collection = Collection.builder()
                 .user(buyer)
                 .product(product)
                 .build();
         collectionRepository.save(collection);
 
-        // Többi ajánlat elutasítása
         List<Bid> otherBids = bidRepository.findByProductId(product.getId());
         for (Bid other : otherBids) {
             if (!other.getId().equals(bidId)) {
@@ -127,7 +146,6 @@ public class BidService {
         }
         bidRepository.saveAll(otherBids);
 
-        // 🧼 Wishlist takarítás és értesítés (kivéve aki megvette)
         List<Wishlist> wishlists = wishlistRepository.findByProductId(product.getId());
         for (Wishlist w : wishlists) {
             if (w.getUser().getId() != buyer.getId()) {
@@ -136,12 +154,10 @@ public class BidService {
                         "The item on your wishlist has been sold. Name: " + product.getName()
                 );
             }
-
         }
         wishlistRepository.deleteByProductId(product.getId());
 
-
-        // Order létrehozás
+        // Rendelés létrehozása
         String address = buyer.getAddress();
         if (address != null && !address.trim().isEmpty()) {
             OrderHeader order = OrderHeader.builder()
@@ -164,7 +180,7 @@ public class BidService {
             orderHeaderRepository.save(order);
         }
 
-        // Értesítések
+        // Értesítések a feleknek
         notificationService.sendNotification(
                 buyer,
                 "Your bid has been accepted for product: " + product.getName() + " ($" + acceptedBid.getAmount() + ")"
@@ -185,22 +201,27 @@ public class BidService {
         );
     }
 
-
-
-
-
+    /**
+     * Ajánlat elutasítása.
+     * @param bidId az elutasítandó ajánlat azonosítója
+     */
     public void rejectBid(Integer bidId) {
         Bid bid = bidRepository.findById(bidId).orElseThrow();
         bid.setStatus(BidStatus.REJECTED);
         bidRepository.save(bid);
 
-        // ✅ Notify bidder
+        // Értesítés a felhasználónak
         notificationService.sendNotification(
                 bid.getBidder(),
                 "Your bid of $" + bid.getAmount() + " on '" + bid.getProduct().getName() + "' was rejected."
         );
     }
 
+    /**
+     * Egy felhasználó összes ajánlatának lekérdezése.
+     * @param userId a felhasználó azonosítója
+     * @return ajánlatok listája
+     */
     public List<Bid> findByUserId(Integer userId) {
         return bidRepository.findByBidderId(userId);
     }

@@ -38,7 +38,7 @@ const Checkout = () => {
       .then(res => res.json())
       .then(data => setUser(data.user))
       .catch(err => {
-        console.error("❌ Failed to fetch profile:", err);
+        console.error("Failed to fetch profile:", err);
         toast.error("Failed to load user profile.");
       });
   }, []);

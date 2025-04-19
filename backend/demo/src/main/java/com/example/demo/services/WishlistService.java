@@ -20,6 +20,7 @@ import java.util.Optional;
 
 @Service
 public class WishlistService {
+
     @Autowired
     WishlistRepository wishlistRepository;
 
@@ -29,10 +30,22 @@ public class WishlistService {
     @Autowired
     UserRepository userRepository;
 
+    /**
+     * Visszaadja a megadott felhasználó teljes kívánságlistáját.
+     *
+     * @param userId a felhasználó azonosítója
+     * @return a kívánságlistában szereplő elemek listája
+     */
     public List<Wishlist> getWishlistById(Integer userId) {
         return wishlistRepository.findByUserId(userId);
     }
 
+    /**
+     * Új terméket ad a felhasználó kívánságlistájához.
+     *
+     * @param wishlistSave tartalmazza a felhasználó és a termék ID-ját
+     * @return a mentett Wishlist entitás
+     */
     public Wishlist addToWishlist(WishlistSave wishlistSave) {
         User user = userRepository.findById(wishlistSave.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + wishlistSave.getUserId()));
@@ -47,6 +60,12 @@ public class WishlistService {
         return wishlistRepository.save(wishlist);
     }
 
+    /**
+     * Törli a kívánságlistából a megadott felhasználóhoz tartozó megadott terméket.
+     *
+     * @param wishlistDelete objektum, amely tartalmazza a felhasználó és a termék azonosítóját
+     * @return válasz, hogy sikeres volt-e a törlés
+     */
     @Transactional
     public ResponseEntity<String> removeFromWishlist(WishlistDelete wishlistDelete) {
         Optional<User> user = userRepository.findById(wishlistDelete.getUserId());
@@ -65,5 +84,3 @@ public class WishlistService {
     }
 
 }
-
-

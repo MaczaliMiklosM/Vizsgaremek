@@ -89,7 +89,7 @@ function Header() {
         });
         setUnreadCount(res.data);
       } catch (err) {
-        console.error("❌ Failed to fetch unread notification count:", err);
+        console.error("Failed to fetch unread notification count:", err);
       }
     };
 

@@ -58,6 +58,15 @@ function ProductDetails() {
     fetchProduct();
   }, [id, isLoggedIn, user?.id, basketKey]);
 
+  useEffect(() => {
+    if (product?.status === "SOLD") {
+      const timer = setTimeout(() => {
+        navigate('/');
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [product, navigate]);
+
   const handleShare = () => {
     const link = `${window.location.origin}/#/product-details/${id}`;
     navigator.clipboard.writeText(link);
@@ -154,7 +163,6 @@ function ProductDetails() {
   };
 
   if (!product) return <div>Loading...</div>;
-
   if (product.status === "SOLD") {
     return (
       <div className="container">
@@ -162,6 +170,7 @@ function ProductDetails() {
         <Navbar />
         <div style={{ textAlign: "center", padding: "100px 20px", fontSize: "1.5rem" }}>
           <p>🚫<strong>The requested product is no longer available.</strong></p>
+          <p style={{ fontSize: "1rem", marginTop: "10px", color: "#555" }}>Redirecting to homepage...</p>
         </div>
         <Footer />
       </div>
@@ -170,93 +179,93 @@ function ProductDetails() {
 
   return (
     <RequireAuth>
-    <div className="container">
-      <Header />
-      <Navbar />
+      <div className="container">
+        <Header />
+        <Navbar />
 
-      <div className="product-details">
-        <div className="product-header">
-          <h1>{product.name}</h1>
-          <h3>{product.description}</h3>
-        </div>
+        <div className="product-details">
+          <div className="product-header">
+            <h1>{product.name}</h1>
+            <h3>{product.description}</h3>
+          </div>
 
-        <div className="product-content">
-          <div className="product-images">
-            <div className="main-image-wrapper">
-              <img
-                src={`data:image/jpeg;base64,${activeImage}`}
-                alt="Product"
-                className="main-image"
-              />
-              <div className="thumbnail-row">
-                {product.imageData && (
-                  <img
-                    src={`data:image/jpeg;base64,${product.imageData}`}
-                    alt="Thumb 1"
-                    className={`thumbnail ${activeImage === product.imageData ? 'active' : ''}`}
-                    onClick={() => setActiveImage(product.imageData)}
-                  />
-                )}
-                {product.imageData2 && (
-                  <img
-                    src={`data:image/jpeg;base64,${product.imageData2}`}
-                    alt="Thumb 2"
-                    className={`thumbnail ${activeImage === product.imageData2 ? 'active' : ''}`}
-                    onClick={() => setActiveImage(product.imageData2)}
-                  />
-                )}
-                {product.imageData3 && (
-                  <img
-                    src={`data:image/jpeg;base64,${product.imageData3}`}
-                    alt="Thumb 3"
-                    className={`thumbnail ${activeImage === product.imageData3 ? 'active' : ''}`}
-                    onClick={() => setActiveImage(product.imageData3)}
-                  />
-                )}
+          <div className="product-content">
+            <div className="product-images">
+              <div className="main-image-wrapper">
+                <img
+                  src={`data:image/jpeg;base64,${activeImage}`}
+                  alt="Product"
+                  className="main-image"
+                />
+                <div className="thumbnail-row">
+                  {product.imageData && (
+                    <img
+                      src={`data:image/jpeg;base64,${product.imageData}`}
+                      alt="Thumb 1"
+                      className={`thumbnail ${activeImage === product.imageData ? 'active' : ''}`}
+                      onClick={() => setActiveImage(product.imageData)}
+                    />
+                  )}
+                  {product.imageData2 && (
+                    <img
+                      src={`data:image/jpeg;base64,${product.imageData2}`}
+                      alt="Thumb 2"
+                      className={`thumbnail ${activeImage === product.imageData2 ? 'active' : ''}`}
+                      onClick={() => setActiveImage(product.imageData2)}
+                    />
+                  )}
+                  {product.imageData3 && (
+                    <img
+                      src={`data:image/jpeg;base64,${product.imageData3}`}
+                      alt="Thumb 3"
+                      className={`thumbnail ${activeImage === product.imageData3 ? 'active' : ''}`}
+                      onClick={() => setActiveImage(product.imageData3)}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="product-info">
+              <div className="product-price">
+                <h2>{product.price} $</h2>
+              </div>
+
+              <div className="product-actions">
+                <button className="btn bid-btn" onClick={handleBid}>
+                  <span>Place Bid</span>
+                </button>
+
+                <button className="btn buy-btn" onClick={addToBasket}>
+                  <span>{inBasket ? "Already in Basket" : "Buy Now"}</span>
+                </button>
+
+                <button className="btn wishlist-btn" onClick={addToWishlist}>
+                  <AddCircleIcon /> <span>{inWishlist ? "Already in Wishlist" : "Wishlist"}</span>
+                </button>
+
+                <button className="btn share-btn" onClick={handleShare}>
+                  <IosShareIcon /> <span>Share</span>
+                </button>
+              </div>
+
+              <div className="product-meta">
+                <p><strong>&nbsp;&nbsp;Condition:</strong> {product.productCondition}</p>
+                <p><strong>&nbsp;&nbsp;Size:</strong> {product.size}</p>
+                <p><strong>&nbsp;&nbsp;Color:</strong> {product.color}</p>
+                <p><strong>&nbsp;&nbsp;Gender:</strong> {product.targetGender}</p>
+                <p><strong>&nbsp;&nbsp;Category:</strong> {product.category}</p>
+                <p><strong>&nbsp;&nbsp;Brand:</strong> {product.brand}</p>
+                <p className="verified-text">&nbsp;&nbsp;Verified Product</p>
               </div>
             </div>
           </div>
-
-          <div className="product-info">
-            <div className="product-price">
-              <h2>{product.price} $</h2>
-            </div>
-
-            <div className="product-actions">
-              <button className="btn bid-btn" onClick={handleBid}>
-                <span>Place Bid</span>
-              </button>
-
-              <button className="btn buy-btn" onClick={addToBasket}>
-                <span>{inBasket ? "Already in Basket" : "Buy Now"}</span>
-              </button>
-
-              <button className="btn wishlist-btn" onClick={addToWishlist}>
-                <AddCircleIcon /> <span>{inWishlist ? "Already in Wishlist" : "Wishlist"}</span>
-              </button>
-
-              <button className="btn share-btn" onClick={handleShare}>
-                <IosShareIcon /> <span>Share</span>
-              </button>
-            </div>
-
-            <div className="product-meta">
-              <p><strong>&nbsp;&nbsp;Condition:</strong> {product.productCondition}</p>
-              <p><strong>&nbsp;&nbsp;Size:</strong> {product.size}</p>
-              <p><strong>&nbsp;&nbsp;Color:</strong> {product.color}</p>
-              <p><strong>&nbsp;&nbsp;Gender:</strong> {product.targetGender}</p>
-              <p><strong>&nbsp;&nbsp;Category:</strong> {product.category}</p>
-              <p><strong>&nbsp;&nbsp;Brand:</strong> {product.brand}</p>
-              <p className="verified-text">&nbsp;&nbsp;Verified Product</p>
-            </div>
-          </div>
         </div>
-      </div>
 
-      {showAccessDenied && <AccessDeniedPopup onClose={() => setShowAccessDenied(false)} />}
-      <Footer />
-      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} closeButton={false} />
-    </div>
+        {showAccessDenied && <AccessDeniedPopup onClose={() => setShowAccessDenied(false)} />}
+        <Footer />
+        <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} closeButton={false} />
+      </div>
     </RequireAuth>
   );
 }

@@ -18,18 +18,27 @@ import java.util.Optional;
 
 @Service
 public class UserManagementService {
+
     @Autowired
     private NotificationService notificationService;
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private JWTUtils jwtUtils;
+
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Új felhasználó regisztrálása.
+     * @param registrationRequest a felhasználó adatai
+     * @return válasz, ami tartalmazza a mentett felhasználót vagy hibaüzenetet
+     */
     public ReqRes register(RegisterRequest registrationRequest) {
         ReqRes resp = new ReqRes();
         try {
@@ -63,7 +72,11 @@ public class UserManagementService {
         return resp;
     }
 
-
+    /**
+     * Felhasználó bejelentkezése e-mail és jelszó alapján.
+     * @param loginRequest a belépési adatok
+     * @return JWT tokennel visszatérő válasz
+     */
     public ReqRes login(LoginRequest loginRequest) {
         ReqRes response = new ReqRes();
         try {
@@ -83,6 +96,11 @@ public class UserManagementService {
         return response;
     }
 
+    /**
+     * Frissíti a meglévő JWT tokent, ha az még érvényes.
+     * @param refreshTokenRequest a meglévő token
+     * @return új token vagy hiba
+     */
     public ReqRes refreshToken(ReqRes refreshTokenRequest) {
         ReqRes response = new ReqRes();
         try {
@@ -106,6 +124,10 @@ public class UserManagementService {
         }
     }
 
+    /**
+     * Lekérdezi az összes felhasználót.
+     * @return felhasználók listája vagy hiba
+     */
     public ReqRes getAllUsers() {
         ReqRes reqRes = new ReqRes();
 
@@ -127,6 +149,11 @@ public class UserManagementService {
         }
     }
 
+    /**
+     * Felhasználó lekérése azonosító alapján.
+     * @param id a felhasználó azonosítója
+     * @return a megtalált felhasználó vagy hiba
+     */
     public ReqRes getUsersById(Integer id) {
         ReqRes reqRes = new ReqRes();
         try {
@@ -141,6 +168,11 @@ public class UserManagementService {
         return reqRes;
     }
 
+    /**
+     * Felhasználó törlése azonosító alapján.
+     * @param userId a felhasználó azonosítója
+     * @return siker vagy hibaüzenet
+     */
     public ReqRes deleteUser(Integer userId) {
         ReqRes reqRes = new ReqRes();
         try {
@@ -160,6 +192,12 @@ public class UserManagementService {
         return reqRes;
     }
 
+    /**
+     * Felhasználó adatainak frissítése.
+     * @param userId a felhasználó azonosítója
+     * @param updateRequest az új adatok
+     * @return frissített felhasználó vagy hiba
+     */
     public ReqRes updateUser(Integer userId, UserUpdateRequest updateRequest) {
         ReqRes reqRes = new ReqRes();
         try {
@@ -188,7 +226,11 @@ public class UserManagementService {
         return reqRes;
     }
 
-
+    /**
+     * Lekéri a bejelentkezett felhasználó profilját.
+     * @param username az e-mail cím
+     * @return profil információ vagy hiba
+     */
     public ReqRes getMyInfo(String username) {
         ReqRes reqRes = new ReqRes();
         try {
@@ -209,8 +251,12 @@ public class UserManagementService {
         return reqRes;
     }
 
+    /**
+     * Megnézi, hogy létezik-e a megadott e-mail.
+     * @param email a vizsgálandó e-mail cím
+     * @return igaz, ha az e-mail már szerepel az adatbázisban
+     */
     public boolean emailExists(String email) {
         return userRepository.existsByEmail(email);
     }
-
 }

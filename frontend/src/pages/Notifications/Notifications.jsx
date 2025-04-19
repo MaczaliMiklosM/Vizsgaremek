@@ -14,8 +14,9 @@ const Notifications = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        setError('Nem találtunk érvényes tokent. Kérlek jelentkezz be!');
+        setError('No valid token found. Please log in!');
         return;
+
       }
 
       const response = await axios.get('/api/notifications/my', {
@@ -26,8 +27,8 @@ const Notifications = () => {
 
       setNotifications(response.data);
     } catch (error) {
-      console.error('Hiba az értesítések lekérésekor:', error);
-      setError('Hiba történt az értesítések lekérésekor!');
+      console.error('Error while fetching notifications:', error);
+      setError('Error while fetching notifications!');
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ const Notifications = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
     } catch (err) {
-      console.error('Nem sikerült megjelölni olvasottként:', err);
+      console.error('Failed to mark notifications as read:', err);
     }
   };
 
@@ -68,15 +69,16 @@ const Notifications = () => {
                 className={`notification-item ${notification.isRead === false ? 'unread-notification' : ''}`}
               >
                 <p>{notification.message}</p>
-                {new Date(notification.timestamp).toLocaleString('hu-HU', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false
-                })}
-
+                <span className='notification-time'>
+                  {new Date(notification.timestamp).toLocaleString('hu-HU', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                  })}
+                </span>
               </div>
             ))}
           </div>

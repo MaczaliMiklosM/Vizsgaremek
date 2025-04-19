@@ -9,6 +9,7 @@ function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('ALL');
   const [activeImages, setActiveImages] = useState({});
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ function AdminDashboard() {
       });
       setActiveImages(defaultImages);
     } catch (err) {
-      console.error(" Failed to fetch products", err);
+      console.error("Failed to fetch products", err);
       toast.error("Failed to fetch products.");
     }
   };
@@ -41,11 +42,11 @@ function AdminDashboard() {
       if (Array.isArray(res.data)) {
         setOrders(res.data);
       } else {
-        console.warn("⚠️ Unexpected response format:", res.data);
+        console.warn("Unexpected response format:", res.data);
         setOrders([]);
       }
     } catch (err) {
-      console.error(" Failed to fetch orders", err);
+      console.error("Failed to fetch orders", err);
       toast.error("Failed to fetch orders.");
       setOrders([]);
     }
@@ -74,7 +75,7 @@ function AdminDashboard() {
       setProducts(prev => prev.map(p => p.id === id ? { ...p, status: 'APPROVED' } : p));
       toast.success("Product approved!");
     } catch (err) {
-      console.error(" Failed to approve product", err);
+      console.error("Failed to approve product", err);
       toast.error("Failed to approve product.");
     }
   };
@@ -89,7 +90,7 @@ function AdminDashboard() {
       setProducts(prev => prev.filter(product => product.id !== id));
       toast.success("Product rejected and deleted.");
     } catch (error) {
-      console.error(" Failed to reject product", error);
+      console.error("Failed to reject product", error);
       toast.error("Failed to reject product.");
     }
   };
@@ -104,7 +105,7 @@ function AdminDashboard() {
       setProducts(prev => prev.filter(product => product.id !== id));
       toast.success("Product successfully deleted!");
     } catch (error) {
-      console.error(" Failed to delete product", error);
+      console.error("Failed to delete product", error);
       toast.error("Failed to delete product.");
     }
   };
@@ -118,15 +119,24 @@ function AdminDashboard() {
       toast.success(`Order #${orderId} status updated to ${newStatus}`);
       fetchAllOrders();
     } catch (error) {
-      console.error(" Failed to update order status", error);
+      console.error("Failed to update order status", error);
       toast.error("Failed to update order status.");
     }
   };
 
   const filteredProducts = products.filter(product => {
-    if (activeTab === 'pending' && product.status !== 'UNAPPROVED') return false;
-    if (activeTab === 'approved' && product.status === 'UNAPPROVED') return false;
-    return product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    if (activeTab === 'pending') {
+      return product.status === 'UNAPPROVED' && matchesSearch;
+    }
+
+    if (activeTab === 'approved') {
+      if (selectedStatus === 'ALL') return matchesSearch;
+      return product.status === selectedStatus && matchesSearch;
+    }
+
+    return true;
   });
 
   return (
@@ -174,8 +184,14 @@ function AdminDashboard() {
         ) : (
           <>
             <h2>{activeTab === 'pending' ? 'Pending Product Approvals' : 'All Products'}</h2>
+
             {activeTab === 'approved' && (
               <div className="admin-searchbar-container">
+                <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+                  <option value="ALL">All</option>
+                  <option value="APPROVED">Approved</option>
+                  <option value="SOLD">Sold</option>
+                </select>
                 <input
                   type="text"
                   placeholder="Search products..."

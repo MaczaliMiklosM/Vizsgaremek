@@ -142,7 +142,7 @@ button:hover {
 }
 
 .checkout-summary img {
-  max-width: 100px;  /* Ensuring images are smaller */
+  max-width: 100px;  
   margin: 10px 0;
 }
 .floating-message.success {

@@ -11,7 +11,7 @@ import axios from 'axios';
 
 import './Wishlist.css';
 
-const Favorites = () => {
+const Wishlist = () => {
   const [favorites, setFavorites] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -30,29 +30,19 @@ const Favorites = () => {
         },
       });
 
-      console.log("✅ Raw wishlist response:", response.data);
-
       const backendList = response.data
         .filter(item => item.status?.toLowerCase() !== "sold")
-        .map(item => {
-          console.log("🛠️ Processed wishlist item:", {
-            id: item.id,
-            name: item.productName,
-            image: item.productImage?.substring(0, 30) + '...'
-          });
-
-          return {
-            id: item.id,
-            name: item.productName,
-            price: item.productPrice + " $",
-            imageData: item.productImage,
-            productId: item.productId,
-          };
-        });
+        .map(item => ({
+          id: item.id,
+          name: item.productName,
+          price: item.productPrice + " $",
+          imageData: item.productImage,
+          productId: item.productId,
+        }));
 
       setFavorites(backendList);
     } catch (error) {
-      console.error("❌ Failed to load wishlist", error);
+      console.error("Failed to load wishlist", error);
     }
   };
 
@@ -92,7 +82,7 @@ const Favorites = () => {
                 setFavorites(restored);
                 toast.dismiss();
               } catch (err) {
-                console.error("❌ Undo failed", err);
+                console.error("Undo failed", err);
                 toast.error("Undo failed");
               }
             }}
@@ -102,7 +92,7 @@ const Favorites = () => {
         </div>
       );
     } catch (error) {
-      console.error("❌ Failed to remove item", error);
+      console.error("Failed to remove item", error);
       toast.error("Failed to remove item");
     }
   };
@@ -150,4 +140,4 @@ const Favorites = () => {
   );
 };
 
-export default Favorites;
+export default Wishlist;

@@ -2,13 +2,9 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.context.annotation.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.apache.catalina.UserDatabase;
-
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 

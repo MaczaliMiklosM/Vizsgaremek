@@ -21,8 +21,6 @@ const Basket = () => {
     const loadCart = async () => {
       const stored = JSON.parse(localStorage.getItem(basketKey)) || [];
 
-      console.log("Initial cart items from localStorage:", stored);
-
       const updatedCart = await Promise.all(stored.map(async (item) => {
         try {
           const res = await axios.get(`/api/products/getProductById/${item.id}`);
@@ -36,9 +34,6 @@ const Basket = () => {
         }
       }));
       const filteredCart = updatedCart.filter(item => item !== null);
-
-
-      console.log("Filtered cart items (SOLD removed):", filteredCart);
 
       setCart(filteredCart);
       localStorage.setItem(basketKey, JSON.stringify(filteredCart));
@@ -59,7 +54,6 @@ const Basket = () => {
     localStorage.setItem(basketKey, JSON.stringify(updated));
 
     toast.success('Item removed from basket!');
-    console.log("Updated cart after removal:", updated);
   };
 
   const getTotal = () =>
@@ -89,7 +83,6 @@ const Basket = () => {
                     {item.size && (
                       <p><strong>Size:</strong> {item.size}</p>
                     )}
-                    <p><strong>Status:</strong> {item.status}</p>
                   </div>
                   <button className="remove-basket-btn" onClick={() => removeFromCart(item.id)}>
                     <Delete style={{ marginRight: '5px' }} />

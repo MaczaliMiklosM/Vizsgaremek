@@ -20,6 +20,13 @@ public class CollectionController {
     @Autowired
     CollectionService collectionService;
 
+    /**
+     * Lekérdezi az adott felhasználó gyűjteményét.
+     * A visszatérő lista tartalmazza a termék nevét, árát és base64-ben kódolt képeit is.
+     *
+     * @param userId a felhasználó azonosítója
+     * @return a felhasználó kollekciójában szereplő termékek listája
+     */
     @GetMapping("/{userId}")
     public List<CollectionRead> getUserCollection(@PathVariable Integer userId) {
         List<Collection> collections = collectionService.getUserCollection(userId);
@@ -40,6 +47,4 @@ public class CollectionController {
         }
         return response;
     }
-
-
 }
