@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/wishlist")
-@Tag(name = "Wishlist controller (kész)")
+@Tag(name = "Wishlist controller")
 public class WishlistController {
 
     @Autowired

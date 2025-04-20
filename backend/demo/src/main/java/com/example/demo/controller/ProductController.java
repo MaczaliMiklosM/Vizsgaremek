@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@Tag(name = "Product controller (kész)")
+@Tag(name = "Product controller")
 public class ProductController {
 
     @Autowired
@@ -73,7 +73,7 @@ public class ProductController {
                 product.getImageData() != null ? Base64.getEncoder().encodeToString(product.getImageData()) : null,
                 product.getImageData2() != null ? Base64.getEncoder().encodeToString(product.getImageData2()) : null,
                 product.getImageData3() != null ? Base64.getEncoder().encodeToString(product.getImageData3()) : null,
-                product.getUser() != null ? product.getUser().getId() : null // ✅ uploaderId
+                product.getUser() != null ? product.getUser().getId() : null
         );
 
         return ResponseEntity.ok(dto);

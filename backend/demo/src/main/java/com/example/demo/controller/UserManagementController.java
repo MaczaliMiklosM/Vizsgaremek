@@ -7,6 +7,7 @@ import com.example.demo.dto.user.UserUpdateRequest;
 import com.example.demo.model.User;
 import com.example.demo.services.UserManagementService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,8 @@ public class UserManagementController {
      *
      * @return profiladatok email alapján
      */
+
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @GetMapping("/adminuser/get-profile")
     public ResponseEntity<ReqRes> getMyProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -61,6 +64,8 @@ public class UserManagementController {
      *
      * @return összes felhasználó listája
      */
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/get-all-users")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userManagementService.getAllUsers().getUserList());
@@ -72,6 +77,7 @@ public class UserManagementController {
      * @param userId a keresett felhasználó azonosítója
      * @return a felhasználó objektum
      */
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/get-users/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
         return ResponseEntity.ok(userManagementService.getUsersById(userId).getUser());
@@ -84,7 +90,9 @@ public class UserManagementController {
      * @param request frissítendő mezők (név, email, stb.)
      * @return frissített felhasználó objektum
      */
-    @PutMapping("/admin/update/{userId}")
+
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    @PutMapping("/user/update/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable Integer userId, @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(userManagementService.updateUser(userId, request).getUser());
     }

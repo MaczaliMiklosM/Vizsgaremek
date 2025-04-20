@@ -79,21 +79,24 @@ function ProductsPage() {
     setFilters(prev => ({ ...prev, price: value }));
   };
 
-  const resetFilters = () => {
-    setFilters({ brands: [], colors: [], productCondition: [], price: 10000 });
-    setSearchTerm("");
-    window.history.replaceState({}, document.title, "/#products");
-  };
-
   const normalizedProducts = normalizeProducts(allProducts);
   const visibleProducts = normalizedProducts.filter(p => p.status?.toLowerCase() !== 'sold');
+
+  const maxProductPrice = useMemo(() => {
+    if (visibleProducts.length === 0) return 10000;
+    return Math.ceil(Math.max(...visibleProducts.map(p => p.price)) / 100) * 100;
+  }, [visibleProducts]);
+
+  useEffect(() => {
+    setFilters(prev => ({ ...prev, price: maxProductPrice }));
+  }, [maxProductPrice]);
 
   const filteredProducts = useMemo(() => {
     return visibleProducts.filter(product => {
       const matchBrand = filters.brands.length === 0 || filters.brands.includes(product.brand);
       const matchColor = filters.colors.length === 0 || filters.colors.includes(product.color);
       const matchCondition = filters.productCondition.length === 0 || filters.productCondition.includes(product.productCondition);
-      const matchPrice = product.price <= filters.price;
+      const matchPrice = filters.price >= maxProductPrice || product.price <= filters.price;
       const search = searchTerm.trim().toLowerCase();
       const matchSearch = !search || product.name.toLowerCase().includes(search) || product.category?.toLowerCase().includes(search) || (search === "man" && product.gender === "man") || (search === "woman" && product.gender === "woman");
       return matchBrand && matchColor && matchCondition && matchPrice && matchSearch;
@@ -107,6 +110,12 @@ function ProductsPage() {
     if (searchTerm === "woman") return "women products";
     if (searchTerm === "man") return "men products";
     return "products";
+  };
+
+  const resetFilters = () => {
+    setFilters({ brands: [], colors: [], productCondition: [], price: maxProductPrice });
+    setSearchTerm("");
+    window.history.replaceState({}, document.title, "/#products");
   };
 
   return (
@@ -147,12 +156,14 @@ function ProductsPage() {
           ))}
 
           <div className="filter-group">
-            <h4 onClick={() => toggleSection("price")}>Price: ${filters.price}</h4>
+            <h4 onClick={() => toggleSection("price")}>
+              Price: {filters.price >= maxProductPrice ? `${maxProductPrice}+` : `$${filters.price}`}
+            </h4>
             <div className={`filter-content ${!expanded.price ? "collapsed" : ""}`}>
               <input
                 type="range"
                 min="0"
-                max="20000"
+                max={maxProductPrice}
                 step="100"
                 value={filters.price}
                 onChange={(e) => handlePriceChange(parseInt(e.target.value))}

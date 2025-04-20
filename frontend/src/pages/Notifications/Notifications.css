@@ -51,16 +51,6 @@
   font-style: italic;
 }
 
-.unread-notification {
-  border-left: 5px solid #22c55e;
-  background: #ecfdf5;
-}
-
-.notification-item.unread-notification p {
-  font-weight: 600;
-  color: #065f46;
-}
-
 .notification-item {
   background: white;
   padding: 15px;

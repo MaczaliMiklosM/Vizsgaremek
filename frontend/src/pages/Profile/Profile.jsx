@@ -53,7 +53,7 @@ const Profile = () => {
     const token = localStorage.getItem('token');
     if (!user || !token) return;
 
-    axios.put(`/api/management/admin/update/${user.id}`, formData, {
+    axios.put(`/api/management/user/update/${user.id}`, formData, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(response => {

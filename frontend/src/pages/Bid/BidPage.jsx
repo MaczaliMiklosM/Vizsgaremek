@@ -180,18 +180,11 @@ function BidPage() {
             ) : (
               <>
                 {!isOwnProduct && !acceptedBid && userProfile && (
-                  <div className="shipping-warning">
-                    <h4>Your Shipping Info</h4>
-                    <input
-                      type="text"
-                      value={shippingAddress}
-                      onChange={(e) => setShippingAddress(e.target.value)}
-                      className="bid-input"
-                    />
+          
                     <p className="info-note">
-                      Note: If your bid is accepted, the order will be placed automatically using the shipping address above. You can update it now if needed.
+                      Note: If your bid is accepted, the order will be placed automatically using your shipping address. You can change it in your profile.
                     </p>
-                  </div>
+                 
                 )}
                 <input
                   type="number"

@@ -1,7 +1,5 @@
 package com.example.demo.config;
 
-
-import com.example.demo.enums.UserRole;
 import com.example.demo.services.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +27,13 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/admin", "/management/**", "/products/getProducts", "/products/getProductById/{id}", "/products/createProduct", "/api/wishlist/**"};
+           "/api/test/**", "/admin", "/products/getProducts", "/products/getProductById/{id}", "/products/createProduct",
+            "/api/wishlist/**", "/management/auth/register", "/management/auth/login", "/management/check-email", "/management/check-email/**",};
 
 
     @Autowired
     private UserDetailService ourUserDetailService;
+    
     @Autowired
     private JWTAuthFilter jwtAuthFilter;
 
@@ -51,17 +51,15 @@ public class SecurityConfig {
                                         "/management/check-email", "/management/check-email/**"
                                 ).permitAll()
 
-
                         .requestMatchers("/notifications/**").authenticated()
                         .requestMatchers("/orders/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .requestMatchers("/wishlist/**").hasAnyAuthority("USER", "ADMIN")
-                        .requestMatchers("/management/admin/update/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/management/user/update/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/products/getProductById/**").permitAll()
                         .requestMatchers("/bids/place").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/bids/accept/").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/bids/reject/").hasAnyAuthority("USER", "ADMIN")
-
                         .requestMatchers("/bids/user/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/bids/received/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/products/by-user/**").hasAnyAuthority("USER", "ADMIN")

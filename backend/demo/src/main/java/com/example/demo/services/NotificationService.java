@@ -28,13 +28,10 @@ public class NotificationService {
         notification.setMessage(message);
         notification.setTimestamp(LocalDateTime.now());
 
-        // Naplózás: mentés előtt
-        System.out.println("Mentés előtt: " + notification);
 
         notificationRepository.save(notification);
 
-        // Naplózás: sikeres mentés után
-        System.out.println("Értesítés mentve: " + notification);
+
     }
 
     /**

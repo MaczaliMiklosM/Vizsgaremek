@@ -149,7 +149,7 @@ const AuthModal = ({ onClose }) => {
           <div className="input-box" key={field}>
             <input
               type={field === 'email' ? 'email' : 'text'}
-              placeholder={field === 'fullName' ? 'Full Name' : field === 'address' ? 'Address' : field}
+              placeholder={field === 'fullName' ? 'Full Name' : field === 'address' ? 'Street, house, ZIP code, city' : field}
               name={field}
               value={formData[field]}
               onChange={handleChange}

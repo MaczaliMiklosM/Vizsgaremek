@@ -20,7 +20,7 @@ function MyProductsPage() {
   const user = JSON.parse(localStorage.getItem("user"));
   const imageInputRefs = [useRef(null), useRef(null), useRef(null)];
 
-  const allowedBrands = ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Dior", "Louis Vuitton"];
+  const allowedBrands = ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Christian Dior", "Louis Vuitton"];
   const allowedColors = ["White", "Black", "Blue", "Red", "Pink", "Green", "Purple", "Yellow", "Grey", "Brown", "Orange", "Multicolor"];
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function MyProductsPage() {
         });
         setMyProducts(res.data);
       } catch (err) {
-        console.error("\u274C Failed to fetch products:", err);
+        console.error("❌ Failed to fetch products:", err);
         if (err.response?.status === 403) {
           setError("You are not authorized to view your products.");
         }
@@ -40,6 +40,13 @@ function MyProductsPage() {
     };
     fetchMyProducts();
   }, [user.id]);
+
+  useEffect(() => {
+    const allImagesUploaded = imageFiles.every((file) => file);
+    if (allImagesUploaded && error === "Please fill out all required fields and upload 3 images.") {
+      setError("");
+    }
+  }, [imageFiles, error]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,7 +100,7 @@ function MyProductsPage() {
 
   const getSizePlaceholder = () => {
     switch (formData.category) {
-      case "sneaker": return "Recommended: EU size 35 - 45";
+      case "sneaker": return "Recommended: EU size 35 - 50";
       case "bag": return "Recommended: 15cm - 50cm";
       case "watch": return "Recommended: 30mm - 50mm";
       default: return "Enter size";
@@ -104,7 +111,7 @@ function MyProductsPage() {
     const size = formData.size.trim();
     if (!size) return "Size is required.";
     switch (formData.category) {
-      case "sneaker": const num = parseInt(size, 10); if (isNaN(num) || num < 35 || num > 45) return "Sneaker size should be between 35 and 45."; break;
+      case "sneaker": const num = parseInt(size, 10); if (isNaN(num) || num < 35 || num > 50) return "Sneaker size should be between 35 and 50."; break;
       case "watch": const mm = parseInt(size, 10); if (isNaN(mm) || mm < 30 || mm > 50) return "Watch size should be between 30mm and 50mm."; break;
       case "bag": const cm = parseInt(size, 10); if (isNaN(cm) || cm < 15 || cm > 50) return "Bag size should be between 15cm and 50cm."; break;
     }
@@ -162,7 +169,7 @@ function MyProductsPage() {
       setMyProducts(updated.data);
 
     } catch (err) {
-      console.error("\u274C Upload failed:", err);
+      console.error("❌ Upload failed:", err);
       if (err.response?.status === 403) {
         setError("You are not authorized to upload products.");
       } else {

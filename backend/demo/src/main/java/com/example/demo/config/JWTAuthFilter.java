@@ -15,7 +15,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-
 @Component
 public class JWTAuthFilter extends OncePerRequestFilter {
 
@@ -25,9 +24,9 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailService ourUserDetailsService;
 
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -35,26 +34,21 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        System.out.println("Token received: " + token);  // Token értékének kiírása
 
         try {
             String userEmail = jwtUtils.extractUsername(token);
-            System.out.println("User email extracted: " + userEmail);  // Az email kiírása
             UserDetails userDetails = ourUserDetailsService.loadUserByUsername(userEmail);
 
             if (jwtUtils.isTokenValid(token, userDetails)) {
-                // Token validálása
-                System.out.println("Token is valid.");
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                System.out.println("Invalid token detected.");  // Érvénytelen token esete
             }
         } catch (Exception e) {
-            System.out.println("Error processing token: " + e.getMessage());
+            //figyelmen kívül hagyjuk
         }
+
         filterChain.doFilter(request, response);
     }
 }

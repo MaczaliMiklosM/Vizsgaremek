@@ -29,7 +29,7 @@ function TermsPage() {
         <section>
           <h2>3. Product Listings & Authenticity</h2>
           <p>
-            All items listed must be original, verified luxury products. LuxCollect reserves the right to remove any product deemed counterfeit, misleading, or inappropriate without notice.
+            All items listed must be original, verified luxury products. LuxShop reserves the right to remove any product deemed counterfeit, misleading, or inappropriate without notice.
           </p>
         </section>
 

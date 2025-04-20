@@ -26,7 +26,7 @@ const About = () => {
         <section className="about-section">
           <h2><OtherHousesIcon /> Our Story</h2>
           <p>
-            Although LuxCollect is currently a fictional company, this project brings it to life! We are designing and developing the company's online presence
+            Although LuxShop is currently a fictional company, this project brings it to life! We are designing and developing the company's online presence
             along with its backend database, creating a marketplace where collectors and investors can acquire rare luxury items.
           </p>
         </section>

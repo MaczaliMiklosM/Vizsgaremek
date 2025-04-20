@@ -105,8 +105,6 @@ public class OrderController {
             OrderStatus newStatus = OrderStatus.valueOf(status.toUpperCase());
             order.setStatus(newStatus);
             orderHeaderRepository.save(order);
-
-            // Értesítés küldése a státusz frissítésről
             notificationService.sendNotification(
                     order.getUser(),
                     "Your order #" + order.getOrderId() + " status was updated to: " + newStatus.name()

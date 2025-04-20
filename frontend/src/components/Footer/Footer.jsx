@@ -27,11 +27,11 @@ const Footer = () => {
       <div className="footer-social">
         <span>Get connected with us on social networks:</span>
         <div className="social-links">
-          <a href="https://www.facebook.com/profile.php?id=61574491025378" target="_blank" rel="noopener noreferrer"><Facebook /></a>
-          <a href="https://x.com/Luxshop_real" target="_blank" rel="noopener noreferrer"><XIcon /></a>
-          <a href="https://www.instagram.com/luxshopreal1/" target="_blank" rel="noopener noreferrer"><Instagram /></a>
-          <a href="https://www.linkedin.com/mynetwork/" target="_blank" rel="noopener noreferrer"><LinkedIn /></a>
-          <a href="https://github.com/dashboard" target="_blank" rel="noopener noreferrer"><GitHub /></a>
+          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"><Facebook /></a>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer"><XIcon /></a>
+          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer"><Instagram /></a>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer"><LinkedIn /></a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer"><GitHub /></a>
         </div>
       </div>
 

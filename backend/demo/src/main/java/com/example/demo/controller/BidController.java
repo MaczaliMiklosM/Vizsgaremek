@@ -20,7 +20,7 @@ public class BidController {
     /**
      * Új licit leadása egy adott termékre.
      *
-     * @param bidRequest a licit részleteit tartalmazó DTO (termék, felhasználó, összeg)
+     * @param bidRequest a licit részleteit tartalmazó DTO
      * @return a létrehozott licit DTO formában vagy hibaüzenet
      */
     @PostMapping("/place")
