@@ -1,0 +1,10 @@
+Product name: Automatic Watch Stainless Steel
+Description: Oyster Perpetual Green Automatic Watch Stainless Steel 
+Price: $11,200
+Brand: Rolex
+Color: green
+Category: watch
+Size: 41
+Condition: used
+Target Gender: Man
+

@@ -1,0 +1,10 @@
+Product name: Skater Sneakers
+Description: B9S Skater Sneakers Cannage Quilt Leather
+Price: $1370
+Brand: Christian Dior
+Color: gray
+Category: sneaker
+Size: 44
+Condition: new
+Target Gender: man
+
