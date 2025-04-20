@@ -1,0 +1,12 @@
+Felhasználók:
+admin:
+email: admin@luxshop.com
+jelszo: admin
+
+1 felhasznalo:
+email: maczali03@gmail.com
+jelszo: Jelszo123!
+
+2 felhasznalo:
+email: molnarzoltan@gmail.com
+jelszo: Jelszo123!
