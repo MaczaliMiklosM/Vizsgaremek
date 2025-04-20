@@ -3,14 +3,11 @@ package com.example.demo.services;
 import com.example.demo.dto.order.OrderItemDTO;
 import com.example.demo.dto.order.OrderRequestDTO;
 import com.example.demo.dto.order.OrderResponseDTO;
+import com.example.demo.enums.BidStatus;
 import com.example.demo.enums.OrderStatus;
 import com.example.demo.enums.Status;
 import com.example.demo.model.*;
-import com.example.demo.repository.OrderBodyRepository;
-import com.example.demo.repository.OrderHeaderRepository;
-import com.example.demo.repository.ProductRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.WishlistRepository;
+import com.example.demo.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-
+    private final BidRepository bidRepository;
     private final OrderHeaderRepository orderHeaderRepository;
     private final OrderBodyRepository orderBodyRepository;
     private final UserRepository userRepository;
@@ -86,7 +83,6 @@ public class OrderServiceImpl implements OrderService {
 
             productNames.append(product.getName()).append(", ");
 
-
             Collection collectionItem = Collection.builder()
                     .user(user)
                     .product(product)
@@ -96,7 +92,26 @@ public class OrderServiceImpl implements OrderService {
             product.setStatus(Status.SOLD);
             productRepository.save(product);
 
+            // 🟡 Összes többi licit REJECTED lesz
+            List<Bid> allBids = bidRepository.findByProductId(product.getId());
+            for (Bid bid : allBids) {
+                if (bid.getStatus() == BidStatus.PENDING) {
+                    bid.setStatus(BidStatus.REJECTED);
+                }
+            }
+            bidRepository.saveAll(allBids);
 
+            // 🔔 Értesítés a többi licitálónak
+            for (Bid bid : allBids) {
+                if (bid.getStatus() == BidStatus.REJECTED && bid.getBidder().getId() != user.getId()) {
+                    notificationService.sendNotification(
+                            bid.getBidder(),
+                            "The product you bid on (" + product.getName() + ") was bought by someone else."
+                    );
+                }
+            }
+
+            // Wishlist értesítések és törlés
             List<Wishlist> allWishlists = wishlistRepository.findAll();
             for (Wishlist w : allWishlists) {
                 if (w.getProduct().getId().equals(product.getId()) && w.getUser().getId() != user.getId()) {

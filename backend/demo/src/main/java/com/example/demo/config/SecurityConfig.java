@@ -33,7 +33,7 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailService ourUserDetailService;
-    
+
     @Autowired
     private JWTAuthFilter jwtAuthFilter;
 
