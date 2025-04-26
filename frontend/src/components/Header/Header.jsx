@@ -31,7 +31,7 @@ function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-  
+
     navigate("/");
     window.location.reload();
   };
@@ -228,7 +228,14 @@ function Header() {
           <span onClick={() => navigate("/products")} className="nav-link">Products</span>
           <span onClick={() => handleProtectedRoute("/wishlist")} className="nav-link">Wishlist</span>
           <span onClick={() => handleProtectedRoute("/basket")} className="nav-link">Basket</span>
-          <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link">Notifications</span>
+          <span onClick={() => handleProtectedRoute("/notifications")} className="nav-link notification-text-wrapper">
+            Notifications
+            {unreadCount > 0 && (
+              <span className="notification-badge-on-text">{unreadCount}</span>
+            )}
+          </span>
+
+
         </div>
       )}
 

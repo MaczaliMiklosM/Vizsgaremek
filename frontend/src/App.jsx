@@ -20,7 +20,6 @@ import RequireAdmin from './components/Auth/RequireAdmin';
 import MyBidsPage from './pages/MyBidPage/MyBidsPage';
 import MyOrdersPage from './pages/MyOrders/MyOrdersPage';
 
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {

@@ -214,6 +214,32 @@
         line-height: 1;
     }
 
+    .notification-text-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .notification-badge-on-text {
+        position: absolute;
+        top: -6px;
+        right: -12px;
+        background-color: #ef4444;
+        color: white !important;
+        font-size: 12px !important;
+        font-weight: bold;
+        border-radius: 50%;
+        padding: 2px 5px;
+        min-width: 22px !important;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+        
+      }
+      
+      
+
     .nav-link {
         cursor: pointer;
     }

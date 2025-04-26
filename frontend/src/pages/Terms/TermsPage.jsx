@@ -22,7 +22,7 @@ function TermsPage() {
         <section>
           <h2>2. User Responsibilities</h2>
           <p>
-            As a registered member, you agree to provide accurate personal information and to use the platform lawfully and respectfully. Misuse of the site may result in suspension or permanent ban.
+            As a registered member, you agree to provide accurate personal information and to use the platform lawfully and respectfully.
           </p>
         </section>
 

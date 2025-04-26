@@ -18,16 +18,8 @@ const About = () => {
         <section className="about-section">
           <h2><InfoIcon /> Who Are We?</h2>
           <p>
-            <strong>LuxShop</strong> is a premium online marketplace dedicated to exclusive, limited-edition, and collectible luxury products.
+            <strong>LuxShop</strong> is a premium online marketplace dedicated to exclusive, limited-edition luxury products.
             Our goal is to provide our customers with unique and high-value items while ensuring a secure and transparent trading experience.
-          </p>
-        </section>
-
-        <section className="about-section">
-          <h2><OtherHousesIcon /> Our Story</h2>
-          <p>
-            Although LuxShop is currently a fictional company, this project brings it to life! We are designing and developing the company's online presence
-            along with its backend database, creating a marketplace where collectors and investors can acquire rare luxury items.
           </p>
         </section>
 

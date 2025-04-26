@@ -92,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
             product.setStatus(Status.SOLD);
             productRepository.save(product);
 
-            // 🟡 Összes többi licit REJECTED lesz
+            // Összes többi licit REJECTED lesz
             List<Bid> allBids = bidRepository.findByProductId(product.getId());
             for (Bid bid : allBids) {
                 if (bid.getStatus() == BidStatus.PENDING) {
@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
             }
             bidRepository.saveAll(allBids);
 
-            // 🔔 Értesítés a többi licitálónak
+            // Értesítés a többi licitálónak
             for (Bid bid : allBids) {
                 if (bid.getStatus() == BidStatus.REJECTED && bid.getBidder().getId() != user.getId()) {
                     notificationService.sendNotification(
