@@ -1,0 +1,45 @@
+= Követelmény specifikáció
+
+[cols="5,3,2"]
+|===
+| Követelmény | Használati esetek | Állapot
+
+| *Áruk kezelése*
+
+  A rendszerben lévő áruk listázása.
+  Új áru rögzítése a rendszerben.
+  Kiválasztott áru metaadatainak megtekintése, azok módosítása.
+  Áru törlés lehetősége.
+  A termékek neve, ára vagy egyéb metaadatok módosítása.
+
+| Áruk CRUD + listázó + módosítás + törlés + átnevezés/ár módosítás
+| Backend elkészítve
+
+| *Állapot kezelés*
+
+A rendszer képes legyen a termékek állapotának kezelésére (pl. elérhetőség, raktári státusz).
+Állapotváltozás rögzítése és nyomon követése.
+
+| Áru állapot módosítás
+| Backend elkészítve
+
+| *Jogosultságok kezelése*
+
+Felhasználók szerepkörének és jogosultságainak kezelése.
+Adminisztrátor jogosultságok a termékek módosítására, törlésére, rögzítésére.
+Vásárló jogosultságok a termékek megtekintésére.
+
+| Áruk listázása, Áru rögzítése, Áru módosítása, Áru törlése
+| Backend elkészítve
+
+| *Felhasználói bejelentkezés*
+
+A rendszerbe csak felhasználónévvel és jelszóval lehet bejelentkezni.
+Két szintű szerepkör: Vásárló, Adminisztrátor.
+
+| Bejelentkezés, Kijelentkezés
+| Elkészítésre vár
+
+|===
+
+link:README.adoc[Vissza]

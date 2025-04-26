@@ -1,0 +1,9 @@
+= Funkcionális modellek
+
+* link:functional-models/aruk_kezelese_funkcionalis_modell.adoc[Áruk kezelése ]
+
+* Termékek kezelése
+
+*  Rendelés kezelése
+
+link:system-plan.adoc[Vissza]
