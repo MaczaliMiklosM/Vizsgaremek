@@ -20,7 +20,7 @@ function MyProductsPage() {
   const user = JSON.parse(localStorage.getItem("user"));
   const imageInputRefs = [useRef(null), useRef(null), useRef(null)];
 
-  const allowedBrands = ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Christian Dior", "Louis Vuitton"];
+  const allowedBrands = ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Christian Dior", "Louis Vuitton","Rolex"];
   const allowedColors = ["White", "Black", "Blue", "Red", "Pink", "Green", "Purple", "Yellow", "Grey", "Brown", "Orange", "Multicolor"];
 
   useEffect(() => {

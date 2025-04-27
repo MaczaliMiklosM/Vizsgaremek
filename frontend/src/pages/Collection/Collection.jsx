@@ -66,7 +66,7 @@ const Collection = () => {
                     />
                     <div className="collection-details">
                       <h2>{item.productName}</h2>
-                      <p className="collection-price">${item.productPrice}</p>
+                      <p className="collection-price">Original price ${item.productPrice}</p>
                     </div>
                   </div>
                 ))

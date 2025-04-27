@@ -8,7 +8,7 @@ import './ProductsPage.css';
 
 const filterOptions = {
   productCondition: ["New", "Used"],
-  brands: ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Christian Dior", "Louis Vuitton"],
+  brands: ["Balenciaga", "Cartier", "Chanel", "Hermes", "Omega", "Christian Dior", "Louis Vuitton","Rolex"],
   colors: ["White", "Black", "Blue", "Red", "Pink", "Green", "Purple", "Yellow", "Grey", "Brown", "Orange", "Multicolor"]
 };
 

@@ -1,6 +1,6 @@
 Product name: Automatic Watch Stainless Steel
 Description: Oyster Perpetual Green Automatic Watch Stainless Steel 
-Price: $11,200
+Price: 11200
 Brand: Rolex
 Color: green
 Category: watch

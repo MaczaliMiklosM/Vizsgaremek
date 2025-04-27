@@ -1,6 +1,6 @@
 Product name: Tote Spring in the City
 Description: OnTheGo Tote Spring in the City Monogram Giant Canvas GM
-Price: $5,020
+Price: 5020
 Brand: Louis Vuitton
 Color: white
 Category: bag
