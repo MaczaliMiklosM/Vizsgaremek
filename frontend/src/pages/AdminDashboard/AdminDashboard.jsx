@@ -107,6 +107,7 @@ function AdminDashboard() {
     } catch (error) {
       console.error("Failed to delete product", error);
       toast.error("Failed to delete product.");
+      window.alert("Failed to delete product. You cannot delete products with active bids or products that have been sold.");
     }
   };
 
