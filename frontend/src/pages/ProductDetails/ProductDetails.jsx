@@ -178,7 +178,6 @@ function ProductDetails() {
   }
 
   return (
-    <RequireAuth>
       <div className="container">
         <Header />
         <Navbar />
@@ -266,7 +265,6 @@ function ProductDetails() {
         <Footer />
         <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} closeButton={false} />
       </div>
-    </RequireAuth>
   );
 }
 
