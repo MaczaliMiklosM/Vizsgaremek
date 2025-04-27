@@ -1,10 +1,13 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.product.ProductSave;
+import com.example.demo.enums.BidStatus;
 import com.example.demo.enums.Status;
+import com.example.demo.model.Bid;
 import com.example.demo.model.Product;
 import com.example.demo.model.User;
 import com.example.demo.model.Wishlist;
+import com.example.demo.repository.BidRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WishlistRepository;
@@ -20,6 +23,10 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+
+
+    @Autowired
+    private BidRepository bidRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -60,14 +67,25 @@ public class ProductService {
      * @param id a törlendő termék ID-ja
      * @return HTTP válasz státusz
      */
+    /**
+     * Töröl egy terméket adminisztrátori jogosultsággal.
+     */
     public ResponseEntity<String> deleteProduct(Integer id) {
         Optional<Product> productOptional = productRepository.findById(id);
 
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
+
+            List<Bid> bids = bidRepository.findByProductId(product.getId());
+
+            for (Bid bid : bids) {
+                if (bid.getStatus() == BidStatus.PENDING || bid.getStatus() == BidStatus.ACCEPTED) {
+                    return new ResponseEntity<>("Cannot delete product with active bids.", HttpStatus.CONFLICT);
+                }
+            }
+
             User uploader = product.getUser();
 
-            // Értesítés a feltöltőnek
             if (uploader != null) {
                 notificationService.sendNotification(
                         uploader,
@@ -75,7 +93,6 @@ public class ProductService {
                 );
             }
 
-            // Értesítés a kívánságlistás felhasználóknak
             List<Wishlist> wishlists = wishlistRepository.findByProductId(product.getId());
             for (Wishlist w : wishlists) {
                 User u = w.getUser();
@@ -88,12 +105,15 @@ public class ProductService {
             }
 
             wishlistRepository.deleteAll(wishlists);
+            bidRepository.deleteAll(bids);
             productRepository.deleteById(id);
+
             return new ResponseEntity<>("Product deleted", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Product not found", HttpStatus.CONFLICT);
         }
     }
+
 
     /**
      * Új termék létrehozása és adatbázisba mentése.

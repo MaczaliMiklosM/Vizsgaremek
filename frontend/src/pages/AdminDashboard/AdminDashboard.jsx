@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './AdminDashboard.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
@@ -106,8 +107,11 @@ function AdminDashboard() {
       toast.success("Product successfully deleted!");
     } catch (error) {
       console.error("Failed to delete product", error);
-      toast.error("Failed to delete product.");
-      window.alert("Failed to delete product. You cannot delete products with active bids or products that have been sold.");
+      if (error.response && error.response.status === 409) {
+        toast.error("Cannot delete products that have active bids or are already sold.");
+      } else {
+        toast.error("Cannot delete products that have active bids or are already sold.");
+      }
     }
   };
 
@@ -174,7 +178,7 @@ function AdminDashboard() {
                     value={order.status}
                     onChange={(e) => updateOrderStatus(order.orderId, e.target.value)}
                   >
-                    {["CART", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"].map(status => (
+                    {['CART', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'].map(status => (
                       <option key={status} value={status}>{status}</option>
                     ))}
                   </select>
@@ -251,6 +255,8 @@ function AdminDashboard() {
           </>
         )}
       </main>
+
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeButton={false} />
     </div>
   );
 }
